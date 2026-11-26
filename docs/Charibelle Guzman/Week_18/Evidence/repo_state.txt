@@ -31,8 +31,8 @@ Rule     : every line below is the unedited output of the command that precedes 
   Remote (fetch/push) https://guzmancharibelle5-rgb@github.com/guzmancharibelle5-rgb/Dama.git
 
   The submission tag v1.0.0-pa2 is placed on the commit that carries this file's week (section 6). This
-  section was written at b8aca5c, the code commit; the documentation commit follows it and is recorded in
-  the README once its id exists.
+  section was written at b8aca5c, the code commit; the documentation commit 2c5b275 follows it, and the
+  closing commit - the one carrying the tag - is the commit in which these two ids first appear together.
 
 ====================================================================================================
 3. FULL HISTORY - git log --oneline
@@ -88,7 +88,7 @@ b79848f Initial Unity project commit
 ====================================================================================================
 6. THE SUBMISSION
 ====================================================================================================
-  Submission tag       v1.0.0-pa2   (annotated, on the commit that carries the Week 18 package)
+  Submission tag       v1.0.0-pa2   (annotated, on the Week 18 closing commit; see section 7)
   Version the app reports  1.0.0-rc1   (bundleVersion)   - deliberately NOT renamed to match the tag
   Android version code 2
   Application id       com.defaultcompany.dama
