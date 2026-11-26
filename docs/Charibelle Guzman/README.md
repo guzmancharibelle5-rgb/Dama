@@ -462,7 +462,7 @@ machine pre-test everywhere it is mentioned, and it is never referred to as a pl
 | Code commit (Week 18) | `b8aca5c` - demonstration harness, the Week 18 seams in `A11yAudit` / `Week15Checks` / `Week17Checks`, and the `Week_18` entry in `SubmissionDocBuilder` |
 | Documentation commit (Week 18) | `2c5b275` - the eight documents and their HTML, the eight PDFs, the nine captures, the evidence files and this README |
 | Submission tag | `v1.0.0-pa2` - annotated, on the Week 18 closing commit; `Week_18/Evidence/repo_state.txt` records `git rev-list -n1 v1.0.0-pa2` and the push attempt's exact output |
-| Remote state | `origin/main` moved `b79848f..308c8ed` and both tags were created on the remote (2026-11-26) - the command and its unedited output are in `Week_18/Evidence/repo_state.txt` §7 |
+| Remote state | `origin/main` carries the whole project, both tags and the Week 18 closing records; the two push outputs and their exact wording are quoted in `Week_18/Evidence/repo_state.txt` §7 |
 | Build target | Android, ARM64 only, IL2CPP, minimum API 26, `com.defaultcompany.dama` |
 | Scenes in build | `DamaGame.unity` (index 0), `SampleScene.unity` (disabled) |
 

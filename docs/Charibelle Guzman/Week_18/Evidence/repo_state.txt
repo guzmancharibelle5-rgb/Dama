@@ -75,7 +75,7 @@ b79848f Initial Unity project commit
   application reports, not by a tag. That is why v1.0.0-pa2 is the first release tag this project carries.
 
 ====================================================================================================
-5. ORIGIN STATE
+5. ORIGIN STATE — as captured before the push; section 7 has the state after it
 ====================================================================================================
   git rev-parse origin/main  ->  b79848f34b44ea1822e2d4543bb35a3c74b1e143
   git log --oneline origin/main  ->  b79848f Initial Unity project commit
@@ -117,9 +117,22 @@ b79848f Initial Unity project commit
   exist there. The module's "repository access" row is therefore satisfied by a repository that actually
   holds the work, not by a local copy plus an intention.
 
-  One note on this record itself. The paragraph you are reading is committed one commit AFTER 308c8ed,
-  because the output of a push cannot sit inside the tree that push sends. Local main is therefore one
-  commit ahead of origin/main at the moment it is written, and that commit carries this section and the
-  checklist's final re-read (`final_results.md` section 5). It was pushed with a follow-up
-  `git push origin main` immediately afterwards, so `git log --oneline origin/main -1` names it. The tag
-  v1.0.0-pa2 stays on 308c8ed, which is the tree that was pushed and the tree the submission names.
+  One note on this record itself, and it is the last one. A record of a push cannot sit inside the tree that
+  push sends, so each of these paragraphs accounts for the one before it. The second push, made after the
+  first record commit existed:
+
+      set GIT_TERMINAL_PROMPT=0 && git push origin main
+
+      To https://github.com/guzmancharibelle5-rgb/Dama.git
+         308c8ed..11fe074  main -> main
+
+  So two pushes carried the submission: b79848f..308c8ed, which is the tagged tree, its tag and
+  week16-final; and 308c8ed..11fe074, which is the push record itself. The paragraph you are reading is in
+  a third commit, pushed the same way, and it names no commit id on purpose, because a file cannot contain
+  the id of the commit that contains it. The remote tip is whatever
+
+      git log --oneline origin/main -1
+
+  prints when you run it, and after that final push it is the commit carrying this text. The tag
+  v1.0.0-pa2 deliberately stays on 308c8ed - the tree that was tagged, pushed and submitted - rather than
+  following these record-only commits.
