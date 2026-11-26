@@ -37,6 +37,11 @@ public static class Week15Checks
     // behaviour. It writes under Week_16 so Week 15's committed logs cannot be overwritten.
     private const string RegressionMenu = "Tools/Dama/Week 16/4. Regression Run";
 
+    // Week 17 seam: the same 28 cases once more, this time against the release candidate's title
+    // row, HOW TO PLAY and CREDITS. Same harness and thresholds; the output lives under Week_17, so
+    // neither Week 15's nor Week 16's committed logs can be rewritten by it.
+    private const string ReleaseMenu = "Tools/Dama/Week 17/3. Regression Run";
+
     private const float TouchFloorCanvasPx = 96f;
     private const float CaptionFloorPx = 20f;
     private const float LabelFloorPx = 18f;
@@ -82,6 +87,9 @@ public static class Week15Checks
 
     [MenuItem(RegressionMenu, false, 41)]
     public static void BeginRegression() => Begin("regression", "Week_16");
+
+    [MenuItem(ReleaseMenu, false, 42)]
+    public static void BeginRelease() => Begin("regression", "Week_17");
 
     private static void Begin(string label, string week = "Week_15")
     {

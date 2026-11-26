@@ -90,7 +90,8 @@ public class DamaBoard : MonoBehaviour
     private Vector2Int chainPiece = new Vector2Int(-1, -1);
     private Coroutine promotionPulse;
 
-    private enum GameState { Ready, Playing, Paused, GameOver, Profile }
+    // HowTo and Credits are title-screen panels, like Profile: they only make sense from Ready.
+    private enum GameState { Ready, Playing, Paused, GameOver, Profile, HowTo, Credits }
 
     private GameState gameState = GameState.Ready;
     private GameObject startPanel;
@@ -102,6 +103,10 @@ public class DamaBoard : MonoBehaviour
     private Text winText;
     private Text winSummaryText;
     private GameObject profilePanel;
+    private GameObject howToPanel;
+    private GameObject creditsPanel;
+    private Text versionLabel;
+    private Text creditsBuildText;
     private Text soundButtonLabel;
     private GameFeedback feedback;
 
@@ -165,6 +170,8 @@ public class DamaBoard : MonoBehaviour
         pausePanel = canvas.transform.Find("PausePanel")?.gameObject;
         winPanel = canvas.transform.Find("WinPanel")?.gameObject;
         profilePanel = canvas.transform.Find("ProfilePanel")?.gameObject;
+        howToPanel = canvas.transform.Find("HowToPanel")?.gameObject;
+        creditsPanel = canvas.transform.Find("CreditsPanel")?.gameObject;
 
         Transform hud = canvas.transform.Find("HUDPanel");
         if (hud != null)
@@ -190,9 +197,16 @@ public class DamaBoard : MonoBehaviour
         WireButton(canvas, "StartPanel/ProfileButton", ShowProfile);
         WireButton(canvas, "ProfilePanel/BackButton", CloseProfile);
         WireButton(canvas, "PausePanel/SoundButton", ToggleSound);
+        WireButton(canvas, "StartPanel/HowToButton", ShowHowTo);
+        WireButton(canvas, "StartPanel/CreditsButton", ShowCredits);
+        WireButton(canvas, "StartPanel/ExitButton", QuitGame);
+        WireButton(canvas, "HowToPanel/BackButton", CloseHowTo);
+        WireButton(canvas, "CreditsPanel/BackButton", CloseCredits);
 
         Transform sound = canvas.transform.Find("PausePanel/SoundButton");
         if (sound != null) soundButtonLabel = sound.Find("Text")?.GetComponent<Text>();
+
+        RefreshReleaseLabels(canvas);
 
         feedback = GetComponent<GameFeedback>();
         if (feedback == null) feedback = FindFirstObjectByType<GameFeedback>();
@@ -222,6 +236,27 @@ public class DamaBoard : MonoBehaviour
         if (pausePanel != null) pausePanel.SetActive(state == GameState.Paused);
         if (winPanel != null) winPanel.SetActive(state == GameState.GameOver);
         if (profilePanel != null) profilePanel.SetActive(state == GameState.Profile);
+        if (howToPanel != null) howToPanel.SetActive(state == GameState.HowTo);
+        if (creditsPanel != null) creditsPanel.SetActive(state == GameState.Credits);
+    }
+
+    /// <summary>
+    /// Week 17: every build-identifying string is derived from the running binary at startup, never
+    /// stored in the scene. A caption baked into a scene survives into a build it does not describe,
+    /// which is the one way a release candidate can name the wrong version while looking correct.
+    /// </summary>
+    private void RefreshReleaseLabels(GameObject canvas)
+    {
+        versionLabel = canvas.transform.Find("StartPanel/VersionLabel")?.GetComponent<Text>();
+        creditsBuildText = canvas.transform.Find("CreditsPanel/BuildText")?.GetComponent<Text>();
+
+        if (versionLabel != null) versionLabel.text = ReleaseInfo.Caption();
+        if (creditsBuildText != null) creditsBuildText.text = ReleaseInfo.BuildLine();
+
+        if (versionLabel == null || creditsBuildText == null)
+            Debug.LogWarning("[Week17] A release label is missing: run Tools > Dama > Week 17 > 1. Build Release Panels.");
+        else
+            Debug.Log($"[Week17] Release labels filled from the binary: title='{versionLabel.text}' credits='{creditsBuildText.text}'.");
     }
 
     private void RefreshUI()
@@ -287,6 +322,54 @@ public class DamaBoard : MonoBehaviour
     {
         if (gameState != GameState.Profile) return;
         ShowState(GameState.Ready);
+    }
+
+    /// <summary>Opens the instruction screen from the title screen.</summary>
+    public void ShowHowTo()
+    {
+        if (gameState != GameState.Ready) return;
+        Time.timeScale = 1f;
+        ShowState(GameState.HowTo);
+        Debug.Log("[Week17] HowToPanel opened.");
+    }
+
+    /// <summary>Returns from the instruction screen to the title screen.</summary>
+    public void CloseHowTo()
+    {
+        if (gameState != GameState.HowTo) return;
+        ShowState(GameState.Ready);
+        Debug.Log("[Week17] HowToPanel closed.");
+    }
+
+    /// <summary>Opens the credits screen from the title screen.</summary>
+    public void ShowCredits()
+    {
+        if (gameState != GameState.Ready) return;
+        Time.timeScale = 1f;
+        ShowState(GameState.Credits);
+        Debug.Log("[Week17] CreditsPanel opened.");
+    }
+
+    /// <summary>Returns from the credits screen to the title screen.</summary>
+    public void CloseCredits()
+    {
+        if (gameState != GameState.Credits) return;
+        ShowState(GameState.Ready);
+        Debug.Log("[Week17] CreditsPanel closed.");
+    }
+
+    /// <summary>
+    /// The EXIT control the release checklist asks for. In the editor it leaves play mode, because
+    /// Application.Quit does nothing there; on a device it closes the application.
+    /// </summary>
+    public void QuitGame()
+    {
+        Debug.Log($"[Week17] EXIT pressed on build {ReleaseInfo.Version}: closing the application.");
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 
     /// <summary>Pause panel SOUND button: flips feedback and renames itself in words, not a tint.</summary>

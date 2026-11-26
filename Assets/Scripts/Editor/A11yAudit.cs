@@ -37,6 +37,7 @@ public static class A11yAudit
     private const string MenuWeek14 = "Tools/Dama/Week 14/1. Run Accessibility Audit";
     private const string MenuWeek15 = "Tools/Dama/Week 15/0. Accessibility Audit";
     private const string MenuWeek16 = "Tools/Dama/Week 16/0. Accessibility Audit";
+    private const string MenuWeek17 = "Tools/Dama/Week 17/0. Accessibility Audit";
     private const string CanvasName = "GameCanvas";
     private const string SceneName = "DamaGame";
 
@@ -81,6 +82,13 @@ public static class A11yAudit
     /// </summary>
     [MenuItem(MenuWeek16, false, 40)]
     public static void RunWeek16() => Run("Week_16", "a11y_week16_", "WEEK 16", "after");
+
+    /// <summary>
+    /// Week 17 re-audit, against the release candidate's UI. A separate folder and prefix again, so
+    /// Week 16's after-file - which `Week_16/Evidence/` cites - is never rewritten by a later layout.
+    /// </summary>
+    [MenuItem(MenuWeek17, false, 50)]
+    public static void RunWeek17() => Run("Week_17", "a11y_week17_", "WEEK 17", "after");
 
     private static void Run(string weekFolder, string prefix, string tag, string forcedLabel = null)
     {
