@@ -79,9 +79,30 @@ Three faults, all in the harness rather than in the game, all disclosed rather t
    real store was restored *before* the match images, so each run added one RED win to
    `…\LocalLow\DefaultCompany\dama\Dama\profile.json` — the store read 5 matches before the first run
    and 8 after the third. The restore now happens after D9, so the committed harness banks into the
-   temporary folder and adds nothing. The three extra rows are **left in place and disclosed here**:
-   removing them would mean hand-editing the player's save, and `PlayerProfile` is the only class
-   permitted to write that file.
+   temporary folder and adds nothing. The three extra rows were **left in place and disclosed here**
+   rather than removed, because removing them would mean hand-editing the player's save and
+   `PlayerProfile` is the only class permitted to write that file.
+4. **The sentence above was itself wrong, and this is the correction.** The three rows are not in the store.
+   The regression gate in section 1 ran three minutes after the captures, and its data cases are written
+   against the *default* data directory: `TC-DATA-01` calls `PlayerProfile.UseDefaultDataDirectory()` and then
+   `ResetProfile()`; `TC-DATA-02` banks one match; `TC-DATA-03` banks another and resets again; `TC-DATA-04`
+   writes a deliberately corrupt file, which is quarantined; `TC-DATA-05` leaves the name at `QA-LOCAL`. So the
+   suite erased the three rows itself and left a test record behind. The store on this machine now reads
+   257 bytes, `0` matches, name `QA-LOCAL`, with `profile.rejected.json` (20 bytes) sitting beside it from
+   `TC-DATA-04`, and the directory carries 2026-11-26 16:53 local — 08:53 UTC, which is the gate's run time.
+   An independent play-mode verification at 09:18 UTC read the same 257 bytes and the same SHA-256
+   (`bcc9ddef…2d27d`) before and after its own run, so nothing has touched it since.
+
+   Nothing was hand-edited, and no claim in this package rests on the old sentence: what the demonstration
+   proves is that the game banks a finished match, which `TC-DATA-02` proves on its own and `D4` shows on a
+   record built in a scratch folder. But the original sentence was checked against the `matches=8` line in
+   `demo_rehearsal.txt` instead of against the file on disk, which is the mistake worth naming.
+
+   Two consequences. First, the gate's own data cases are destructive to whatever profile the machine holds —
+   correct for a development machine whose store is a test artifact, wrong on a player's device, and now
+   written down instead of assumed. Second, `docs/Charibelle Guzman/Week_18/Evidence/` describes the store as
+   it was read, not as it was hoped to be: the correction stays in the file rather than replacing the record
+   of the mistake.
 
 ## 4. What these results do not prove
 
@@ -148,3 +169,33 @@ five pages of it for the PA2 document and so on.
 Three rows stay as they were on the first day of the week: the installable build (BLOCKED on hardware and on
 signing), the originality declaration (UNSIGNED, a hand signature), and the defense (NOT SAT, a supervised viva).
 Nothing in this package moves them, and no later edit to this file will.
+
+## 6. Independent play-mode verification — 2026-11-26 09:18 UTC
+
+Everything in sections 1–3 was produced by harnesses written for this week, so a second pair of eyes was put on
+the same flow: an **automation agent drove the running game through its own UI**, clicking the real buttons and
+reading the real components, with only UI clicks — no direct game-state writes, no reflection, no seeding.
+
+| Step | What was read back |
+|---|---|
+| Title | `StartPanel` alone; `HUDPanel`, `PausePanel`, `ProfilePanel`, `WinPanel`, `HowToPanel`, `CreditsPanel` all false; `VersionLabel` = `1.0.0-rc1 · Editor`; buttons HOW TO PLAY / START / CREDITS / PROFILE / EXIT |
+| HOW TO PLAY | `HowToPanel` the only active panel, `StartPanel` false, body 1,122 characters at 19 px; BACK returned the title |
+| CREDITS | `CreditsPanel` the only active panel; `BuildText` = `Build 1.0.0-rc1 · Editor · com.defaultcompany.dama`; body 903 characters; BACK returned the title |
+| PROFILE | `ProfilePanel` the only active panel; `ResetLabel` still `RESET PROFILE` (never armed); BACK returned the title |
+| START | state `Playing`, 24 pieces under `DamaBoard/Pieces`, `Turn: RED`, `Red: 12   Blue: 12` |
+| Pause / resume | `PausePanel` with `Time.timeScale` 0 and the same side to move; after RESUME, `timeScale` 1 and still `Turn: RED` |
+| MENU from the pause panel | title screen, state `Ready`, `timeScale` 1, HUD hidden |
+
+No console error or exception was logged in either episode. The agent's first attempt stalled on its own harness
+(a one-frame `ShowState` transition was observed as "`StartPanel` and `HowToPanel` both true" and the step never
+latched); the corrected attempt passed all seven steps in 4.8 s. That is reported rather than hidden because it is
+the same class of fault as item 1 in section 3 — the observer was wrong, not the game.
+
+The real store was left untouched, which was the constraint that mattered: `profile.json` read **257 bytes,
+sha256 `bcc9ddef4b46406ec7b9750e1c49705b773d5972e08c37008bca696d3ae2d27d`, before and after**, because RESET was
+never pressed and the match was never finished. `git status` was empty under `Week_13` … `Week_17` before and after
+the run, and play mode was stopped at the end.
+
+**This is a machine verification, not a person.** It is one more agent walking a flow it was told to walk; it says
+nothing about a human player, a phone, or a thumb, exactly like the Week 14 machine pre-test. It is labelled as
+such everywhere it is mentioned.
