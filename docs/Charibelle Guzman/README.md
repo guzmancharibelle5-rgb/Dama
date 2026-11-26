@@ -49,7 +49,75 @@ A match ends when a side has no pieces left, or has pieces but no legal move.
 | 15 | Game Testing, Defect Correction and Milestones | AS3 milestone, reflection, test logs, defect log, evidence | complete - see `Week_15/` |
 | 16 | Mobile Game Profiling and Performance Optimization | SA6, AS3, reflection, three profile runs, regression logs, evidence | complete - see `Week_16/` |
 | 17 | Release Preparation and Documentation | PT7 (front page, technical documentation, user guide, evidence index, reflection), three screens, four new controls, release identity, six captures, evidence | complete - see `Week_17/` |
-| 18 | Final Project, Demonstration and Defense | - | not started |
+| 18 | Final Project, Demonstration and Defense | PA2 package, technical report, user guide, evidence portfolio, originality declaration, 14-slide deck + speaker notes, reflection, nine-screen demonstration, defense pointer sheet | complete - see `Week_18/` |
+
+---
+
+## Week 18 at a glance
+
+The last week produced no new game code: it produced proof that the game that already exists does what the previous
+seventeen weeks said it does. A checklist was written **first**, before any artefact, so the week was measured
+against a list rather than a list written to fit the week. Then one harness walked the game through its own entry
+points - `ShowHowTo`, `ShowCredits`, `ShowProfile`, `ResetPressed`, `StartGame`, `PauseGame`, `ResumeGame`,
+`ReturnToMenu`, `CheckForWin` - and took **nine** screenshots, one per demonstration requirement, each with its own
+wall-clock offset. The harness fails the run if any two images are byte-identical, which is not decoration: the
+first version of it produced three names over one picture, and the gate caught it (`final_results.md` section 3).
+
+All three gates were re-run on the same tree, and none of them overwrote a committed log - `Week17Checks` gained
+`RunDirOverride`, `A11yAudit` gained `RunWeek18()`, `Week15Checks` gained `BeginWeek18()`. Release checks **5 / 0**,
+regression **27 / 0 / 1 blocked** (`TC-COMPAT-01`, hardware, exactly as in Weeks 15-17), accessibility **148 passed,
+0 failed, 4 not measurable**.
+
+The submission is the tree at tag **`v1.0.0-pa2`** and **no Android package**. The version string did not move to
+`1.0.0-pa2` on purpose: on Android the save file lives under a path built from `productName` and `companyName`, and
+both on-screen version strings are derived from `Application.version` by `ReleaseInfo`, so re-labelling the build
+would present every player with an empty profile or print a string the code did not generate. The tag marks the
+submission where marking costs nothing.
+
+| Item | Where |
+|---|---|
+| Checklist, written before anything else | `Week_18/Evidence/final_pre_submission_checklist.md` - the module's eight Week 18 procedure rows plus every named submission item, each PASS / PENDING / BLOCKED |
+| Release record | `Week_18/Evidence/release_record.md` - identity, why the version did not move, the three independent reasons there is no APK, and the four steps that would close the row |
+| Demonstration | `Week_18/Evidence/D1_title.png` … `D9_end_screen.png` - nine images, nine distinct SHA-256 values, transcript in `demo_rehearsal.txt` (run 2026-11-26 08:50:43 UTC) |
+| Release checks | `Week_18/Evidence/test_logs_release/` - **5 passed, 0 failed, 0 console errors** (`TC-REL-01…05`) |
+| Regression at `Week_18` | `Week_18/Evidence/test_logs_regression/` - **27 passed, 0 failed, 1 blocked** (`TC-COMPAT-01`) |
+| Accessibility audit | `Week_18/Evidence/a11y_week18_after.log` - **148 passed, 0 failed, 0 warnings, 4 not measurable** |
+| Results, faults and their limits | `Week_18/Evidence/final_results.md` - the three counts, the three harness faults with what each one cost, and section 4 naming what none of it proves |
+| Repository hygiene | `Week_18/Evidence/secret_scan_week18.md` - no key, token, keystore or `.apk` tracked |
+| Defense | `Week_18/Evidence/defense_prep.md` - 49 questions with file, class, commit, case and log pointers and **no answers**; `e3_record.md` blank until the viva |
+| Documents | `Week_18/*.pdf` - PA2 (5 pp), technical report (5 pp), user guide (3 pp), evidence portfolio (4 pp), originality declaration (3 pp, signature line blank), deck (**14 slides at 16:9**, 960x540 pt), speaker notes (2 pp), reflection (2 pp) |
+| Submission tag | `v1.0.0-pa2` on the PA2 commit; `repo_state.txt` records the log, the tags and the push result |
+
+### Folder map
+
+```
+  Week_18/
+    Guzman_Charibelle_PA2.pdf                     the submission front page and the project in one document
+    Guzman_Charibelle_PA2_Technical_Report.pdf    rules, state machine, persistence, identity, testing, limits
+    Guzman_Charibelle_PA2_User_Guide.pdf          the nine screens, the rules, the profile, troubleshooting
+    Guzman_Charibelle_PA2_Evidence_Portfolio.pdf  every claim mapped to the file, case or hash that proves it
+    Guzman_Charibelle_PA2_Originality_Declaration.pdf  complete except the signature line, which is blank
+    Guzman_Charibelle_PA2_Presentation.pdf        14 slides, 16:9 landscape
+    Guzman_Charibelle_PA2_Presentation_Speaker_Notes.pdf  the outline that goes with the deck
+    Guzman_Charibelle_Week18_Reflection.pdf       the week's self-assessment
+    others/
+      *.md                                        the eight document bodies
+      *.html                                      built with Tools > Dama > Submission > Build Week 18 HTML
+      Guzman_Charibelle_PA2_Presentation_16x9.html  the deck's 16:9 page size, kept next to the A4 build
+    Evidence/
+      final_pre_submission_checklist.md           written first; every row re-read at the end
+      release_record.md                           identity, the no-APK reasons, what would close them
+      final_results.md                            the three gate counts, the nine captures, the three faults
+      secret_scan_week18.md                       the hygiene scan
+      demo_rehearsal.txt                          the demonstration run, in order, with offsets and hashes
+      defense_prep.md                             questions and pointers; no scripted answers
+      e3_record.md                                the viva record, deliberately blank
+      D1_title.png … D9_end_screen.png            the nine demonstration images
+      a11y_week18_after.log                       the authoritative audit (148 / 0 / 0, 4 not measurable)
+      a11y_week18_audit_*.log                     timestamped copies
+      test_logs_release/                          case_log.tsv, summary.txt, console.log - 5 / 0 / 0
+      test_logs_regression/                       case_log.tsv, summary.txt, console.log - 27 / 0 / 1
+```
 
 ---
 
@@ -344,6 +412,12 @@ discover.
 | The version caption reads **`· Editor`** in every Week 17 capture | `ReleaseInfo.Platform` reads the platform it is running on, so an Android build would read `· Android`. Nobody has seen that string, because no build exists. The mechanism is proven (`TC-REL-01` compares the caption to `Application.version`); the Android value is inferred from `Application.platform`, not observed |
 | **EXIT is bound, not proven to quit on Android** | `TC-REL-04` proves `StartPanel/ExitButton` holds one listener to `DamaBoard.QuitGame`. `QuitGame` calls `EditorApplication.isPlaying = false` under the editor and `Application.Quit()` in a build - and `Application.Quit()` has never run, because no build has. The check proves the wire, not the behaviour on a phone |
 | A scene builder **run twice can corrupt the scene** | It did: the release-panel builder had no cleanup for the three new title buttons, so its second run left a duplicate set and `TC-A11Y-02` reported three controls overlapping themselves (`DEF-17-05`). `DestroyIfExists` now loops until nothing with that name is left, and the regression catches the symptom - but every future builder has the same failure mode until it is written with the same discipline |
+| The **PA2 submission carries no binary** | Tag `v1.0.0-pa2` marks a source tree and nothing else. No APK, AAB or Windows package exists, so "install the submitted build" cannot be done with this submission by anyone, including the student: `release_record.md` section 3 gives three independent reasons, and section 5 gives the four steps that would produce one |
+| The **defense was not sat** | Item 7 of the module's Week 18 procedure is a viva held under supervision. The package ships the pointer sheet (`defense_prep.md`) and the blank record (`e3_record.md`); a blank record means not run, and it must not be read as a pass |
+| The **originality declaration is unsigned in this copy** | The document is complete except for the signature line, which is deliberately empty. Printing a signature from this toolchain would be a fabricated signature, so `final_pre_submission_checklist.md` section 3.3 records the row as unsigned rather than attaching a name to it |
+| The **demonstration is a harness, not a person** | All nine images come from one scripted run of the game's own entry points at the Editor's 1151x584 game view, and `demo_rehearsal.txt` says so in its header. It proves the screens exist, are reachable and are legible at that resolution; it proves nothing about a thumb on a phone |
+| The Week 18 harness **added three rows to the real profile** | The end screen is produced by the game's own win check, and that check banks the match. During the first three harness runs the real store was restored too early, so each run added one RED win - the store read 5 matches before the first run and 8 after the third. The restore now happens after D9, so the committed harness adds nothing. The three rows are left in place and disclosed in `final_results.md` section 3, because removing them would mean hand-editing a file only `PlayerProfile` may write |
+| The **deck is a PDF, not a `.pptx`** | 14 slides at 960x540 pt (16:9) printed from HTML by headless Edge, because no presentation toolchain is in this project. It presents and it prints; it cannot be edited by the instructor, and the document says so where the format is described |
 
 ---
 

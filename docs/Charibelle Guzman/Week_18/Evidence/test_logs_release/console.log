@@ -1,0 +1,14 @@
+08:52:51.020 Log      [Week17] Entering play mode for the RELEASE checks.
+08:52:51.961 Log      [Feedback] ready - sound ON, clips move=ok capture=ok crown=ok win=ok lose=ok, haptics=on on WindowsEditor
+08:52:52.050 Log      [Week17] Release labels filled from the binary: title='1.0.0-rc1 · Editor' credits='Build 1.0.0-rc1 · Editor · com.defaultcompany.dama'.
+08:52:52.289 Log      [Week17] TC-REL-01 PASS (release) The title caption names the version the binary was compiled with :: caption='1.0.0-rc1 · Editor' expected='1.0.0-rc1 · Editor' Application.version='1.0.0-rc1' fontSize=22
+08:52:52.341 Log      [Week17] TC-REL-02 PASS (release) The credits build line agrees with the title and names the application id :: title='1.0.0-rc1 · Editor' credits='Build 1.0.0-rc1 · Editor · com.defaultcompany.dama' version='1.0.0-rc1' id='com.defaultcompany.dama' bothNameVersion=True buildNamesId=True agree=True (title says '1.0.0-rc1', credits say '1.0.0-rc1')
+08:52:52.394 Log      [Week17] HowToPanel opened.
+08:52:52.395 Log      [Week17] HowToPanel closed.
+08:52:52.395 Log      [Week17] TC-REL-03 PASS (release) HOW TO PLAY opens with a real instruction body and closes back to the title :: opened=True bodyChars=1122 bodyFont=19 closed=True howToStillOn=False titleOn=True
+08:52:52.447 Log      [Week17] CreditsPanel opened.
+08:52:52.448 Log      [Week17] CreditsPanel closed.
+08:52:52.449 Log      [Week17] TC-REL-04 PASS (release) CREDITS opens and closes, and all five new controls are bound to the method they claim :: opened=True closed=True wired=True | HOWTO[1 call(s): DamaBoard.ShowHowTo] CREDITS[1 call(s): DamaBoard.ShowCredits] EXIT[1 call(s): DamaBoard.QuitGame] HOWTO-BACK[1 call(s): DamaBoard.CloseHowTo] CREDITS-BACK[1 call(s): DamaBoard.CloseCredits]
+08:52:52.509 Log      [Perf] restart reuses pooled piece GameObjects (0 parked): no Destroy and no new GameObject per piece
+08:52:52.509 Log      [Week15] ReturnToMenu: board reset, title screen shown, timeScale restored to 1.
+08:52:52.509 Log      [Week17] TC-REL-05 PASS (release) The new panels hide completely and cannot leak into a running match :: atTitle: StartPanel=True HowToPanel=False CreditsPanel=False ProfilePanel=False PausePanel=False WinPanel=False HUDPanel=False | after StartGame: HowTo=False Credits=False Start=False HUD=True

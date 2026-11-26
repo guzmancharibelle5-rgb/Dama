@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PA2 — Technical Report</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>PA2 — Technical Report</h1>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman — BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Week:</strong> 18 · <strong>Assessment:</strong> PA2</p>
+<p class="meta"><strong>Engine:</strong> Unity 6000.6.0f1 · URP 17.6.0 (2D Renderer) · Android, IL2CPP, ARM64, minimum API 26</p>
+<p class="meta"><strong>Version under test:</strong> <code>1.0.0-rc1</code> (version code <code>2</code>), <code>com.defaultcompany.dama</code></p>
+<hr/>
+<h2>1. Scope of this report</h2>
+<p>This report describes the code that is being submitted, names the file each behaviour lives in, and records the defects found across Weeks 13–18 and how each one closed. It does not describe a phone, because no build was made and no phone was attached; §9 states what that costs.</p>
+<h2>2. System shape</h2>
+<p>One scene, <code>Assets/Scenes/DamaGame.unity</code>, at build index 0. The scene holds a <code>GameCanvas</code>, a board root, and one <code>DamaBoard</code> component that owns both the rules and the UI wiring.</p>
+<table>
+<thead><tr>
+<th>Script</th>
+<th>Kind</th>
+<th>Responsibility</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Assets/Scripts/DamaBoard.cs</code></td>
+<td>runtime</td>
+<td>8x8 <code>Cell[,] grid</code>, parallel <code>bool[,] isKing</code>, move generation, chains, crowning, win detection, <code>GameState</code>, the seven panels, HUD</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Profile/PlayerProfile.cs</code></td>
+<td>runtime, static</td>
+<td>the save file: load, clamp, sign, write, reset; the only class that touches it</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Profile/ProfilePanel.cs</code></td>
+<td>runtime</td>
+<td>the profile screen: name field, record, best times, side toggle, two-press reset</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Core/ReleaseInfo.cs</code></td>
+<td>runtime, static</td>
+<td><code>Version</code>, <code>BundleId</code>, <code>Engine</code>, <code>Platform</code>, <code>Caption()</code>, <code>BuildLine()</code></td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Core/GameFeedback.cs</code></td>
+<td>runtime</td>
+<td>move and end-of-match audio</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/BoardCameraFitter.cs</code></td>
+<td>runtime</td>
+<td>frames the board for the current aspect ratio</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/MobileRuntimeConfig.cs</code></td>
+<td>runtime</td>
+<td>mobile runtime settings applied at startup</td>
+</tr>
+</tbody></table>
+<p>The boundary that matters: <code>DamaBoard</code> decides <em>what happened</em>, <code>ProfilePanel</code> decides <em>what the player sees</em>, and <code>PlayerProfile</code> decides <em>what is stored</em>. No other class opens the save file, which is what makes the data rules (clamping, signature, atomic write) enforceable in one place.</p>
+<h2>3. The board</h2>
+<p>The grid is a <code>Cell[,]</code> of 8x8 — <code>DamaBoard.Size</code> is the single source for every loop — plus a parallel <code>bool[,] isKing</code>. A square holds either nothing, a man of one side, or a crowned man; the king flag is kept beside the grid rather than encoded twice, so a crowning changes one boolean and one cell.</p>
+<p>Three rules are implemented as constraints on generation rather than as checks after the fact:</p>
+<ol>
+<li><strong>Capture is compulsory.</strong> <code>GetCaptureMoves</code> is consulted first; if it returns anything, the simple moves are never offered. That is why a player who taps a man with no legal move gets nothing, and why the UI has no "invalid move" path to explain.</li>
+<li><strong>Captures chain.</strong> After a jump lands, the generator is asked again from the landing square; the chain ends only when no continuation exists.</li>
+<li><strong>The Dama flies.</strong> A king's move walks the diagonal in both directions until the edge or a piece; a jump over an enemy it can reach is legal from any distance.</li>
+</ol>
+<p>Win detection is one predicate used everywhere: <code>CountPieces(side) == 0 || !HasAnyLegalMove(side)</code>. It runs after a move and when a seeded position is checked, so the end screen and the tests agree.</p>
+<p><strong>A contract worth naming.</strong> <code>GetCaptureMoves</code>, <code>GetSimpleMoves</code> and <code>GetSelectableMoves</code> return a <strong>shared buffer</strong> that is valid only until the same generator is next called. Every current caller consumes it immediately and stores nothing — audited call by call in Week 16 — and the contract is written into the field comment, because a future caller that keeps the list would break the board silently, with no error.</p>
+<h2>4. State machine and panels</h2>
+<p><code>GameState</code> is <code>Ready</code>, <code>Playing</code>, <code>Paused</code>, <code>GameOver</code>, <code>Profile</code>, <code>HowTo</code>, <code>Credits</code>. <code>ShowState()</code> is the only place a panel is toggled, and every panel is reached from exactly one state:</p>
+<table>
+<thead><tr>
+<th>State</th>
+<th>Panel(s) shown</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Ready</code></td>
+<td><code>StartPanel</code></td>
+</tr>
+<tr>
+<td><code>Playing</code></td>
+<td><code>HUDPanel</code></td>
+</tr>
+<tr>
+<td><code>Paused</code></td>
+<td><code>HUDPanel</code> + <code>PausePanel</code></td>
+</tr>
+<tr>
+<td><code>GameOver</code></td>
+<td><code>HUDPanel</code> + <code>WinPanel</code></td>
+</tr>
+<tr>
+<td><code>Profile</code></td>
+<td><code>ProfilePanel</code></td>
+</tr>
+<tr>
+<td><code>HowTo</code></td>
+<td><code>HowToPanel</code></td>
+</tr>
+<tr>
+<td><code>Credits</code></td>
+<td><code>CreditsPanel</code></td>
+</tr>
+</tbody></table>
+<p>The title screen carries five controls in two rows — HOW TO PLAY / START / CREDITS, then PROFILE / EXIT — plus a version caption anchored top-left. Each control is bound by path in <code>CacheUI()</code> (<code>WireButton(canvas, "StartPanel/StartButton", StartGame)</code>), so a control that exists but was never wired is inert. <code>TC-REL-04</code> exists precisely to catch that: it reads the bound delegate off each button and names the method it resolves to.</p>
+<p><code>ExitButton</code> calls <code>QuitGame()</code>, which logs the build line and then quits — <code>EditorApplication.isPlaying = false</code> under the editor, <code>Application.Quit()</code> in a build. The wire is proven (<code>TC-REL-04</code>); the behaviour on Android is not, because no build has run.</p>
+<h2>5. Player data</h2>
+<p><code>PlayerProfile</code> stores a JSON envelope: a schema number, a payload, and an HMAC signature over the payload. The key is a per-install salt kept beside the file.</p>
+<table>
+<thead><tr>
+<th>Rule</th>
+<th>Implementation</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Atomic write</td>
+<td>payload written to <code>&lt;file&gt;.tmp</code>, then moved over the real file</td>
+</tr>
+<tr>
+<td>Corruption handling</td>
+<td>a file whose signature fails is copied aside as a rejected record and a default profile is loaded</td>
+</tr>
+<tr>
+<td>Clamping</td>
+<td>every numeric field is clamped to its legal range on load, so a hand-edited 99 wins cannot become 99</td>
+</tr>
+<tr>
+<td>Single bank</td>
+<td>the match id is fixed when the match starts; a second end-of-match call for the same id is refused</td>
+</tr>
+<tr>
+<td>One writer</td>
+<td>no other class reads, signs, writes or deletes the file</td>
+</tr>
+</tbody></table>
+<p>On Android the store lives under <code>Application.persistentDataPath</code>, which is built from <code>companyName</code> and <code>productName</code> — <code>…\LocalLow\DefaultCompany\dama\Dama\profile.json</code>. That is why neither of those two fields may change: moving them moves the store and looks exactly like a wipe. The version lives in <code>bundleVersion</code>, which is what <code>Application.version</code> reads.</p>
+<p><strong>Stated limit.</strong> The signature makes the save tamper-evident, not secret. Key and file share a device, and there is no server; the record is a courtesy, not a boundary.</p>
+<h2>6. Release identity</h2>
+<p><code>ReleaseInfo</code> derives everything from <code>Application.*</code> and holds no state:</p>
+<table>
+<thead><tr>
+<th>Member</th>
+<th>Source</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Version</code></td>
+<td><code>Application.version</code> → <code>1.0.0-rc1</code></td>
+</tr>
+<tr>
+<td><code>BundleId</code></td>
+<td><code>Application.identifier</code> → <code>com.defaultcompany.dama</code></td>
+</tr>
+<tr>
+<td><code>Engine</code></td>
+<td><code>Application.unityVersion</code> → <code>6000.6.0f1</code></td>
+</tr>
+<tr>
+<td><code>Platform</code></td>
+<td><code>Application.platform</code> → <code>Editor</code> here, <code>Android</code> in a build</td>
+</tr>
+<tr>
+<td><code>Caption()</code></td>
+<td>version · platform → <code>1.0.0-rc1 · Editor</code></td>
+</tr>
+<tr>
+<td><code>BuildLine()</code></td>
+<td><code>Build &lt;version&gt; · &lt;platform&gt; · &lt;bundle id&gt;</code></td>
+</tr>
+</tbody></table>
+<p>Both on-screen strings are written by <code>ReleaseInfo</code> at runtime, never typed into a scene label, and <code>TC-REL-01</code>/<code>TC-REL-02</code> compare them back to <code>Application.version</code> so they cannot drift.</p>
+<h2>7. Editor tooling</h2>
+<p>Building the UI in code rather than by hand is what makes the scene reproducible, and it has a matching risk: a builder that runs twice can duplicate what it builds.</p>
+<table>
+<thead><tr>
+<th>Tool</th>
+<th>Menu</th>
+<th>What it does</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>DamaBoardBuilder</code></td>
+<td><code>Tools/Dama/Build Board</code></td>
+<td>board, squares, HUD, pieces root</td>
+</tr>
+<tr>
+<td><code>ProfileSceneBuilder</code></td>
+<td><code>Tools/Dama/Build Profile UI</code></td>
+<td><code>StartPanel/ProfileButton</code>, <code>ProfilePanel</code> and its children</td>
+</tr>
+<tr>
+<td><code>Week15Fixes</code></td>
+<td><code>Tools/Dama/Week 15</code></td>
+<td>pause/end MENU buttons, caption sizes</td>
+</tr>
+<tr>
+<td><code>Week17ReleasePanels</code></td>
+<td><code>Tools/Dama/Week 17/1</code></td>
+<td>version caption, HOW TO PLAY, CREDITS, EXIT</td>
+</tr>
+<tr>
+<td><code>AccessibilityBuild</code></td>
+<td><code>Tools/Dama/Accessibility</code></td>
+<td>touch floors, caption sizes, contrast fills</td>
+</tr>
+<tr>
+<td><code>AndroidBuildSetup</code></td>
+<td><code>Tools/Android</code></td>
+<td>ARM64, IL2CPP, build scenes, per-platform quality</td>
+</tr>
+<tr>
+<td><code>SubmissionDocBuilder</code></td>
+<td><code>Tools/Dama/Submission</code></td>
+<td>markdown → print-ready HTML per week</td>
+</tr>
+</tbody></table>
+<p><strong>The duplicate-builder defect is the important lesson here.</strong> <code>Week17ReleasePanels</code> had no cleanup for the three title buttons it created, so a second run appended a second HOW TO PLAY / CREDITS / EXIT at the same anchored positions: <code>StartPanel</code> held 11 children instead of 8, and the accessibility case reported each control as overlapping <em>itself</em> (<code>DEF-17-05</code>). <code>DestroyIfExists</code> now loops until nothing with that name remains, and the regression run is what proves the fix.</p>
+<h2>8. Defect history</h2>
+<table>
+<thead><tr>
+<th>Id</th>
+<th>Severity</th>
+<th>What it was</th>
+<th>How it closed</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>DEF-15-01</code></td>
+<td>S2</td>
+<td>no route back to the title once a match began</td>
+<td><code>PausePanel/MenuButton</code>, <code>WinPanel/MenuButtonWin</code>, <code>ReturnToMenu()</code> — <code>TC-FLOW-06</code>, <code>TC-RULE-11</code></td>
+</tr>
+<tr>
+<td><code>DEF-15-02</code></td>
+<td>S3</td>
+<td>text did not scale with the OS setting</td>
+<td>closed for the <strong>size floor only</strong> (captions to 22 px bold, status to 20 px); no dynamic-type path exists</td>
+</tr>
+<tr>
+<td><code>DEF-17-02</code></td>
+<td>S2</td>
+<td>no exit control at all</td>
+<td><code>StartPanel/ExitButton</code> → <code>QuitGame()</code>; <code>TC-REL-04</code> names the listener</td>
+</tr>
+<tr>
+<td><code>DEF-17-05</code></td>
+<td>S3</td>
+<td>a second builder run left duplicate title controls</td>
+<td><code>DestroyIfExists</code> loops; <code>StartPanel</code> back to 8 children; <code>TC-A11Y-02</code> 0 overlaps</td>
+</tr>
+<tr>
+<td><code>DEF-17-06</code></td>
+<td>S3</td>
+<td>the release check read the wrong field of a uGUI listener and reported <code>null</code></td>
+<td>the check reads the delegate's <code>Target</code>/<code>Method.Name</code>; the listeners were always correct</td>
+</tr>
+<tr>
+<td>Week 18</td>
+<td>—</td>
+<td>three harness faults in the demonstration capture (refused <code>ShowProfile</code>, 0.0 s best times, real store gained a match per run)</td>
+<td>see <code>Week_18/Evidence/final_results.md</code> §3 — all three fixed, all three disclosed</td>
+</tr>
+</tbody></table>
+<h2>9. Test architecture</h2>
+<p>Every harness is an editor script that enters play mode, drives the game through its own entry points, measures what it can read back, and writes a log. None of them asserts a number it did not measure.</p>
+<table>
+<thead><tr>
+<th>Harness</th>
+<th>Cases</th>
+<th>Output</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Week13Checks</code></td>
+<td>15 data and security cases</td>
+<td><code>Week_13/Evidence/pt5_checks.log</code></td>
+</tr>
+<tr>
+<td><code>Week14Checks</code> + <code>A11yAudit</code></td>
+<td>usability, first audit (50)</td>
+<td><code>Week_14/Evidence/a11y_*.log</code></td>
+</tr>
+<tr>
+<td><code>Week15Checks</code></td>
+<td>27 cases: rules, data, boundaries, a11y, flow</td>
+<td><code>Week_15/Evidence/test_logs_final/</code></td>
+</tr>
+<tr>
+<td><code>Week16Profile</code></td>
+<td>three profiling runs, same 32 turns</td>
+<td><code>Week_16/Evidence/profile_*</code></td>
+</tr>
+<tr>
+<td><code>Week17Checks</code></td>
+<td><code>TC-REL-01…05</code></td>
+<td><code>Week_17/Evidence/test_logs_release/</code></td>
+</tr>
+<tr>
+<td><code>Week17Captures</code></td>
+<td>six images + distinct-hash gate</td>
+<td><code>Week_17/Evidence/week17_shots.txt</code></td>
+</tr>
+<tr>
+<td><code>Week18Captures</code></td>
+<td>nine images + distinct-hash gate</td>
+<td><code>Week_18/Evidence/demo_rehearsal.txt</code></td>
+</tr>
+<tr>
+<td><code>A11yAudit</code></td>
+<td>148 checks over 18 buttons and 1 field</td>
+<td><code>Week_18/Evidence/a11y_week18_after.log</code></td>
+</tr>
+</tbody></table>
+<p>Two things the harnesses do deliberately: they seed positions <strong>by reflection</strong> and then rebuild the visible pieces from the grid, so an image can never disagree with the state it claims; and they hash every capture and fail on a collision, because the first Week 17 run wrote six names over four pictures.</p>
+<h2>10. Commit history and reproducibility</h2>
+<table>
+<thead><tr>
+<th>Commit / tag</th>
+<th>What it carries</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>b6b477b</code>, <code>a215f34</code></td>
+<td>Week 13: signed player profile, PT5 package</td>
+</tr>
+<tr>
+<td><code>1998b0c</code>, <code>58976b7</code></td>
+<td>Week 14: accessibility audit, feedback, PT6 package</td>
+</tr>
+<tr>
+<td><code>207376b</code>, <code>3f4bb95</code></td>
+<td>Week 15: test harness, defect fixes, AS3 milestone</td>
+</tr>
+<tr>
+<td><code>f9503e8</code>, <code>d6c4ba7</code>, <code>3b396b9</code>, <code>87aea89</code></td>
+<td>Week 16: profiling harness, two optimizations, SA6/AS3</td>
+</tr>
+<tr>
+<td><code>week16-final</code> → <code>337b436</code></td>
+<td>the frozen baseline Week 17 was built on</td>
+</tr>
+<tr>
+<td><code>10006a4</code>, <code>183b603</code>, <code>01d58df</code></td>
+<td>Week 17: release identity, three screens, release package</td>
+</tr>
+<tr>
+<td><code>v1.0.0-pa2</code></td>
+<td>the Week 18 submission commit</td>
+</tr>
+</tbody></table>
+<p>Every result in Weeks 13–18 can be regenerated: each harness has a menu entry and each week's <code>HOW_TO_RERUN.txt</code> names the order. The demonstration is <code>Tools &gt; Dama &gt; Week 18 &gt; 1. Capture Demonstration</code>; the gates are <code>Week 17/2</code>, <code>Week 18/2</code> and <code>Week 18/3</code>.</p>
+<h2>11. What this report does not claim</h2>
+<ul>
+<li>No APK, no install, no device. The installable-build row is BLOCKED with its reason.</li>
+<li>No phone performance: no frame rate, battery, thermal or memory figure in this project is a device figure.</li>
+<li>No human playtest: the Week 14 kit was never run with a volunteer.</li>
+<li>No dynamic type and no screen-reader path.</li>
+<li>The oral defense is not described as passed; <code>Evidence/e3_record.md</code> is blank by design.</li>
+</ul>
+
+</body>
+</html>

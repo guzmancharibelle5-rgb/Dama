@@ -1,0 +1,107 @@
+DAMA - WEEK 18 - REPOSITORY STATE AT SUBMISSION
+Student  : Charibelle Guzman (BSIT-4)
+Project  : Dama - MOBILE DEV 002, Module 5, Week 18 (PA2)
+Captured : 2026-11-26, on E:\Damath Charry\dama, at the code commit named in section 2
+Rule     : every line below is the unedited output of the command that precedes it, or a restatement of it.
+           Nothing here is reconstructed from memory.
+
+====================================================================================================
+1. COMMANDS USED
+====================================================================================================
+  git rev-list --count HEAD
+  git log --oneline
+  git for-each-ref refs/tags --format="%(refname:short) %(objecttype) %(*objectname:short)%(objectname:short) %(taggername)"
+  git remote -v
+  git branch -vv
+  git rev-parse origin/main
+  git log --oneline origin/main
+  git config user.name ; git config user.email
+  git status --short
+  git push origin main --tags        (section 7 - the attempt and its exact output)
+
+====================================================================================================
+2. WORKING TREE
+====================================================================================================
+  Branch              main
+  HEAD                b8aca5c  "Week 18 PA2: demonstration harness, Week 18 seams in the gates and the
+                                 Week 18 document builder entry"
+  Commits on main     20
+  Upstream            origin/main, and main is ahead of it by 19 commits (see section 5)
+  Commit author       Charry <zedrichzaivan753@gmail.com>
+  Remote (fetch/push) https://guzmancharibelle5-rgb@github.com/guzmancharibelle5-rgb/Dama.git
+
+  The submission tag v1.0.0-pa2 is placed on the commit that carries this file's week (section 6). This
+  section was written at b8aca5c, the code commit; the documentation commit follows it and is recorded in
+  the README once its id exists.
+
+====================================================================================================
+3. FULL HISTORY - git log --oneline
+====================================================================================================
+b8aca5c Week 18 PA2: demonstration harness, Week 18 seams in the gates and the Week 18 document builder entry
+01d58df Week 17: record the code and documentation commit ids in the README
+183b603 Week 17: PT7 package, release evidence, six captures and printed PDFs
+10006a4 Week 17: release identity 1.0.0-rc1, HOW TO PLAY / CREDITS / EXIT panels, release checks and captures
+337b436 Week 16: record the documentation commit id in the README
+87aea89 Week 16 SA6 analysis, AS3 performance record, reflection and printed PDFs
+3b396b9 Week 16 optimization 2: pooled pieces, cached square binding, regression seam
+d6c4ba7 Week 16 optimization 1: allocation-free move generation
+f9503e8 Week 16: profiling harness and measured baseline
+32a62e1 Week 15: record the documentation commit id in the README
+3f4bb95 Week 15 AS3 milestone, reflection, test logs, defect log and printed PDFs
+207376b Week 15 AS3: test harness, defect fixes and play-mode captures
+4eb9d10 Week 14: record the documentation commit id in the README
+58976b7 Week 14 SA6, PT6, reflection, playtest kit and the printed PDFs
+129531f Week 14: correct the doc builder's note on rebuilding Week 13
+1998b0c Week 14 PT6: accessibility audit, repair pass, audio feedback and play-mode evidence
+b843b73 Week 13: record the documentation commit id in PT5 and README
+a215f34 Week 13: SA5, PT5 and reflection documents, with print-ready HTML and PDFs
+b6b477b Week 13 PT5: signed player profile, PT5 data checks and play-mode evidence
+b79848f Initial Unity project commit
+
+  Twenty commits: one initial import, then per week a code commit and a documentation commit, plus a small
+  README commit recording the ids. Week 16 carries three code commits, one per measured change, so the
+  history can show the baseline run happening before either optimization - which is the one thing the
+  earlier weeks could not show.
+
+====================================================================================================
+4. TAGS - git for-each-ref refs/tags
+====================================================================================================
+  week16-final   tag   337b436   Charry
+      "Week 16 frozen tree: profiling and optimization complete, no feedback changes after this commit"
+      target commit 337b436feec71a2f93ef27608349a54474e879a0, 2026-11-26 14:45:41 +0800
+
+  v1.0.0-rc1 was NEVER created as a tag in this repository, in any week. Week 17 marked its frozen
+  baseline with week16-final instead, and the release candidate is identified by the version string the
+  application reports, not by a tag. That is why v1.0.0-pa2 is the first release tag this project carries.
+
+====================================================================================================
+5. ORIGIN STATE
+====================================================================================================
+  git rev-parse origin/main  ->  b79848f34b44ea1822e2d4543bb35a3c74b1e143
+  git log --oneline origin/main  ->  b79848f Initial Unity project commit
+
+  So origin/main holds exactly one commit: the initial import. Every commit since then - all nineteen of
+  them, Weeks 13 through 18 - exists only in this working copy until section 7 says otherwise. The
+  module asks for repository access, which is why the push below is attempted and its output recorded
+  whether it succeeds or fails.
+
+====================================================================================================
+6. THE SUBMISSION
+====================================================================================================
+  Submission tag       v1.0.0-pa2   (annotated, on the commit that carries the Week 18 package)
+  Version the app reports  1.0.0-rc1   (bundleVersion)   - deliberately NOT renamed to match the tag
+  Android version code 2
+  Application id       com.defaultcompany.dama
+  productName / companyName   dama / DefaultCompany   - unchanged since Week 13, because the save path is
+                              built from them
+  Binary submitted     none. See Week_18/Evidence/release_record.md section 3 for the three independent
+                       reasons, and section 5 for the four steps that would produce one.
+
+====================================================================================================
+7. PUSH ATTEMPT
+====================================================================================================
+  The attempt and its exact output are appended below, after the attempt was made. This section was
+  empty when the rest of this file was committed, and that is deliberate: the record of a network
+  operation cannot exist before the operation.
+
+  (appended after the attempt - see the end of this file)

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PA2 — Final Project, Demonstration and Defense</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>PA2 — Final Project, Demonstration and Defense</h1>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman — BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Week:</strong> 18 · <strong>Assessment:</strong> PA2</p>
+<p class="meta"><strong>Game:</strong> Dama — the Philippine form of draughts</p>
+<p class="meta"><strong>Theme:</strong> Philippine Games and Sports</p>
+<hr/>
+<h2>1. Submission at a glance</h2>
+<table>
+<thead><tr>
+<th>Item</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Submitted tree</td>
+<td><code>main</code> at the PA2 commit, tagged <code>v1.0.0-pa2</code></td>
+</tr>
+<tr>
+<td>Submitted binary</td>
+<td><strong>none — BLOCKED</strong>, see §3</td>
+</tr>
+<tr>
+<td>Version the app reports</td>
+<td><code>1.0.0-rc1</code> (Android version code <code>2</code>)</td>
+</tr>
+<tr>
+<td>Application id</td>
+<td><code>com.defaultcompany.dama</code></td>
+</tr>
+<tr>
+<td>Engine</td>
+<td>Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer)</td>
+</tr>
+<tr>
+<td>Build settings as configured</td>
+<td>Android, IL2CPP, ARM64 only, minimum API 26, target API automatic, debug signing only</td>
+</tr>
+<tr>
+<td>Scene</td>
+<td><code>Assets/Scenes/DamaGame.unity</code>, build index 0</td>
+</tr>
+<tr>
+<td>Demonstration</td>
+<td>nine captures D1–D9, <code>Evidence/demo_rehearsal.txt</code></td>
+</tr>
+<tr>
+<td>Final checklist</td>
+<td><code>Evidence/final_pre_submission_checklist.md</code></td>
+</tr>
+<tr>
+<td>Gate results</td>
+<td><code>Evidence/final_results.md</code> — 5/0 release, 27/0/1 regression, 148/0/0/4 audit</td>
+</tr>
+</tbody></table>
+<p><strong>The submission is the source tree, not a package.</strong> No Android build was produced in this project in any week, and this document says so in three places rather than implying otherwise: here, in §3, and in <code>Evidence/release_record.md</code>. Everything that is claimed below was measured on the tree that is being submitted, in the Editor, at a 1151x584 game view.</p>
+<h2>2. The game</h2>
+<p><em>Dama</em> is draughts as it is played in the Philippines: an 8x8 board, twelve men a side, two people taking turns on one phone. Three rules make it Dama rather than checkers:</p>
+<ul>
+<li><strong>A capture must be taken.</strong> If a jump exists for the player to move, the non-capturing moves are not offered at all — they are not legal moves that are discouraged, they are absent.</li>
+<li><strong>A capture chains.</strong> A man that lands on a square from which another jump is available keeps going until the chain ends on its own.</li>
+<li><strong>The king flies.</strong> A man that reaches the far row is crowned a <em>Dama</em> and may move any distance along any diagonal, in any direction.</li>
+</ul>
+<p>A match ends when a side has no men left, or has men but no legal move.</p>
+<p><strong>Target player.</strong> Students and young adults who played <em>agawan base</em>, <em>patintero</em> or <em>dama</em> as children, on a mid-range Android phone, one device shared by two players. That decided three things that are visible in the build: every control clears a 96 canvas-pixel touch floor because two people are reaching for the same glass; the whole board is drawn in 2D from the top so a player can read it across a table; and the profile system records a local record because the two players are not on separate devices and have no accounts.</p>
+<h2>3. The submitted build — and why there is none</h2>
+<p>The module asks for an installable build. This submission does not contain one. Three independent reasons, each sufficient:</p>
+<ol>
+<li><strong>No package was ever produced.</strong> Weeks 13–18 were scoped to Editor evidence by decision, and no Android build exists for this project.</li>
+<li><strong>No signing key exists.</strong> <code>androidUseCustomKeystore: 0</code>, and the keystore, alias and password fields are empty. Anything this machine built would be debug-signed.</li>
+<li><strong>No device answers <code>adb</code>.</strong> Unity's bundled platform-tools return <code>List of devices attached</code> with no serial, so a package could not have been installed or launched anyway.</li>
+</ol>
+<p>This is recorded as <strong>BLOCKED</strong>, not as a pass, in <code>Evidence/final_pre_submission_checklist.md</code> and in <code>Evidence/release_record.md</code> §3, and <code>TC-COMPAT-01</code> remains BLOCKED in the regression suite. The full record of the attempt, including what the Editor evidence is and is not worth, is <code>Week_17/Evidence/clean_install.md</code>.</p>
+<h2>4. The demonstration sequence</h2>
+<p>Nine screens, one run, nine distinct SHA-256 values. Full transcript with offsets in <code>Evidence/demo_rehearsal.txt</code>.</p>
+<table>
+<thead><tr>
+<th>Step</th>
+<th>What it demonstrates</th>
+<th>Capture</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Title</td>
+<td>onboarding, version caption derived from the build</td>
+<td><code>D1_title.png</code></td>
+</tr>
+<tr>
+<td>How to play</td>
+<td>the rules in 1,122 characters fitted to 19 px</td>
+<td><code>D2_how_to_play.png</code></td>
+</tr>
+<tr>
+<td>Credits</td>
+<td>author, course, engine, licence, AI-assistance statement, build line</td>
+<td><code>D3_credits.png</code></td>
+</tr>
+<tr>
+<td>Profile</td>
+<td>local record, best times, side toggle, name field</td>
+<td><code>D4_profile_record.png</code></td>
+</tr>
+<tr>
+<td>Profile after reset</td>
+<td>the two-press confirmation erasing the record</td>
+<td><code>D5_profile_after_reset.png</code></td>
+</tr>
+<tr>
+<td>Fresh match</td>
+<td>the core loop at 12 v 12, HUD naming the turn</td>
+<td><code>D6_match_fresh.png</code></td>
+</tr>
+<tr>
+<td>After a capture</td>
+<td>theme mechanic: a mandatory jump, counts following the board</td>
+<td><code>D7_match_after_capture.png</code></td>
+</tr>
+<tr>
+<td>Pause</td>
+<td>settings: RESUME, RESTART, SOUND, MENU</td>
+<td><code>D8_pause.png</code></td>
+</tr>
+<tr>
+<td>End screen</td>
+<td>completion: RED wins because BLUE has no legal move</td>
+<td><code>D9_end_screen.png</code></td>
+</tr>
+</tbody></table>
+<p>The demonstration covers the module's list in order — onboarding, core loop, theme mechanics, settings, data features, error handling (the reset confirmation), completion and progression. It does <strong>not</strong> cover a handset, because there is none.</p>
+<h2>5. Architecture at a glance</h2>
+<table>
+<thead><tr>
+<th>Piece</th>
+<th>File</th>
+<th>What it owns</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Board and rules</td>
+<td><code>Assets/Scripts/DamaBoard.cs</code></td>
+<td>the 8x8 grid, move generation, chains, crowning, <code>GameState</code>, the seven panels</td>
+</tr>
+<tr>
+<td>Player data</td>
+<td><code>Assets/Scripts/Profile/PlayerProfile.cs</code></td>
+<td>the signed save file and every read and write of it</td>
+</tr>
+<tr>
+<td>Profile screen</td>
+<td><code>Assets/Scripts/Profile/ProfilePanel.cs</code></td>
+<td>the name field, record, best times, side toggle, two-press reset</td>
+</tr>
+<tr>
+<td>Release identity</td>
+<td><code>Assets/Scripts/Core/ReleaseInfo.cs</code></td>
+<td><code>Version</code>, <code>BundleId</code>, <code>Engine</code>, <code>Platform</code>, <code>Caption()</code>, <code>BuildLine()</code> — all from <code>Application.*</code></td>
+</tr>
+<tr>
+<td>Feedback</td>
+<td><code>Assets/Scripts/Core/GameFeedback.cs</code></td>
+<td>the move and end-of-match audio</td>
+</tr>
+<tr>
+<td>Camera</td>
+<td><code>Assets/Scripts/BoardCameraFitter.cs</code></td>
+<td>frames the board for the current aspect ratio</td>
+</tr>
+</tbody></table>
+<p><code>DamaBoard</code> holds rules and UI wiring; it does not know how a save is serialised. <code>PlayerProfile</code> is the only class that touches the save file. <code>ProfilePanel</code> never parses JSON — it asks <code>PlayerProfile</code>.</p>
+<p><strong>State machine.</strong> <code>GameState</code> is <code>Ready</code>, <code>Playing</code>, <code>Paused</code>, <code>GameOver</code>, <code>Profile</code>, <code>HowTo</code>, <code>Credits</code>. <code>ShowState()</code> is the only place a panel is turned on or off; every panel is therefore reachable and every panel is hideable, which is what <code>TC-REL-05</code> checks.</p>
+<h2>6. Security and player data</h2>
+<p>The save is a JSON envelope with a schema number, a payload and an HMAC signature over the payload. The key is a per-install salt stored beside the file. The store is written atomically — temp file, then move — and a file that fails its signature is set aside as a rejected copy instead of being trusted. Every numeric field is clamped on load, and the match id gate refuses a repeated end-of-match bank.</p>
+<p><strong>What that is worth, stated plainly:</strong> the save is <strong>tamper-evident, not encrypted</strong>. The key and the file live on the same device and there is no server to check a record against, so a determined player with a debugger can rewrite their own stats. The design goal was to make an accidental corrupt file recoverable and a casual edit detectable, not to defend against the device's owner. That limit is recorded in <code>Week_13/Evidence/pt5_checks.log</code> as <code>L15 KNOWN LIMIT</code> and is not counted as a pass.</p>
+<h2>7. Testing and evidence</h2>
+<table>
+<thead><tr>
+<th>Gate</th>
+<th>Result</th>
+<th>Where</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Week 17 release checks re-run on this tree</td>
+<td><strong>5 passed, 0 failed, 0 console errors</strong></td>
+<td><code>Evidence/test_logs_release/</code></td>
+</tr>
+<tr>
+<td>Full regression re-run on this tree</td>
+<td><strong>27 passed, 0 failed, 1 blocked</strong> (<code>TC-COMPAT-01</code>)</td>
+<td><code>Evidence/test_logs_regression/</code></td>
+</tr>
+<tr>
+<td>Accessibility audit</td>
+<td><strong>148 passed, 0 failed, 0 warnings, 4 not measurable</strong></td>
+<td><code>Evidence/a11y_week18_after.log</code></td>
+</tr>
+<tr>
+<td>Demonstration</td>
+<td>nine distinct captures</td>
+<td><code>Evidence/D1…D9.png</code>, <code>demo_rehearsal.txt</code></td>
+</tr>
+<tr>
+<td>Historical weeks</td>
+<td>Weeks 13–17 evidence, untouched</td>
+<td><code>Week_13</code> … <code>Week_17</code></td>
+</tr>
+</tbody></table>
+<p>The regression suite is the same 27 cases Weeks 15–17 ran, including the ten rule cases, the five data cases (one of which recovers a deliberately corrupted save), the two boundary cases and the corrected accessibility cases.</p>
+<h2>8. Optimisation</h2>
+<p>Week 16 measured first, then changed two things: move generation was made allocation-free and pieces were pooled instead of destroyed. On the same scene and the same 32-turn replay:</p>
+<table>
+<thead><tr>
+<th>Measure</th>
+<th>Before</th>
+<th>After</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Allocation per legality scan</td>
+<td>6,975.9 B</td>
+<td>−0.1 B ± 0.1 (below the method's resolution)</td>
+</tr>
+<tr>
+<td>Allocation per restart</td>
+<td>5,596 B</td>
+<td>~1.7 KB or less</td>
+</tr>
+<tr>
+<td>Frame time (mean)</td>
+<td>2.062 ms</td>
+<td>unchanged within run noise</td>
+</tr>
+</tbody></table>
+<p>The frame claim is deliberately not made: the frame was already far inside a 33.3 ms budget before the change, and the mean moved with the Editor session rather than with the code. What is proven is that the allocation went away. Every performance number in this project is an <strong>Editor</strong> number; nothing is known about a phone's frame rate, battery or thermals.</p>
+<h2>9. Limitations and honest gaps</h2>
+<table>
+<thead><tr>
+<th>Limitation</th>
+<th>Standing</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>No APK, no handset</strong></td>
+<td><code>TC-COMPAT-01</code> BLOCKED; §3 of this document; nothing claims a device</td>
+</tr>
+<tr>
+<td>The save is tamper-evident, not encrypted</td>
+<td>recorded as a known limit since Week 13</td>
+</tr>
+<tr>
+<td><strong>No human playtest has been run</strong></td>
+<td>the Week 14 kit exists (consent, script, task cards, observation sheet); zero volunteers have played</td>
+</tr>
+<tr>
+<td>Text does not follow the OS font scale</td>
+<td>WCAG 2.2 SC 1.4.4 is not met; the audit measures a size floor, not a dynamic-type path</td>
+</tr>
+<tr>
+<td>No screen-reader path</td>
+<td>uGUI exposes no accessibility tree; a native bridge would be needed</td>
+</tr>
+<tr>
+<td>Contrast margins are thin</td>
+<td>three fills pass the 3:1 line at 3.16–3.19:1; the next edit to those fills can undo it</td>
+</tr>
+<tr>
+<td>Haptics unproven</td>
+<td><code>Handheld.Vibrate()</code> is a no-op in the Editor, and every capture is an Editor capture</td>
+</tr>
+<tr>
+<td><code>EXIT</code> bound, never fired on Android</td>
+<td><code>TC-REL-04</code> proves the wire to <code>DamaBoard.QuitGame</code>; <code>Application.Quit()</code> has never run, because no build has</td>
+</tr>
+<tr>
+<td>The version caption reads <code>· Editor</code></td>
+<td>a build would read <code>· Android</code>; nobody has seen that string</td>
+</tr>
+<tr>
+<td>An audit is a floor</td>
+<td>it cannot show that a player understood the game</td>
+</tr>
+</tbody></table>
+<h2>10. What is in this folder</h2>
+<pre><code>Week_18/
+  Guzman_Charibelle_PA2.pdf                          this document
+  Guzman_Charibelle_PA2_Technical_Report.pdf         architecture, data flow, defects, harnesses
+  Guzman_Charibelle_PA2_User_Guide.pdf               how to play, the screens, troubleshooting
+  Guzman_Charibelle_PA2_Evidence_Portfolio.pdf       every claim mapped to the file that proves it
+  Guzman_Charibelle_PA2_Originality_Declaration.pdf  the declaration, unsigned in this copy
+  Guzman_Charibelle_PA2_Presentation.pdf             the defense deck
+  Guzman_Charibelle_PA2_Presentation_Speaker_Notes.pdf
+  Guzman_Charibelle_Week18_Reflection.pdf
+  others/                                            the markdown sources and their HTML
+  Evidence/                                          checklist, release record, gates, captures, defence pointers</code></pre>
+<h2>11. Responsible AI use</h2>
+<p>Code, document structure and phrasing were produced with AI assistance and then read, run and corrected against the actual build. Every number in this package is copied from a harness log or a command output: the gate counts from <code>Evidence/test_logs_*</code> and <code>a11y_week18_after.log</code>, the capture hashes from <code>demo_rehearsal.txt</code>, the optimisation numbers from the Week 16 <code>summary.txt</code>/<code>metrics.md</code>. Where the evidence cannot support a claim — device behaviour, frame time, a playtest, the defense itself — the documents say so instead of quoting a number. The full disclosure table is section 6 of <code>Guzman_Charibelle_PA2_Originality_Declaration</code>.</p>
+
+</body>
+</html>

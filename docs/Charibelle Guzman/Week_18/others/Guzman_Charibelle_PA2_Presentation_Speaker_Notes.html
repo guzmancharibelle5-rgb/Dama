@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PA2 — Speaker Notes</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>PA2 — Speaker Notes</h1>
+<p><strong>Charibelle Guzman · BSIT-4 · MOBILE DEV 002, Module 5 · Week 18</strong></p>
+<p>These are the notes that go with <code>Guzman_Charibelle_PA2_Presentation</code> — what to say on each slide and which file to open if a question follows. They are notes, not a script, and they deliberately contain no prepared answers: the questions in <code>Evidence/defense_prep.md</code> are the ones to be answered live.</p>
+<hr/>
+<p><strong>Slide 1 — Title.</strong> Fifteen seconds. Name, course, week, and the one-line pitch: draughts as it is played here, two people, one phone. Say the tag <code>v1.0.0-pa2</code> out loud so the submission is identifiable.</p>
+<p><strong>Slide 2 — Why this game.</strong> Explain that the theme is carried by the rules and not by a texture: compulsory capture, chaining, the flying Dama are what make it Dama. If asked where the rules live, open <code>Assets/Scripts/DamaBoard.cs</code> and point at the move generators.</p>
+<p><strong>Slide 3 — Target player.</strong> The important sentence is that the player is <em>two</em> people sharing one device. Everything else on this slide is a consequence: the 96 canvas-pixel touch floor, the top-down board, the local record. If asked for the derivation of 96: 48 dp at xxhdpi is 144 physical px, and 144 / 1.50 with the project's 1280x720 scaler is 96 canvas px.</p>
+<p><strong>Slide 4 — Core loop.</strong> Walk the loop on the deck, then say it is three taps from a finished match to a new one. Mention that MENU on the pause panel exists because of a defect found in Week 15, not because it was planned — the defect log is <code>Week_15/Evidence/defect_log.md</code>.</p>
+<p><strong>Slide 5 — Rules.</strong> The key engineering point: these are constraints on generation, not checks after the fact. <code>GetCaptureMoves</code> is consulted first, and if it returns anything the simple moves are never offered — which is also why tapping a man with no legal move does nothing.</p>
+<p><strong>Slide 6 — Onboarding, credits, exit.</strong> Describe the three panels as a module requirement that was missing until Week 17. EXIT is worth a sentence: the wire is proven by a test that names the handler, the Android behaviour is not proven, because no build ran.</p>
+<p><strong>Slide 7 — Architecture.</strong> Draw the boundary out loud: <code>DamaBoard</code> decides what happened, <code>ProfilePanel</code> decides what is shown, <code>PlayerProfile</code> decides what is stored. If asked why the UI is built in code, the answer is reproducibility — and be honest that it has a cost: a builder that runs twice can duplicate what it builds, which is exactly <code>DEF-17-05</code>.</p>
+<p><strong>Slide 8 — Player data.</strong> Say both halves: what the signature does (tamper-evident, atomic write, clamped fields, rejected-file recovery) and what it does not (encryption, or any defence against the device's owner). Then the path: <code>persistentDataPath</code> is built from <code>productName</code> and <code>companyName</code>, so the version went into <code>bundleVersion</code> instead.</p>
+<p><strong>Slide 9 — Demonstration.</strong> Point at the nine files and at <code>Evidence/demo_rehearsal.txt</code>. Mention the hash gate and why it exists: the first Week 17 run wrote six names over four pictures because the Editor window was not foreground. Say plainly that the run is an Editor run.</p>
+<p><strong>Slide 10 — Testing.</strong> Give the three counts: 27 / 0 / 1, 5 / 0 / 0, 148 / 0 / 0 / 4. Then the sentence that matters: <code>TC-COMPAT-01</code> is blocked on hardware and is not counted as a pass anywhere in the package.</p>
+<p><strong>Slide 11 — Profiling.</strong> Lead with the method: measure, change one thing, measure again. The two changes were allocation-free move generation and piece pooling. Do not claim a frame-time win — the frame was already inside budget and the mean moved with the session. The evidence is <code>Week_16/Evidence/metrics.md</code>.</p>
+<p><strong>Slide 12 — Usability and accessibility.</strong> The audit is a floor. Name the thin margins (3.16–3.19:1) and the missing pieces (dynamic type, screen reader) before anyone asks. Say that no human playtest was run, and that the Week 14 kit is in <code>Week_14/Playtest/</code> unused.</p>
+<p><strong>Slide 13 — Limitations.</strong> This is the slide to be slow on. No APK, no handset, Editor numbers only, haptics unproven, EXIT unfired, caption reads <code>· Editor</code>, defense not in the package. Each one is a row in the README's known-limitations table and in <code>Evidence/final_pre_submission_checklist.md</code>.</p>
+<p><strong>Slide 14 — Next.</strong> Close with the one gap that matters most: an installable build on a handset. Then the playtest, then dynamic type. End on the rule that produced the whole method: measure before claiming.</p>
+<p><strong>If there is time left.</strong> Open the three artefacts that carry the submission: <code>Evidence/final_results.md</code> (the gates), <code>Evidence/demo_rehearsal.txt</code> (the nine captures with hashes), and <code>Evidence/repo_state.txt</code> (the tag and commit). Those three answer most questions about what was actually done.</p>
+
+</body>
+</html>

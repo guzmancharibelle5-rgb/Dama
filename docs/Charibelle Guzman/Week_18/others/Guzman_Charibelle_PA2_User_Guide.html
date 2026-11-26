@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PA2 — User Guide</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>PA2 — User Guide</h1>
+<p class="meta"><strong>Game:</strong> Dama — the Philippine form of draughts</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman — BSIT-4 · MOBILE DEV 002, Module 5, Week 18</p>
+<p class="meta"><strong>Version:</strong> <code>1.0.0-rc1</code></p>
+<p class="meta"><strong>Platform:</strong> Android, 8.0 (API 26) or newer — <strong>see the note below before you look for an installer</strong></p>
+<hr/>
+<h2>1. Before you start — there is no installer</h2>
+<p>This submission contains <strong>no APK</strong>. No Android build was produced for this project, so there is nothing to install on a phone. That is recorded as BLOCKED, with the reasons, in <code>Week_18/Evidence/final_pre_submission_checklist.md</code> §3.</p>
+<p>To play the submitted game:</p>
+<ol>
+<li>Open the project in <strong>Unity 6000.6.0f1</strong> (or newer 6000.x).</li>
+<li>Open <code>Assets/Scenes/DamaGame.unity</code>.</li>
+<li>Press <strong>Play</strong>. The game runs at the Editor's game view resolution.</li>
+</ol>
+<p>Everything in the rest of this guide describes that build.</p>
+<h2>2. The title screen</h2>
+<pre><code>1.0.0-rc1 · Editor                       &lt;- the build you are running
+
+        HOW TO PLAY      START      CREDITS
+              PROFILE          EXIT</code></pre>
+<table>
+<thead><tr>
+<th>Control</th>
+<th>What it does</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>HOW TO PLAY</strong></td>
+<td>the rules, in one screen, with BACK to return</td>
+</tr>
+<tr>
+<td><strong>START</strong></td>
+<td>a fresh match, RED to move</td>
+</tr>
+<tr>
+<td><strong>CREDITS</strong></td>
+<td>who made the game, what engine, the licence, the AI-assistance statement, and the build line</td>
+</tr>
+<tr>
+<td><strong>PROFILE</strong></td>
+<td>your local name, record, best times and side</td>
+</tr>
+<tr>
+<td><strong>EXIT</strong></td>
+<td>quits the game (under the Editor it leaves play mode)</td>
+</tr>
+</tbody></table>
+<p>The caption is not a label someone typed: it is produced by <code>ReleaseInfo</code> from the build itself, so it cannot claim a version the code was not compiled with.</p>
+<h2>3. The rules, as the game enforces them</h2>
+<p>Dama is played on an 8x8 board, twelve men a side. Men move one square diagonally forward; the board is drawn from above so both players can read it across a table.</p>
+<ul>
+<li><strong>A capture must be taken.</strong> If a jump is available to you, the game will not offer you a quiet move. Tap a man with no legal move and nothing will be selected — that is the rule, not a broken tap.</li>
+<li><strong>A capture chains.</strong> If your man lands where another jump is available, it keeps going until the chain ends. You do not choose to stop early.</li>
+<li><strong>Reaching the far row crowns a Dama.</strong> A Dama moves any distance along any diagonal, forward or back.</li>
+<li><strong>The match ends</strong> when a side has no men left, or has men but no legal move.</li>
+</ul>
+<p><strong>How to move:</strong> tap the man you want, then tap the empty square you want it to go to. The HUD at the top tells you whose turn it is and how many men each side has.</p>
+<h2>4. In a match</h2>
+<table>
+<thead><tr>
+<th>On screen</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Turn: RED</code> / <code>Turn: BLUE</code></td>
+<td>whose move it is</td>
+</tr>
+<tr>
+<td><code>Red: 12   Blue: 12</code></td>
+<td>men remaining, both sides</td>
+</tr>
+<tr>
+<td><strong>PAUSE</strong></td>
+<td>the pause panel (below)</td>
+</tr>
+</tbody></table>
+<p><strong>Pause panel.</strong> RESUME returns to the match; RESTART starts a new board; SOUND turns the move and end-of-match audio on or off; <strong>MENU</strong> abandons the match and returns to the title screen. That last one exists because of a defect found in Week 15: before it, once a match started there was no way back to the title without closing the app.</p>
+<p><strong>End screen.</strong> The winner is named, the reason is written out (<code>BLUE has no pieces left</code>, <code>BLUE has no legal move</code>) and the counts are given. RESTART plays again; MENU returns to the title.</p>
+<p>The match is recorded in your profile when it ends — once, even if the end screen is reached twice.</p>
+<h2>5. Your profile</h2>
+<p>The profile stores everything on this device and nothing anywhere else. There is no account and no network call.</p>
+<table>
+<thead><tr>
+<th>Field</th>
+<th>What it is</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>NAME</td>
+<td>up to 16 characters; type it, then <strong>SAVE</strong></td>
+</tr>
+<tr>
+<td>SIDE</td>
+<td>which colour you play; wins and losses are counted against it</td>
+</tr>
+<tr>
+<td>Matches / Wins / Losses</td>
+<td>your record</td>
+</tr>
+<tr>
+<td>Current streak / Best streak</td>
+<td>consecutive wins</td>
+</tr>
+<tr>
+<td>Fastest victories</td>
+<td>your three quickest wins, with the match number</td>
+</tr>
+<tr>
+<td><strong>RESET PROFILE</strong></td>
+<td>erases name, record and best times — <strong>two presses</strong>, within four seconds</td>
+</tr>
+</tbody></table>
+<p>The two-press reset is deliberate. One tap that wipes an evening's record is a defect waiting to happen on a phone, and a confirmation dialog is dismissed by habit; so the button arms, changes its label to PRESS AGAIN, says what will be lost, and waits.</p>
+<h2>6. If something looks wrong</h2>
+<table>
+<thead><tr>
+<th>What you see</th>
+<th>Why</th>
+<th>What to do</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Tapping a man selects nothing</td>
+<td>capture is compulsory and that man has no legal move</td>
+<td>tap a man that can jump</td>
+</tr>
+<tr>
+<td>The game seems frozen after a match</td>
+<td>the end screen is modal, and the clock is stopped under it</td>
+<td>RESTART or MENU</td>
+</tr>
+<tr>
+<td>SOUND does nothing in the Editor</td>
+<td>the audio device is the Editor's, and the clips are short</td>
+<td>it is a settings toggle, not a test</td>
+</tr>
+<tr>
+<td>No vibration</td>
+<td><code>Handheld.Vibrate()</code> is a no-op in the Editor</td>
+<td>unproven on a phone, and not claimed</td>
+</tr>
+<tr>
+<td>The profile is empty after moving the project</td>
+<td>the save lives under <code>Application.persistentDataPath</code>, outside the project</td>
+<td>nothing to recover; a fresh profile starts</td>
+</tr>
+<tr>
+<td>The profile says a save was rejected</td>
+<td>the file's signature did not match</td>
+<td>the old file is kept aside and a clean profile starts</td>
+</tr>
+</tbody></table>
+<h2>7. Accessibility</h2>
+<ul>
+<li>Every control clears a <strong>96 canvas-pixel</strong> touch floor at the project's 1280x720 reference scaler (48 dp at xxhdpi is 144 physical px; 144 / 1.50 = 96 canvas px).</li>
+<li>Captions are 22 px bold and body labels 19–20 px, measured by the audit, not chosen by eye.</li>
+<li>Three control fills sit just over the 3:1 non-text contrast line (3.16:1, 3.17:1, 3.19:1) and two labels just over 4.5:1 — they pass, with little room.</li>
+<li><strong>What is missing:</strong> text does not follow the phone's font-size setting, and there is no screen-reader path. A player who needs either cannot use this game yet; that is stated here rather than hidden.</li>
+</ul>
+<h2>8. What the game does not do</h2>
+<ul>
+<li>It does not connect to the internet, and it has no accounts, ads or purchases.</li>
+<li>It does not send anything off the device; the only file it writes is the profile.</li>
+<li>It does not run on a phone in this submission — no build exists. §1 is the whole of that story.</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+DAMA - WEEK 18 - DEMONSTRATION SEQUENCE TRANSCRIPT
+Student : Charibelle Guzman (BSIT-4)
+Scene   : Assets/Scenes/DamaGame.unity
+Harness : Tools > Dama > Week 18 > 1. Capture Demonstration
+Run at  : 2026-11-26 08:50:43 UTC   Unity 6000.6.0f1
+Build   : 1.0.0-rc1 · Editor   Application.version=1.0.0-rc1
+Canvas  : 1280x720 reference, match 0.50   Game view at capture: 1151x584
+Platform: Editor. No APK was built and no handset was attached, so these are Editor
+          captures of the scene an Android build would ship - not evidence from a device.
+
+Each line carries the seconds since the run began, so the sequence can be checked against
+the PNG timestamps. A "Requested" line is the screenshot call; the "Wrote" line for the
+same file is the moment the PNG existed on disk with a non-zero length.
+------------------------------------------------------------------------------------------------
+RUN LOG
+------------------------------------------------------------------------------------------------
++   0.0 s  16:50:32  Entering play mode for the Week 18 demonstration sequence.
++   1.3 s  16:50:33  Real profile directory: C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama\Dama
++   1.7 s  16:50:33  D1 state: StartPanel=True VersionLabel='1.0.0-rc1 · Editor' Application.version='1.0.0-rc1' HowToButton=320x100 at (-440, 0) StartButton=320x100 at (0, 0) CreditsButton=320x100 at (440, 0) ProfileButton=320x96 at (-440, -115) ExitButton=320x100 at (0, -115).
++   1.7 s  16:50:33  Requested D1_title.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_18\Evidence\D1_title.png
++   1.8 s  16:50:33  Wrote D1_title.png (82403 bytes, sha256 d1cf682018b8ca3f...).
++   2.7 s  16:50:34  D2 state: HowToPanel=True StartPanel=False body chars=1122 body=19 px back=320x100 at (0, 0).
++   2.7 s  16:50:34  Requested D2_how_to_play.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_18\Evidence\D2_how_to_play.png
++   2.7 s  16:50:34  Wrote D2_how_to_play.png (162047 bytes, sha256 984fabeaccbf8100...).
++   3.6 s  16:50:35  D3 state: CreditsPanel=True BuildText='Build 1.0.0-rc1 · Editor · com.defaultcompany.dama' body chars=903.
++   3.6 s  16:50:35  Requested D3_credits.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_18\Evidence\D3_credits.png
++   3.7 s  16:50:35  Wrote D3_credits.png (143703 bytes, sha256 6342537d78e673f0...).
++   4.1 s  16:50:36  Scratch profile opened at C:\Users\Zedrich\AppData\Local\Temp\DamaWeek18Demo: matches=0.
++   4.6 s  16:50:36  Scratch match 1 banked: matches=1 wins=1 losses=0 bestStreak=1 bestWins=1.
++   5.0 s  16:50:37  Scratch match 2 banked: matches=2 wins=2 losses=0 bestStreak=2 bestWins=2.
++   5.5 s  16:50:37  Scratch match 3 banked: matches=3 wins=2 losses=1 bestStreak=2 bestWins=2.
++   6.0 s  16:50:38  D4 state: ProfilePanel=True RecordText='Matches: 3   Wins: 2   Losses: 1 | Current streak: 0   Best streak: 2' BestText='Fastest victories | 1. 0.5 s   match 1 | 2. 0.5 s   match 2' StatusText='Type a name, then SAVE. Nothing leaves this device.' dir='C:\Users\Zedrich\AppData\Local\Temp\DamaWeek18Demo'.
++   6.0 s  16:50:38  Requested D4_profile_record.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_18\Evidence\D4_profile_record.png
++   6.0 s  16:50:38  Wrote D4_profile_record.png (70916 bytes, sha256 4fe0c36405c1a396...).
++   6.5 s  16:50:38  D5 step 1: RESET pressed once - ResetLabel='PRESS AGAIN' StatusText='This erases your name, record and best times. Press again within 4 s.'.
++   6.9 s  16:50:39  D5 step 2: RESET pressed again - ResetLabel='RESET PROFILE' RecordText='Matches: 0   Wins: 0   Losses: 0 | Current streak: 0   Best streak: 0' BestText='Fastest victories | - none yet -' StatusText='Profile erased.'.
++   6.9 s  16:50:39  Requested D5_profile_after_reset.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_18\Evidence\D5_profile_after_reset.png
++   6.9 s  16:50:39  Wrote D5_profile_after_reset.png (61233 bytes, sha256 1344436b8d81043e...).
++   7.8 s  16:50:40  D6 state: HUDPanel=True turn='Turn: RED' counts='Red: 12   Blue: 12' StartPanel=False.
++   7.8 s  16:50:40  Requested D6_match_fresh.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_18\Evidence\D6_match_fresh.png
++   7.9 s  16:50:40  Wrote D6_match_fresh.png (50252 bytes, sha256 392f131fb8e212a1...).
++   8.3 s  16:50:40  Rebuilt 3 visible piece(s) from the grid so the image matches the state.
++   8.8 s  16:50:40  D7 state: a RED man jumped a BLUE man (3,4) -> (4,5); turn='Turn: BLUE' counts='Red: 1   Blue: 2'.
++   8.8 s  16:50:40  Requested D7_match_after_capture.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_18\Evidence\D7_match_after_capture.png
++   8.8 s  16:50:41  Wrote D7_match_after_capture.png (24777 bytes, sha256 a86927876e60267e...).
++   9.7 s  16:50:41  D8 state: PausePanel=True timeScale=0.00 ResumeButton=320x96 at (0, 0).
++   9.7 s  16:50:41  Requested D8_pause.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_18\Evidence\D8_pause.png
++   9.8 s  16:50:41  Wrote D8_pause.png (37633 bytes, sha256 f1a218dab19ed260...).
++  10.2 s  16:50:42  Rebuilt 2 visible piece(s) from the grid so the image matches the state.
++  10.7 s  16:50:42  D9 state: WinPanel=True WinText='RED WIN!' SummaryText='RED WINS.  RED 1-1, BLUE has no legal move.'.
++  10.7 s  16:50:42  Requested D9_end_screen.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_18\Evidence\D9_end_screen.png
++  10.7 s  16:50:42  Wrote D9_end_screen.png (42675 bytes, sha256 b52cc8fd23c81245...).
++  11.2 s  16:50:43  Profile directory restored to C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama\Dama: matches=8.
+------------------------------------------------------------------------------------------------
+HASHES (sha256, first 32 hex characters)
+------------------------------------------------------------------------------------------------
+  D1_title.png                 d1cf682018b8ca3f931b98d71f753c47
+  D2_how_to_play.png           984fabeaccbf8100b0508d913430f789
+  D3_credits.png               6342537d78e673f088c1f6e2b50fedce
+  D4_profile_record.png        4fe0c36405c1a3965fb1692988ee2550
+  D5_profile_after_reset.png   1344436b8d81043edd4d5b790147b6f2
+  D6_match_fresh.png           392f131fb8e212a1c224f562d69a0cf7
+  D7_match_after_capture.png   a86927876e60267ec657082d8de1975d
+  D8_pause.png                 f1a218dab19ed2605549197e0df902b0
+  D9_end_screen.png            b52cc8fd23c81245b8ecdb2b31aa63d0
+
+  All 9 images are byte-distinct: no name is a copy of another.
+------------------------------------------------------------------------------------------------
+WHAT EACH IMAGE IS
+  D1_title.png                 the title screen: the version caption top-left, HOW TO PLAY, START
+                               and CREDITS on the first row, PROFILE and EXIT on the second.
+                               The caption is derived from Application.version by ReleaseInfo -
+                               not a string typed into the scene.
+  D2_how_to_play.png           the HOW TO PLAY panel: the rules, the mandatory capture, the chain,
+                               the flying Dama, and BACK returning to the title.
+  D3_credits.png               the CREDITS panel: author, course, engine, licence and the
+                               AI-assistance statement, with the build line naming the same
+                               version the title shows and the application id.
+  D4_profile_record.png        the PROFILE panel with a banked record and the fastest-winning
+                               times, produced by three real matches banked through the game's
+                               own RecordMatch path.
+  D5_profile_after_reset.png   the same panel after the two-press RESET: the record cleared and
+                               the status line saying so. One tap wiping a record is the defect
+                               the second press exists to prevent.
+  D6_match_fresh.png           a fresh match: twelve men a side and the HUD naming the turn.
+  D7_match_after_capture.png   the same match after RED jumped a BLUE man at (3,4) and landed at
+                               (4,5), with the HUD counts following the board.
+  D8_pause.png                 the pause panel: RESUME, RESTART, SOUND and MENU, with the clock
+                               stopped (timeScale 0).
+  D9_end_screen.png            the end screen after BLUE was left with a man and no legal move.
+
+The profile images are taken against a scratch data directory, because the demonstration has
+to show a record and then erase it, and the record on this machine belongs to whoever played.
+PlayerProfile.SetDataDirectory points the store at a temporary folder, three matches are banked
+there, and the real directory is pointed back at its own folder only after D9 - because the last
+match ends through the game's own win check, and that check banks the match. The "Real profile
+directory" and "Profile directory restored" lines above are that round trip; the match
+images therefore bank into the temporary folder, not into the player's own record.
+
+Every other state is produced through the game's own entry points (ShowHowTo, ShowCredits,
+ShowProfile, ResetPressed, StartGame, RestartGame, PauseGame, ResumeGame, ReturnToMenu,
+CheckForWin). Only the board seeding is done by reflection, and the visible pieces are then
+rebuilt from the grid so the picture matches the state the transcript describes.

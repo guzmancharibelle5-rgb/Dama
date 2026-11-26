@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Week 18 — Reflection</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>Week 18 — Reflection</h1>
+<p><strong>Charibelle Guzman · BSIT-4 · MOBILE DEV 002, Module 5</strong> <strong>Week 18 · PA2 — Final Project, Demonstration and Defense</strong></p>
+<hr/>
+<h2>1. Strongest result</h2>
+<p>The strongest thing in this submission is not a feature. It is that the three gates can be re-run in twenty minutes and produce the same answers on the same tree: <strong>5 passed / 0 failed</strong> for the release checks, <strong>27 passed / 0 failed / 1 blocked</strong> for the regression suite, <strong>148 passed / 0 failed / 0 warnings / 4 not measurable</strong> for the accessibility audit. Those numbers are in <code>Week_18/Evidence/final_results.md</code> and each one is copied from the log beside it.</p>
+<p>That matters because a claim nobody can re-check is a story. When the Week 17 builder duplicated three title buttons, the regression suite reported each control as overlapping <em>itself</em> — a sentence no human would write by looking at a screenshot — and the fix was accepted only once the same suite returned zero overlaps. Testing that can catch its own week's mistake is worth more than a feature list.</p>
+<p>The second result is smaller but I like it more: the demonstration harness disproved itself twice before its output was used. It refused to open the profile because the game was mid-match, and it measured best times of <code>0.0 s</code> because it banked three matches inside one tick. Both were caught by the harness's own logging, both were fixed, and both are written down in <code>final_results.md</code> §3 instead of being quietly re-run until the pictures looked right.</p>
+<h2>2. Most important limitation</h2>
+<p><strong>There is no installable build.</strong> The module asks for one, and this submission does not have one — no APK, no keystore, no device. It is recorded as BLOCKED in three places and <code>TC-COMPAT-01</code> stays blocked in every log.</p>
+<p>I could describe that as a scheduling problem, but that would be the comfortable answer. The real reason is that I chose, week after week, the work that could be finished inside the Editor: a harness, a log, a capture, a document. Every one of those was verifiable, and none of them required me to produce something I could not check — a signed package running on glass. So the submission is strong exactly where Editor evidence is strong and silent exactly where it is not, and the module's central deliverable is the one thing missing.</p>
+<p>The honest cost is not "no screenshots from a phone". It is that nobody — including me — knows whether this game installs, launches, respects the Android lifecycle, or responds correctly to a real thumb. The Editor shares the scene and the scripts with a build, so the behaviour is likely similar; likely is not measured, and this project spent six weeks refusing to publish the difference.</p>
+<h2>3. Next improvement</h2>
+<p>In order:</p>
+<ol>
+<li><strong>Build it, sign it, install it.</strong> A keystore held outside the repository, <code>androidUseCustomKeystore: 1</code>, a release build at IL2CPP/ARM64/API 26, then <code>adb install -r</code> on a handset and the nine demonstration screens re-taken on the device. That single change would turn the largest BLOCKED row in the submission into a measured result, and it is the only item on this list that closes a gap rather than adding a feature.</li>
+<li><strong>Run the playtest kit that already exists.</strong> Consent form, session script, five task cards, observation sheet — written in Week 14 and never used. Three volunteers would tell me whether the compulsory-capture rule is understood or merely enforced, which no audit can answer.</li>
+<li><strong>Follow the phone's font scale.</strong> The audit measures a size floor; it cannot make the game obey a system setting. That is WCAG 2.2 SC 1.4.4, and it stays unmet until the UI reads the platform scale.</li>
+</ol>
+<p>Everything else — a nicer board, more sounds, an animated crowning — is decoration next to those three.</p>
+<h2>4. What the six weeks actually taught me</h2>
+<p>The method, more than the code: decide what would count as proof <em>before</em> doing the work, then refuse to write a number you did not measure. Week 16 is where it became concrete — a byte counter that looked right was tested against a deliberate 64 KB allocation, failed, and was replaced rather than reported. Week 17 repeated it when a check read the wrong field of a UI listener and reported <code>null</code>: the check was wrong, the code was fine, and the record says so.</p>
+<p>The cost of that discipline is visible too. It is slower, it produces documents about what did <em>not</em> work, and it means handing in a package whose largest row says BLOCKED. I think that is the right trade. A submission that says "nine distinct captures, 27 cases, and here is the one thing I could not do" is worth more than one that implies everything was finished.</p>
+<h2>5. AI assistance declaration</h2>
+<p>AI was used as an assistant for code drafts, document structure and phrasing, and for running the harnesses. Every number in every document of this submission was copied from a log or a command output that the tool produced on this machine; nothing was typed from memory or estimated to fill a table. Where the evidence could not support a claim — a device install, a phone frame rate, a human playtest, the oral defense — the documents say so. The full disclosure is §6 of <code>Guzman_Charibelle_PA2_Originality_Declaration</code>, and the defect history that came out of working with an assistant is §8 of the technical report.</p>
+<p>The defense itself is mine to sit. Nothing in this package is a prepared answer to a defense question; <code>Evidence/defense_prep.md</code> holds pointers to files, classes and commits, and <code>Evidence/e3_record.md</code> is blank until it is filled in front of the instructor.</p>
+
+</body>
+</html>
