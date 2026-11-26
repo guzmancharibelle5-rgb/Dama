@@ -63,6 +63,7 @@ signed JSON file inside the app's own sandbox and survives closing and reopening
 |---|---|
 | Feature | `PlayerProfile` (signed save), `ProfilePanel` (the screen), `DamaBoard` (banks a finished match) |
 | Code commit | `b6b477b` - "Week 13 PT5: signed player profile, PT5 data checks and play-mode evidence" |
+| Documentation commit | `a215f34` - SA5, PT5, the reflection, their HTML and PDFs |
 | Checks | `Week_13/Evidence/pt5_checks.log` - 14 assertions passed, 0 failed, 1 documented known limit |
 | Captures | `Week_13/Evidence/E1..E4` - empty profile, record, best-times board, after reset |
 | Re-running everything | `Week_13/Evidence/HOW_TO_RERUN.txt` |
@@ -123,6 +124,7 @@ table is PT5 section 9, and the reflection carries the required declaration.
 |---|---|
 | Branch | `main` |
 | Code commit (Week 13) | `b6b477b` |
+| Documentation commit (Week 13) | `a215f34` |
 | Tracked files after the commit | 190 |
 | Build target | Android, ARM64 only, IL2CPP, minimum API 26, `com.defaultcompany.dama` |
 | Scenes in build | `DamaGame.unity` (index 0), `SampleScene.unity` (disabled) |

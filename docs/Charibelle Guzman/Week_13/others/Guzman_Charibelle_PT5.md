@@ -308,7 +308,7 @@ left out.
 | Repository branch | `main` |
 | Code commit | `b6b477b` "Week 13 PT5: signed player profile, PT5 data checks and play-mode evidence", 2026-11-26 |
 | Commit contents | 19 files changed, 3570 insertions, 134 deletions |
-| Documentation commit | follows this document; a document cannot contain the hash of the commit that contains it, so the code commit above is the one to check out |
+| Documentation commit | `a215f34` - SA5, this document, the reflection, the HTML and the PDFs |
 
 `Evidence/build_and_commit.txt` records the settings, the scene order and the same commit id.
 
