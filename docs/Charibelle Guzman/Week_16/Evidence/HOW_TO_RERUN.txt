@@ -1,0 +1,144 @@
+DAMA - WEEK 16 - HOW TO RE-RUN EVERY ARTEFACT
+Student : Charibelle Guzman (BSIT-4)
+Build   : dama-editor-w16-opt2   scene Assets/Scenes/DamaGame.unity   Unity 6000.6.0f1
+Written : 2026-11-26
+
+Everything in this folder was produced by a menu item or by the harness it names,
+not by hand. The order below reproduces the record from an unmodified checkout of
+the baseline commit.
+
+----------------------------------------------------------------------------
+ORDER MATTERS
+----------------------------------------------------------------------------
+  1  baseline profile run        (writes moves.txt - do this FIRST)
+  2  optimization 1              (code change, one commit)
+  3  after-optimization-1 run    (replays moves.txt)
+  4  optimization 2              (code change, one commit)
+  5  after-optimization-2 run    (replays moves.txt)
+  6  accessibility re-audit
+  7  regression run
+
+Step 1 is the only run that CHOOSES its own moves. Steps 3 and 5 replay the turn
+list it recorded, so a changed move generator shows up as a different move hash
+or a replay warning instead of being averaged away. If moves.txt is regenerated
+after a code change, the three runs are no longer the same game and must not be
+compared.
+
+Do not edit a script while a profile run is in progress. Domain reload on
+play-mode entry is disabled in this project, so a recompile that lands mid-run
+stalls the harness with play mode still on and no summary written. Recover by
+stopping play mode, fixing the compile, and running again.
+
+----------------------------------------------------------------------------
+1. BASELINE PROFILE RUN
+----------------------------------------------------------------------------
+  Tools > Dama > Week 16 > 1. Baseline Profile
+
+Writes Evidence/profile_baseline/{summary.txt, frames.csv} (~34,550 rows) and
+re-records Evidence/moves.txt (32 turns). Expect: frame mean 2.062 ms, p95
+2.841 ms, 0 of 34,550 frames over 33.3 ms; one GetSelectableMoves 556.7 B +- 3.3
+(R2 1.00); one legality scan over 12 pieces 6,975.9 B +- 0.1 (R2 1.00); one
+restart 5,701.2 B +- 145.5 (R2 0.99); worst restart frame 5.296 ms; move hash
+0xE432E83D. The run takes about 80 s and enters play mode itself.
+
+Two things the run does on purpose, both stated in its own summary header:
+  - vSync is forced to 0 and Application.targetFrameRate to -1 for the run and
+    restored afterwards, so a 16.7 ms vsync lock cannot hide a hitch;
+  - the Profiler is forced on for the run and restored afterwards;
+  - the REAL local profile is reset (UseDefaultDataDirectory + ResetProfile), and
+    the fixture's restarts bank matches. The save file under test is
+    C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama/Dama/profile.json.
+
+----------------------------------------------------------------------------
+2-5. THE TWO OPTIMIZATIONS AND THEIR RUNS
+----------------------------------------------------------------------------
+  Tools > Dama > Week 16 > 2. After Optimization 1   -> Evidence/profile_after_alloc/
+  Tools > Dama > Week 16 > 3. After Optimization 2   -> Evidence/profile_after_pool/
+
+Both replay moves.txt. Expect: the same move hash 0xE432E83D, 32 replayed turns,
+3 restarts and 0 replay warnings, or the code change is not behaviour-preserving.
+
+Expected figures after optimization 1: legality scan below the resolution of the
+method (-0.1 B +- 0.1, R2 0.25), one GetSelectableMoves -6.8 B +- 4.2
+(R2 0.25), restart still ~5.6 KB, frame mean ~2.19 ms.
+
+Expected figures after optimization 2: restart -1,665.5 B +- 1,704.1 (R2 0.11,
+consistent with 0 B), frame mean ~2.18 ms, worst restart frame ~5.2 ms.
+
+A slope printed as "below the resolution of this method" is the SUCCESS case for
+the allocation target, not a missing measurement: the fit can no longer separate
+the per-call cost from zero, and the standard error is printed beside it so the
+claim can be bounded.
+
+Known snag: the editor's menu dispatch can report success without the run
+starting. If no "run complete" line appears in the console, invoke the entry
+point directly from a C# editor script:
+
+    Week16Profile.RunBaseline();
+    Week16Profile.RunAfterOptimizationOne();
+    Week16Profile.RunAfterOptimizationTwo();
+
+----------------------------------------------------------------------------
+6. ACCESSIBILITY RE-AUDIT
+----------------------------------------------------------------------------
+  Tools > Dama > Week 16 > 0. Accessibility Audit     (instant, edit mode)
+
+Writes Evidence/a11y_week16_after.log plus a timestamped copy. Expect: 105
+passed, 0 failed, 0 warnings, 4 not measurable - the same four not-measurable
+rows as Week 15, reported and never scored.
+
+This run takes an explicit "after" label. Both optimizations are already
+committed when it runs, so there is no pre-state; the file-existence rule that
+Week 14 and 15 used would have named the first file "baseline" and misdescribed
+it.
+
+The Week 14 and Week 15 audits write into their own week folders and are left
+alone - those files are committed evidence and re-running them would overwrite it.
+
+----------------------------------------------------------------------------
+7. REGRESSION RUN
+----------------------------------------------------------------------------
+  Tools > Dama > Week 16 > 4. Regression Run          (~40 s)
+
+Writes Evidence/test_logs_regression/{case_log.tsv, summary.txt, console.log}.
+Expect: "DAMA - WEEK 16 TEST RUN (REGRESSION)", 27 passed, 0 failed, 1 blocked,
+0 console errors. TC-COMPAT-01 is the blocked case and it is blocked on purpose.
+
+This harness used to write into fixed Week_15/Evidence/test_logs_baseline/ and
+test_logs_final/ folders. It now carries a runWeek field and this menu writes
+under Week_16, so a regression run CANNOT overwrite Week 15's committed logs.
+After running it, confirm that:
+
+    git status -- "docs/Charibelle Guzman/Week_14" "docs/Charibelle Guzman/Week_15"
+
+reports no change. If it reports anything, the seam has been bypassed and the
+Week 15 evidence needs restoring from Git.
+
+----------------------------------------------------------------------------
+8. DOCUMENTS
+----------------------------------------------------------------------------
+  Tools > Dama > Submission > Build Week 16 HTML
+
+Converts others/*.md into others/*.html. The three PDFs at this folder's root are
+then printed from that HTML with Edge:
+
+  "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless=new
+    --disable-gpu --no-pdf-header-footer --print-to-pdf="<abs>.pdf"
+    "file:///E:/Damath Charry/dama/docs/Charibelle Guzman/Week_16/others/<X>.html"
+
+The quoted file:/// URL needs its literal spaces. Page counts are checked with
+findstr /C:"/Count" on the PDF. Guzman_Charibelle_Week16_Reflection.pdf is 2
+pages; SA6 is 6 and AS3 is 7.
+
+----------------------------------------------------------------------------
+WHAT IS NOT REPRODUCIBLE HERE
+----------------------------------------------------------------------------
+TC-COMPAT-01 (second device or configuration profile) cannot be run: no APK is
+produced this week and no Android handset is attached. That is recorded in the
+Week 15 environment note with the command and its output, and the case stays
+BLOCKED in the regression log.
+
+Draw calls, batches and set pass calls are recorded as NOT MEASURABLE in every
+run: the recorders are valid but every sample read 0 while the scene was visibly
+drawing. That is a property of this Editor session, not of the game, and no
+rendering claim is made in either direction.

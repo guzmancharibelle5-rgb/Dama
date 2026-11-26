@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Week 16 Reflection - What Profiling Actually Taught Me</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>Week 16 Reflection - What Profiling Actually Taught Me</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Week:</strong> 16 - Mobile Game Profiling and Performance Optimization</p>
+<p class="meta"><strong>Produced:</strong> 2026-11-26</p>
+<p>I expected this week to be about making the game faster. It turned out to be about finding out whether I could tell whether the game was faster - and that was the harder, more useful lesson.</p>
+<h2>The number I was most proud of was wrong</h2>
+<p>I built the profiling harness, ran it, and it printed <code>0.0 B allocated per turn</code>. That is exactly what my own target asked for, so my first reaction was satisfaction. My second reaction was doubt, because <code>0.0</code> is a suspicious answer: the game allocates a <code>List</code> per piece scanned, so a true zero was not credible.</p>
+<p>So I tested the counter itself. I allocated 64 KB on purpose and asked the counter how much it had seen. It reported <strong>0 B</strong>. The instrument was blind, and if I had not checked, my entire week's evidence - a whole document, "target met" - would have been a lie with a clean table around it. Four other byte counters failed the same way: one is a stub, two move in 4 KB blocks, one throws <code>NotImplementedException</code>. The only counter that does work is the Editor-wide per-frame one, and it carries about 210 KB of the Editor's own work per frame, which is roughly 200 times the size of the thing I was trying to measure.</p>
+<p>The fix was to stop trying to read the signal and start <strong>amplifying</strong> it: run the same call <em>n</em> times and <em>2n</em> times, and fit a line. The slope is the cost of one call; the intercept eats the Editor's own allocation. The first time I saw a slope of 6,975.9 B with R² 1.00 come out of a counter I had just upgraded from useless, I trusted it - because I could see it move when I asked the same call to run twice as often.</p>
+<p>The lesson generalises beyond Unity: <strong>before you measure something, measure your ruler</strong>. A broken measurement does not announce itself; it reports a perfect score.</p>
+<h2>Profiling told me what <em>not</em> to fix</h2>
+<p>My frame mean is 2.062 ms against a 33.3 ms budget, with <strong>zero</strong> frames over budget out of 34,550. My instinct was that this much headroom meant something was being wasted and I should go find it. The better reading is the opposite: frame time is simply not this game's problem, and any optimization I justified with frame time would have been a story I told myself.</p>
+<p>Instead the data pointed somewhere I would not have guessed: the thing that costs the most is <strong>deciding who is allowed to move</strong>. <code>CheckForWin</code> asks <code>HasAnyLegalMove</code> at the end of every turn, which asks every piece whether it can capture, and each of those questions was building a brand-new list. 6,975.9 bytes per turn, on a turn-based board game, forever. Removing it was a twenty-line change, and the whole-board figure went from 6,975.9 B to 0.1 B.</p>
+<p>That is the difference between optimizing what looks expensive and optimizing what repeats.</p>
+<h2>Being honest about the numbers that did not move</h2>
+<p>The restart work is where I had to be most careful with myself. I expected the restart frame to drop and it did not, not really: 5.296 ms before, 5.154 ms after, 8.099 ms in between. Nine samples per run cannot separate that from noise, so I did not claim it. What I can prove is that the <em>allocation</em> on that path collapsed, because the byte fit can see it and the error bar, while wide, sits far from the old value.</p>
+<p>The same discipline applies to frame time: mean went from 2.062 ms to 2.181 ms. That looks like a 5.8% regression caused by my optimizations, and it would have been easy to hide it by quoting only the p95. The honest test was the idle frames - 2.059 ms to 2.172 ms - which execute no move generation at all and moved by the same amount. If idle moves, it is the machine and the Editor session, not my code. Saying that out loud is worth more to me than a nicer table.</p>
+<p>I also had to write down, before measuring, that the restart target was <strong>already met</strong>. It would have been convenient to pretend it was failing so that I had "two bottlenecks, both fixed". Instead the second change is reported as what it is: churn removed, on a path whose budget was never in danger.</p>
+<h2>What I could not do, and what I would do next</h2>
+<p>There is no phone in this lab and no APK was built, so every number this week is an Editor number. The Editor adds about 2 ms of its own work to every frame and cannot see draw calls at all - both of which I have written into the evidence rather than around. What that means practically is that I have proved the game allocates nothing per turn, and I have <strong>not</strong> proved anything about how that feels on an Adreno or Mali phone.</p>
+<p>If I had one more week, the honest order would be:</p>
+<ol>
+<li>build the APK and capture draw calls and frame time on the one handset I can find, so the <code>NOT MEASURABLE</code> cells become measurements;</li>
+<li>profile a long match, not a 71-second window, to see whether the pool's remembered pieces and any slow growth matter as the session wears on;</li>
+<li>profile in a Development build rather than in the Editor, because the Editor's own 2 ms hides exactly the costs I am now small enough to care about.</li>
+</ol>
+<h2>What I am taking out of this week</h2>
+<p>Two things. The first is that <strong>a measurement you have not tried to break is not a measurement</strong> - the counter that read 0 B through a 64 KB allocation taught me that in one afternoon. The second is that the most valuable thing profiling produced was not an optimization at all: it was the sentence "frame time is fine, stop looking there". Knowing where <em>not</em> to spend a week is a result, and I only know it because I wrote the targets down before I looked at the numbers.</p>
+<hr/>
+<p>I confirm that this reflection describes my own development experience and that all assistance, including AI assistance, has been disclosed. The documents for this week were drafted with AI assistance and then checked against the build: every number quoted in this reflection and in <code>Guzman_Charibelle_SA6.pdf</code> / <code>Guzman_Charibelle_AS3.pdf</code> is copied from a <code>summary.txt</code>, a <code>case_log.tsv</code> or an audit log that the harness generated, and each figure was re-read against its source file before the PDFs were printed. The frame-time and draw-call claims that the evidence could not support were removed from the documents rather than softened.</p>
+
+</body>
+</html>

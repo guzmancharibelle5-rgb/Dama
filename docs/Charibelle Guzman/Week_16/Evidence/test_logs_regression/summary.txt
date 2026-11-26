@@ -1,0 +1,72 @@
+DAMA - WEEK 16 TEST RUN (REGRESSION)
+Game: Dama  |  Theme: Philippine Games and Sports  |  Student: Charibelle Guzman (BSIT-4)
+Harness: Assets/Scripts/Editor/Week15Checks.cs
+Scene: DamaGame.unity   Unity: 6000.6.0f1   Editor: WindowsEditor
+Run at: 2026-11-26 06:39:37 UTC   Game view: 1151x584
+Thresholds: touch 96 canvas px, captions 20 px, labels 18 px
+TOTAL: 27 passed, 0 failed, 1 blocked, 0 console error(s)
+----------------------------------------------------------------------------------------------------
+TC-FLOW-01    PASS    REQ-01      Launched scene shows the title screen
+                StartPanel=True HUDPanel=True PausePanel=True WinPanel=True
+TC-FLOW-02    PASS    REQ-01      Title screen states the rules
+                chars=156
+TC-FLOW-03    PASS    REQ-02      START begins a match with 24 pieces, RED to move, counts shown
+                pieces=24 turn='Turn: RED' counts='Red: 12   Blue: 12'
+TC-FLOW-04    PASS    REQ-10      PAUSE freezes the board; RESUME returns to the same side to move
+                paused=True pausedTurn=1 resumed=True resumedTurn=1 soundLabel='SOUND: ON'
+TC-FLOW-05    PASS    REQ-11      SOUND toggle silences feedback, spells its state and survives in PlayerPrefs
+                enabled True->False->True label 'SOUND: OFF' then 'SOUND: ON' prefs 0/1
+TC-FLOW-06    PASS    REQ-17      A match can be left for the title screen without closing the app
+                StartPanel=True PausePanel=False HUDPanel=False timeScale=1.00
+TC-RULE-01    PASS    REQ-04      A mandatory capture removes the quiet move from the offered list
+                offered=[(3,4)] expected only [(3,4)]
+TC-RULE-02    PASS    REQ-04      A jump lands beyond the enemy and removes it
+                landing=RED jumpedCell=empty
+TC-RULE-03    PASS    REQ-05      A capture that lands on another jump keeps the turn and the chain
+                chain=(3,4) turn=RED:True continuationOffered=True
+TC-RULE-04    PASS    REQ-06      RED is crowned on its far row, y == 7
+                landing=(2,7) isKing=True
+TC-RULE-05    PASS    REQ-06      BLUE is crowned on its far row, y == 0 (not y == 7)
+                landing=(4,0) isKing=True
+TC-RULE-06    PASS    REQ-06      A Dama flies any distance along a diagonal and stops before a piece
+                offered=[(1,1), (2,2), (3,3), (4,4), (5,5), (6,6)] expected 6 squares ending at (6,6)
+TC-RULE-07    PASS    REQ-07      A side with no pieces left loses, and the winner is declared
+                WinPanel=True WinText='RED WIN!'
+TC-RULE-08    PASS    REQ-09      The end screen says the match was won by removing every piece
+                SummaryText='RED WINS.  RED 1-0, BLUE has no pieces left.'
+TC-RULE-09    PASS    REQ-08      A side that still has pieces but no legal move loses
+                WinPanel=True WinText='RED WIN!'
+TC-RULE-10    PASS    REQ-09      The end screen names both counts and says why the match ended
+                SummaryText='RED WINS.  RED 1-1, BLUE has no legal move.' expected reason 'no legal move' and 'RED 1-1'
+TC-RULE-11    PASS    REQ-09      The end screen offers RESTART and a way back to the title screen
+                RestartButtonWin=True MenuButtonWin=True
+TC-DATA-01    PASS    REQ-13      Name and side survive a reload from disk
+                name='QA-CHARIBELLE' side=2 savePath=C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama\Dama\profile.json
+TC-DATA-02    PASS    REQ-14      A finished match is banked once and survives a reload
+                afterFirst=1 afterRepeat=1 repeatRefused=True afterReload=1 error=''
+TC-DATA-03    PASS    REQ-15      Reset clears the record and leaves a usable profile
+                reset=True name='PLAYER' wins=0 losses=0 best=0
+TC-DATA-04    PASS    REQ-16      A corrupt save is set aside, reported, and the game recovers
+                error='JSON parse error: Invalid value.' quarantined=True emptyDefaults=True recovered=True reloaded=True
+TC-DATA-05    PASS    REQ-22      The player record is one local file inside the app sandbox
+                path=C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama\Dama\profile.json insideSandbox=True exists=True rejectedCopyInsideSandbox=True
+TC-A11Y-01    PASS    REQ-19      Every button and input field is at least 96x96 canvas px
+                13 buttons, 1 fields, 0 below floor 
+TC-A11Y-02    PASS    REQ-19      No two controls on the same panel overlap
+                0 overlapping pairs
+TC-A11Y-03    PASS    REQ-20      Captions are at least 20 px and labels at least 18 px
+                0 caption(s), 0 label(s) below floor 
+TC-BOUND-01   PASS    REQ-21      100 rapid taps do not crash, change the board or bank a match
+                pieces 24->24 matchId 0->0 throws='' stillAnswers=True
+TC-BOUND-02   PASS    REQ-10      50 pause/resume cycles leave the game running and unpaused
+                timeScale=1.00 pausePanel=False throws=''
+TC-COMPAT-01  BLOCKED compatibility Second device or configuration profile
+                BLOCKED: no APK was built this week (Editor-only evidence) and no Android handset was attached
+----------------------------------------------------------------------------------------------------
+ACCEPTANCE ROLL-UP (criteria written before the run, see Evidence/acceptance_criteria.md)
+  CC-1 data loss            : PASS
+  CC-2 core loop completes  : PASS
+  CC-3 no shared data       : PASS (the game has no network path; see environment.md)
+  CC-4 no repeated crashes  : PASS (0 console error(s) in console.log)
+  AC-5 every control usable : PASS
+  AC-6 every label readable : PASS (contrast is measured by A11yAudit, not here)

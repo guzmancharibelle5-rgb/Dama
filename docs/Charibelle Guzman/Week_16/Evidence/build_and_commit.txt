@@ -1,0 +1,138 @@
+DAMA - WEEK 16 - BUILD AND COMMIT RECORD
+Student : Charibelle Guzman (BSIT-4)
+Build   : dama-editor-w16-opt2
+Written : 2026-11-26
+
+Every number quoted in the Week 16 documents belongs to one of the three commits
+below. The order is the order the work was done: measure, prove the measuring
+instrument, optimize one thing, re-measure, optimize the second thing,
+re-measure, regress, document.
+
+----------------------------------------------------------------------------
+COMMIT 1 - f9503e8  "Week 16: profiling harness and measured baseline"
+----------------------------------------------------------------------------
+Files
+  A  Assets/Scripts/Editor/Week16Profile.cs           (new, 1135 lines)
+  A  Assets/Scripts/Editor/Week16Profile.cs.meta
+  A  docs/Charibelle Guzman/Week_16/Evidence/targets.md
+  A  docs/Charibelle Guzman/Week_16/Evidence/bottlenecks.md
+  A  docs/Charibelle Guzman/Week_16/Evidence/moves.txt
+  A  docs/Charibelle Guzman/Week_16/Evidence/profile_baseline/summary.txt
+  A  docs/Charibelle Guzman/Week_16/Evidence/profile_baseline/frames.csv
+
+What it adds: one fixed scenario (~75 s) with a discarded 3 s warm-up, an
+allocation fixture, 32 turns driven through the game's own GetSelectableMoves and
+ExecuteMove, 3 scripted restarts and a 3 s end dwell; per-frame recording into
+preallocated arrays; a CSV and a summary written once at the end.
+
+targets.md was committed in the same commit as the baseline ON PURPOSE: the four
+targets are written before the run and the file is in the tree with the run it
+judged, so the order can be checked.
+
+Baseline result, 2026-11-26 14:20:15: frame mean 2.062 ms, p95 2.841 ms, 0 of
+34550 frames over 33.3 ms; GetSelectableMoves 556.7 B +- 3.3 (R2 1.00); legality
+scan over 12 pieces 6975.9 B +- 0.1 (R2 1.00) - the per-turn figure, PT-2 FAILED;
+restart 5701.2 B +- 145.5 (R2 0.99), worst restart frame 5.296 ms - PT-3 met;
+draw calls and batches NOT MEASURABLE; move hash 0xE432E83D.
+
+----------------------------------------------------------------------------
+COMMIT 2 - d6c4ba7  "Week 16 optimization 1: allocation-free move generation"
+----------------------------------------------------------------------------
+Files
+  M  Assets/Scripts/DamaBoard.cs
+  A  docs/Charibelle Guzman/Week_16/Evidence/profile_after_alloc/summary.txt
+  A  docs/Charibelle Guzman/Week_16/Evidence/profile_after_alloc/frames.csv
+
+What it changes: GetCaptureMoves/GetSimpleMoves write into reusable per-generator
+buffers; GetSelectableMoves returns a shared empty list for the mandatory-capture
+refusal; HasCaptureAt/HasSimpleMoveAt answer the probes without building a list;
+HasAnyLegalMove asks the side-wide capture question once.
+
+Result, 2026-11-26 14:27:06: legality scan -0.1 B +- 0.1 (R2 0.25), i.e. below
+the resolution of the method; GetSelectableMoves -6.8 B +- 4.2. PT-2 now MET.
+Move hash unchanged at 0xE432E83D over 32 replayed turns, no replay rejection.
+
+This commit contains NOTHING but optimization 1, so the second change cannot
+borrow credit for it. The file was reconstructed to its optimization-1-only state
+for this commit and optimization 2 was committed after its own measurement.
+
+----------------------------------------------------------------------------
+COMMIT 3 - 3b396b9  "Week 16 optimization 2: pooled pieces, cached square
+                      binding, regression seam"
+----------------------------------------------------------------------------
+Files
+  M  Assets/Scripts/DamaBoard.cs
+  M  Assets/Scripts/Editor/Week15Checks.cs
+  M  Assets/Scripts/Editor/A11yAudit.cs
+  M  Assets/Scripts/Editor/SubmissionDocBuilder.cs
+  M  Assets/Scripts/Editor/Week16Profile.cs
+
+What it changes:
+  - DamaBoard: a pooled piece is parked under an inactive PiecePool root and
+    rented again; a restart rents 24 pooled objects instead of destroying and
+    creating them; piece names are prebuilt per side and cell; crowns are kept
+    on the pooled object, toggled, and found by child index; BindLayout reads its
+    64 squares by child index with a positional check (Find stays as fallback).
+  - Week15Checks: runWeek seam + "Tools/Dama/Week 16/4. Regression Run", so a
+    Week 16 regression writes Week_16/Evidence/test_logs_regression and cannot
+    overwrite Week 15's committed logs; the summary title derives from the week.
+  - A11yAudit: RunWeek16() writing a11y_week16_after.log with an explicit
+    "after" label.
+  - SubmissionDocBuilder: Week_16 entry + "Build Week 16 HTML".
+  - Week16Profile: the RESTART paragraph no longer describes the pre-optimization
+    implementation, so a summary cannot contradict the code it measured.
+
+Result, 2026-11-26 14:36:21: restart allocation -1665.5 B +- 1704.1 (R2 0.11),
+i.e. consistent with 0 B and bounded at ~1.7 KB at two standard errors, against
+5596.2 B before - at least a 69% reduction. Worst restart frame 5.154 ms against
+a 16.7 ms budget. Move hash unchanged at 0xE432E83D, no replay rejection.
+
+One earlier after-optimization-2 run (14:33:27) was discarded and is cited
+nowhere: its figures were sound but the harness's RESTART paragraph still
+described the pre-optimization code, so the file contradicted itself. It was
+re-run after the harness text was fixed rather than edited by hand.
+
+----------------------------------------------------------------------------
+REGRESSION AFTER BOTH CHANGES
+----------------------------------------------------------------------------
+  Week 15 suite   : 27 passed, 0 failed, 1 blocked, 0 console errors
+                    (identical to Week 15's committed final run)
+  A11y audit      : 105 passed, 0 failed, 0 warnings, 4 not measurable
+                    (identical to Week 15's committed final run)
+  Move hash       : 0xE432E83D in all three profile runs
+  Week 14 / 15    : git status reports no change under either Evidence folder
+
+TC-COMPAT-01 stays BLOCKED: no APK, no handset, adb has no serial.
+
+----------------------------------------------------------------------------
+COMMANDS USED
+----------------------------------------------------------------------------
+Harness entry points were invoked directly rather than through the menu, because
+menu dispatch can report success without executing:
+
+    Week16Profile.RunBaseline();
+    Week16Profile.RunAfterOptimizationOne();
+    Week16Profile.RunAfterOptimizationTwo();
+    A11yAudit.RunWeek16();
+    Week15Checks.BeginRegression();
+    SubmissionDocBuilder.BuildWeek16();
+
+Commits were made with explicit paths, never "git add -A", so the following were
+never staged: Assets/Plugins/NuGet/*, Packages/Aura/, Packages/manifest.json,
+Packages/packages-lock.json, docs/Zedrich Abrera/, and the module .docx.
+
+PDF printing:
+
+  "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless=new
+    --disable-gpu --no-pdf-header-footer --print-to-pdf="<abs>.pdf"
+    "file:///E:/Damath Charry/dama/docs/Charibelle Guzman/Week_16/others/<X>.html"
+
+Page counts verified with findstr /C:"/Count": SA6 6, AS3 7, Reflection 2.
+
+----------------------------------------------------------------------------
+THE DOCUMENTATION COMMIT
+----------------------------------------------------------------------------
+The commit that adds this file, the three PDFs, others/*.md|*.html, the remaining
+Evidence files and the README week-16 row is recorded in
+docs/Charibelle Guzman/README.md, in the same way Week 15 recorded its own
+documentation commit id.

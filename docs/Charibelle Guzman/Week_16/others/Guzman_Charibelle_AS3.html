@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>AS3 - Performance Change Log, Measured Results and Regression Record</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>AS3 - Performance Change Log, Measured Results and Regression Record</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Theme:</strong> Philippine Games and Sports</p>
+<p class="meta"><strong>Week:</strong> 16 - Mobile Game Profiling and Performance Optimization</p>
+<p class="meta"><strong>Build:</strong> <code>dama-editor-w16-opt2</code> - scene <code>DamaGame.unity</code> at commit <code>3b396b9</code>, executed in the Unity Editor in play mode</p>
+<p class="meta"><strong>Platform range:</strong> Android 8.0 (API 26) and above, ARM64, IL2CPP, <code>com.defaultcompany.dama</code></p>
+<p class="meta"><strong>Engine:</strong> Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), C#</p>
+<p class="meta"><strong>Repository:</strong> local Git repository, branch <code>main</code></p>
+<p class="meta"><strong>Components under test:</strong> <code>Assets/Scripts/DamaBoard.cs</code>, <code>Assets/Scripts/Editor/Week16Profile.cs</code>,</p>
+<p><code>Assets/Scripts/Editor/Week15Checks.cs</code>, <code>Assets/Scripts/Editor/A11yAudit.cs</code>, <code>Assets/Scenes/DamaGame.unity</code></p>
+<p class="meta"><strong>Produced:</strong> 2026-11-26</p>
+<hr/>
+<h2>1. The build, and the four artefacts that judge it</h2>
+<p>This document records two code changes and what they measurably did. Every claim here is a cell copied from a generated file, and the files are named so the claim can be checked.</p>
+<table>
+<thead><tr>
+<th>---</th>
+<th>---</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Build identifier</td>
+<td><code>dama-editor-w16-opt2</code></td>
+</tr>
+<tr>
+<td>Source revision</td>
+<td><code>3b396b9</code> ("Week 16 optimization 2: pooled pieces, cached square binding, regression seam")</td>
+</tr>
+<tr>
+<td>Baseline revision</td>
+<td><code>f9503e8</code> ("Week 16: profiling harness and measured baseline")</td>
+</tr>
+<tr>
+<td>Optimization 1 revision</td>
+<td><code>d6c4ba7</code> ("Week 16 optimization 1: allocation-free move generation")</td>
+</tr>
+<tr>
+<td>Scene</td>
+<td><code>Assets/Scenes/DamaGame.unity</code>, build index 0</td>
+</tr>
+<tr>
+<td>Execution mode</td>
+<td>Unity Editor 6000.6.0f1, play mode, game view 1151 x 584, quality 5 (Ultra)</td>
+</tr>
+<tr>
+<td>Frame pacing during a run</td>
+<td>vSync forced to 0, <code>Application.targetFrameRate</code> to -1, both restored afterwards</td>
+</tr>
+<tr>
+<td>Save location</td>
+<td><code>C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama/Dama/profile.json</code></td>
+</tr>
+</tbody></table>
+<table>
+<thead><tr>
+<th>Artefact</th>
+<th>Written</th>
+<th>Result</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Evidence/profile_baseline/</code></td>
+<td>2026-11-26 14:20:15</td>
+<td>frame mean 2.062 ms; legality scan <strong>6,975.9 B</strong>; restart 5,701.2 B</td>
+</tr>
+<tr>
+<td><code>Evidence/profile_after_alloc/</code></td>
+<td>2026-11-26 14:27:06</td>
+<td>frame mean 2.191 ms; legality scan <strong>below resolution</strong>; restart 5,596.2 B</td>
+</tr>
+<tr>
+<td><code>Evidence/profile_after_pool/</code></td>
+<td>2026-11-26 14:36:21</td>
+<td>frame mean 2.181 ms; legality scan <strong>0.1 B +/- 0.1</strong>; restart <strong>below resolution</strong></td>
+</tr>
+<tr>
+<td><code>Evidence/test_logs_regression/</code></td>
+<td>2026-11-26 06:39 UTC</td>
+<td><strong>27 passed, 0 failed, 1 blocked</strong>, 0 console errors</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_week16_after.log</code></td>
+<td>2026-11-26 14:38</td>
+<td><strong>105 passed, 0 failed</strong>, 0 warnings, 4 not measurable</td>
+</tr>
+</tbody></table>
+<p>All three profile runs used the same scenario, the same scene and the same 32 turns replayed from <code>Evidence/moves.txt</code>, and all three ended on move hash <strong><code>0xE432E83D</code></strong> with no replay rejection. That is the condition that makes the comparison legitimate: the same game happened three times.</p>
+<h2>2. Change 1 - allocation-free move generation</h2>
+<p><strong>Revision:</strong> <code>d6c4ba7</code>. <strong>File:</strong> <code>Assets/Scripts/DamaBoard.cs</code>.</p>
+<h3>What was wrong</h3>
+<p><code>GetCaptureMoves</code> and <code>GetSimpleMoves</code> each built a fresh <code>List&lt;Vector2Int&gt;</code> on every call, and <code>GetSelectableMoves</code> built another for the mandatory-capture refusal. Because <code>CheckForWin</code> calls <code>HasAnyLegalMove</code> at the end of <strong>every</strong> turn, and <code>HasAnyLegalMove</code> asks those generators about all 12 pieces, the game allocated a collection per piece per turn, forever.</p>
+<p>Baseline measurement: <strong>556.7 B</strong> for one <code>GetSelectableMoves</code>, <strong>6,975.9 B</strong> for one whole-board legality scan (R² 1.00 on both), against a project target of <strong>0 B</strong> per turn.</p>
+<h3>What changed</h3>
+<ul>
+<li><strong>One reusable buffer per generator.</strong> <code>captureBuffer</code> and <code>simpleBuffer</code> are instance <code>List&lt;Vector2Int&gt;(32)</code> fields; the generators write into them and return them.</li>
+<li><strong>A shared empty result</strong> for the mandatory-capture refusal, so refusing costs nothing.</li>
+<li><strong><code>HasCaptureAt(x, y)</code> / <code>HasSimpleMoveAt(x, y)</code></strong> - the probe form of the same question, answered with <code>.Count &gt; 0</code> instead of a list built for a caller that only wanted a yes or a no. These back <code>PlayerHasCapture</code> and <code>HasAnyLegalMove</code>.</li>
+<li><strong><code>HasAnyLegalMove</code> asks the side-wide question once.</strong> <code>bool mustCapture = PlayerHasCapture(me)</code> is hoisted out of the loop instead of being re-derived per piece.</li>
+<li>A one-time <code>[Perf]</code> log states the new contract in the console, so the behaviour is visible in a build log and not only in a source comment.</li>
+</ul>
+<h3>The contract this creates, and how it was made safe</h3>
+<p>A generator now returns a <strong>shared buffer, valid only until that generator is next called</strong>. A caller that stored the list would silently see it change. Every call site was audited before the change:</p>
+<table>
+<thead><tr>
+<th>caller</th>
+<th>what it does with the list</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>HandleTap</code></td>
+<td><code>selectedMoves.AddRange(moves)</code> immediately</td>
+</tr>
+<tr>
+<td><code>ExecuteMove</code> (capture chain)</td>
+<td>reads <code>continuations.Count</code>, then <code>AddRange</code> into <code>selectedMoves</code></td>
+</tr>
+<tr>
+<td><code>RehighlightChain</code></td>
+<td><code>selectedMoves.AddRange(...)</code></td>
+</tr>
+<tr>
+<td><code>HasAnyLegalMove</code> / <code>PlayerHasCapture</code></td>
+<td>reads <code>.Count</code> through the probe helpers</td>
+</tr>
+</tbody></table>
+<p>None stores it, and the nesting is strictly sequential (<code>GetSelectableMoves</code> -&gt; <code>GetCaptureMoves</code> -&gt; <code>PlayerHasCapture</code> -&gt; <code>GetCaptureMoves</code>), so no call can invalidate a list another call is reading. The contract is written into the field comment for whoever touches this next.</p>
+<h3>Measured result</h3>
+<table>
+<thead><tr>
+<th>fixture</th>
+<th>before</th>
+<th>after</th>
+<th>reading</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>one <code>GetSelectableMoves</code></td>
+<td>556.7 B +/- 3.3 (R² 1.00)</td>
+<td><strong>-6.8 B +/- 4.2</strong> (R² 0.25)</td>
+<td>below the resolution of the method - and 556.7 B removed</td>
+</tr>
+<tr>
+<td>one whole-board legality scan (per turn)</td>
+<td>6,975.9 B +/- 0.1 (R² 1.00)</td>
+<td><strong>-0.1 B +/- 0.1</strong> (R² 0.25)</td>
+<td><strong>PT-2 met</strong></td>
+</tr>
+</tbody></table>
+<p>The R² falling to 0.25 is the signature of success, not of failure: a fit through a real per-call cost has R² near 1; a fit through noise has R² near 0. The instrument still works - the intercept and the Editor-wide column still move - there is simply nothing left for it to find.</p>
+<h2>3. Change 2 - piece pooling, cached binding, and no strings on the hot path</h2>
+<p><strong>Revision:</strong> <code>3b396b9</code>. <strong>File:</strong> <code>Assets/Scripts/DamaBoard.cs</code> (plus harness seams, section 4).</p>
+<h3>What was wrong</h3>
+<p><code>RestartGame</code> destroyed 24 piece GameObjects and created 24 new ones, each with an interpolated name and a freshly added <code>SpriteRenderer</code>. <code>ExecuteMove</code> renamed a piece with another interpolation on every move. <code>PromoteToDama</code> located a crown with <code>Transform.Find</code>, and <code>BindLayout</code> resolved 64 squares with a per-cell <code>Transform.Find</code> plus a <code>name.Split('_')</code> per piece.</p>
+<p>Baseline measurement: <strong>5,701.2 B</strong> per restart (R² 0.99); worst restart frame 5.296 ms.</p>
+<h3>What changed</h3>
+<ul>
+<li><strong>A piece pool.</strong> A piece that leaves the board - captured, or cleared by a restart - is parked under an inactive <code>PiecePool</code> root and <strong>rented again</strong>. A restart releases what is on the board and rents 24 objects instead of destroying and creating them. Because the pool root is inactive and is not under <code>Pieces</code>, nothing that iterates the board's pieces ever sees a parked one.</li>
+<li><strong>Prebuilt piece names.</strong> <code>pieceNames[side, cell]</code> is built once at type initialisation, so neither a rent nor a move formats a string.</li>
+<li><strong>Crowns found by child index</strong> (<code>CrownChild</code>) instead of <code>Transform.Find</code>, and kept on the pooled object: promoting a rented piece only re-activates its crown instead of creating one.</li>
+<li><strong><code>BindLayout</code> reads its squares by child index</strong>, <code>x * Size + y</code>, with a <strong>positional check</strong> (<code>IsSquareAt</code>); <code>Transform.Find</code> remains as the fallback for a hierarchy that was hand-reordered. <code>isKing</code> now comes from a crown's active state instead of a name lookup.</li>
+<li>A one-time <code>[Perf]</code> log records how many pieces were parked the first time the pool path ran.</li>
+</ul>
+<h3>Measured result</h3>
+<table>
+<thead><tr>
+<th>metric</th>
+<th>before</th>
+<th>after</th>
+<th>reading</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>one restart incl. profile write</td>
+<td>5,596.2 B +/- 109.4 (R² 1.00)</td>
+<td><strong>-1,665.5 B +/- 1,704.1</strong> (R² 0.11)</td>
+<td>indistinguishable from 0 B; <strong>at most ~1.7 KB at two standard errors</strong>, at least a <strong>69%</strong> reduction</td>
+</tr>
+<tr>
+<td>worst restart frame</td>
+<td>5.296 ms (baseline)</td>
+<td><strong>5.154 ms</strong></td>
+<td>under the 16.7 ms budget; <strong>not</strong> claimed as an improvement</td>
+</tr>
+<tr>
+<td>mean restart frame</td>
+<td>3.103 ms</td>
+<td>3.668 ms</td>
+<td>within the noise of nine samples per run</td>
+</tr>
+</tbody></table>
+<p>The frame figure is deliberately <strong>not</strong> claimed as a win. Nine samples (3 restarts x 3 frames) per run, with worst-frame values of 5.296 / 8.099 / 5.154 ms across the three runs, cannot separate the effect from the noise. What the bytes can show, they show; what they cannot, this document says.</p>
+<h2>4. The harness seams this week needed</h2>
+<p>Two Week 15 harnesses had to be made safe to re-run without damaging committed evidence:</p>
+<table>
+<thead><tr>
+<th>file</th>
+<th>seam</th>
+<th>why it was mandatory</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Week15Checks.cs</code></td>
+<td>new <code>runWeek</code> field; <code>Tools/Dama/Week 16/4. Regression Run</code> writes <code>Week_16/Evidence/test_logs_regression/</code>; the summary title derives from the week</td>
+<td>the harness wrote into fixed `Week_15/Evidence/test_logs_baseline</td>
+</tr>
+<tr>
+<td><code>A11yAudit.cs</code></td>
+<td><code>RunWeek16()</code> writes <code>a11y_week16_after.log</code>, with the <strong>after</strong> label passed explicitly</td>
+<td>both optimizations were already committed, so there is no pre-state. The file-existence rule would have called the first file "baseline" and misdescribed it</td>
+</tr>
+</tbody></table>
+<p>Verified after the runs: <code>git status -- docs/Charibelle Guzman/Week_14 docs/Charibelle Guzman/Week_15</code> reports <strong>no change</strong>.</p>
+<h2>5. Trade-offs, stated</h2>
+<table>
+<thead><tr>
+<th>trade-off</th>
+<th>cost</th>
+<th>benefit</th>
+<th>decision</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Shared move buffers</td>
+<td>a caller must not retain a generator's list</td>
+<td>6,975.9 B per turn -&gt; 0 B</td>
+<td>accepted; every caller audited, contract documented in code</td>
+</tr>
+<tr>
+<td>Piece pool</td>
+<td>24 piece GameObjects stay alive for the session instead of being destroyed; captured pieces are retained too</td>
+<td>restart allocation 5,596 B -&gt; at most ~1.7 KB; no Destroy/new-GameObject churn on a user action</td>
+<td>accepted; memory cost is bounded and known</td>
+</tr>
+<tr>
+<td>Crowns kept, not recreated</td>
+<td>a pooled piece carries an inactive child</td>
+<td>promotion stops creating an object mid-match</td>
+<td>accepted; the crown is toggled and found by index</td>
+</tr>
+<tr>
+<td><code>BindLayout</code> by child index</td>
+<td>the fast path depends on <code>BuildLayout</code>'s creation order</td>
+<td>64 <code>Transform.Find</code> calls removed from a bind</td>
+<td>accepted with a positional check and a <code>Find</code> fallback</td>
+</tr>
+<tr>
+<td><code>RefreshUI</code> strings untouched</td>
+<td>HUD still allocates two small strings per refresh</td>
+<td>scope stays honest - PT-2's 0 B rule is about move generation</td>
+<td><strong>out of scope, measured separately</strong></td>
+</tr>
+<tr>
+<td><code>SpriteAtlas</code></td>
+<td>-</td>
+<td>-</td>
+<td><strong>deferred</strong>, reasons in SA6 section 9</td>
+</tr>
+</tbody></table>
+<h2>6. Target scorecard</h2>
+<table>
+<thead><tr>
+<th>Id</th>
+<th>Target</th>
+<th>Baseline</th>
+<th>Final</th>
+<th>Status</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>PT-1</td>
+<td>33.3 ms mean, p95 under 33.3 ms</td>
+<td>2.062 ms mean, p95 2.841, 0/34,550 over</td>
+<td>2.181 ms mean, p95 3.097, 0/32,681 over</td>
+<td><strong>MET</strong> in all runs</td>
+</tr>
+<tr>
+<td>PT-2</td>
+<td>0 B per turn beyond the HUD strings</td>
+<td><strong>6,975.9 B</strong></td>
+<td><strong>0.1 B +/- 0.1</strong></td>
+<td><strong>FAILED -&gt; MET</strong></td>
+</tr>
+<tr>
+<td>PT-3</td>
+<td>worst restart frame under 16.7 ms</td>
+<td>5.296 ms</td>
+<td>5.154 ms</td>
+<td><strong>MET</strong> in all runs</td>
+</tr>
+<tr>
+<td>PT-4</td>
+<td>record draw calls, do not reduce</td>
+<td>NOT MEASURABLE</td>
+<td>NOT MEASURABLE</td>
+<td><strong>RECORDED as unmeasurable</strong></td>
+</tr>
+<tr>
+<td>-</td>
+<td>restart allocation (churn, not a target)</td>
+<td>5,701.2 B</td>
+<td>at most ~1.7 KB at 2 sigma</td>
+<td><strong>improved</strong></td>
+</tr>
+</tbody></table>
+<p>Against the delivery target stated in <code>Evidence/targets.md</code>, which is the module's own completion checkpoint: one target - the allocation budget - went from failed to met, and the other two were already met and stayed met.</p>
+<p>An honest note on frame time: mean frame is 2.062 ms at baseline and 2.181 ms at the end, which is <strong>+0.119 ms (+5.8%)</strong>. That is not a regression from this work. The <strong>idle</strong> mean moved by almost the same amount (2.059 -&gt; 2.172 ms), and idle frames execute no move generation at all; a change to move generation cannot move the idle frame, while a different Editor session can. That is why the allocation fixture, not the frame mean, is the decision metric for this week (see <code>Evidence/method.md</code>).</p>
+<h2>7. Regression - behaviour did not change</h2>
+<table>
+<thead><tr>
+<th>check</th>
+<th>Week 15 (committed)</th>
+<th>Week 16 after both changes</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>28 functional cases</td>
+<td>27 passed, 0 failed, 1 blocked</td>
+<td><strong>27 passed, 0 failed, 1 blocked</strong></td>
+</tr>
+<tr>
+<td>console errors</td>
+<td>0</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>accessibility audit</td>
+<td>105 passed, 0 failed, 4 not measurable</td>
+<td><strong>105 passed, 0 failed, 4 not measurable</strong></td>
+</tr>
+<tr>
+<td>move hash over 32 replayed turns</td>
+<td><code>0xE432E83D</code></td>
+<td><strong><code>0xE432E83D</code></strong></td>
+</tr>
+<tr>
+<td>replay rejections</td>
+<td>-</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td><code>Week_14</code> / <code>Week_15</code> evidence</td>
+<td>-</td>
+<td><strong>unchanged</strong> (<code>git status</code> clean)</td>
+</tr>
+</tbody></table>
+<p>The blocked case is <code>TC-COMPAT-01</code> (second device or configuration profile) - <strong>blocked, not passed</strong>: no APK was built this week and no Android handset is attached. The four not-measurable accessibility items are the same four as Week 15 and are not passes either.</p>
+<p>Full detail: <code>Evidence/regression.md</code>, <code>Evidence/test_logs_regression/case_log.tsv</code>, <code>Evidence/a11y_week16_after.log</code>.</p>
+<h2>8. What this milestone does not prove</h2>
+<ul>
+<li><strong>Nothing about a phone.</strong> Editor play mode, one machine, one resolution, no APK, <code>adb</code> has no device. Device performance and compatibility stay <strong>BLOCKED</strong>.</li>
+<li><strong>No rendering claim.</strong> Draw calls and batches read 0 in every run while the scene was drawing, so they are recorded as <code>NOT MEASURABLE</code> - not as an improvement and not as a problem.</li>
+<li><strong>No battery, thermal or GPU-time claim.</strong></li>
+<li><strong>The restart frame time is not claimed as improved</strong>, only as still passing: nine samples per run cannot support more.</li>
+<li><strong>Long sessions were not profiled</strong>; the pool's session-long memory cost is reasoned about, not measured.</li>
+</ul>
+<h2>9. Where everything is</h2>
+<table>
+<thead><tr>
+<th>Question</th>
+<th>File</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>What was measured, how, and what the instrument can see</td>
+<td><code>Evidence/method.md</code></td>
+</tr>
+<tr>
+<td>The three runs, side by side, with raw values</td>
+<td><code>Evidence/metrics.md</code></td>
+</tr>
+<tr>
+<td>The analysis behind the choices, and what was refused</td>
+<td><code>Guzman_Charibelle_SA6.pdf</code></td>
+</tr>
+<tr>
+<td>Targets written before measuring</td>
+<td><code>Evidence/targets.md</code></td>
+</tr>
+<tr>
+<td>Bottleneck findings from the baseline</td>
+<td><code>Evidence/bottlenecks.md</code></td>
+</tr>
+<tr>
+<td>Regression detail</td>
+<td><code>Evidence/regression.md</code></td>
+</tr>
+<tr>
+<td>Raw baseline run</td>
+<td><code>Evidence/profile_baseline/summary.txt</code>, <code>frames.csv</code></td>
+</tr>
+<tr>
+<td>Raw after-opt-1 run</td>
+<td><code>Evidence/profile_after_alloc/summary.txt</code>, <code>frames.csv</code></td>
+</tr>
+<tr>
+<td>Raw after-opt-2 run</td>
+<td><code>Evidence/profile_after_pool/summary.txt</code>, <code>frames.csv</code></td>
+</tr>
+<tr>
+<td>The turn list every run replays</td>
+<td><code>Evidence/moves.txt</code></td>
+</tr>
+<tr>
+<td>Build and commit commands</td>
+<td><code>Evidence/build_and_commit.txt</code></td>
+</tr>
+<tr>
+<td>How to reproduce all of it</td>
+<td><code>Evidence/HOW_TO_RERUN.txt</code></td>
+</tr>
+</tbody></table>
+<h2>10. Assistance, and how each item was checked</h2>
+<p>Code, document structure and phrasing were produced with AI assistance and then read, run and corrected against the actual build. The rule for this week is that no number in this document was typed from memory or from a conversation:</p>
+<table>
+<thead><tr>
+<th>Item</th>
+<th>How it was checked</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>every baseline, after-opt-1 and after-opt-2 figure</td>
+<td>copied from <code>Evidence/profile_*/summary.txt</code>, which the harness wrote; each one re-read against the file before printing</td>
+</tr>
+<tr>
+<td>the allocation method (amplitude scaling)</td>
+<td>the counters that failed were tested directly in the Editor and their failures are recorded with the readings, not summarised</td>
+</tr>
+<tr>
+<td>the move hash and replay result</td>
+<td>read from the <code>SCENARIO</code> block of each run's <code>summary.txt</code>; the console was checked for replay warnings</td>
+</tr>
+<tr>
+<td>the 28 regression cases</td>
+<td><code>Evidence/test_logs_regression/case_log.tsv</code>, generated by the harness</td>
+</tr>
+<tr>
+<td>the accessibility counts</td>
+<td><code>Evidence/a11y_week16_after.log</code>, generated by <code>A11yAudit</code></td>
+</tr>
+<tr>
+<td>the commit ids</td>
+<td><code>git log</code> in this repository</td>
+</tr>
+<tr>
+<td>the claims that were <strong>removed</strong></td>
+<td>frame-time improvement and any rendering claim were dropped when the evidence could not support them; they are absent on purpose, and section 8 names why</td>
+</tr>
+</tbody></table>
+
+</body>
+</html>
