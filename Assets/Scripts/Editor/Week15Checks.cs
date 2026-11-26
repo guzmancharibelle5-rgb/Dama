@@ -91,6 +91,13 @@ public static class Week15Checks
     [MenuItem(ReleaseMenu, false, 42)]
     public static void BeginRelease() => Begin("regression", "Week_17");
 
+    /// <summary>
+    /// Week 18 re-run of the same suite against the submitted tree. The output folder is derived from
+    /// the week name, so this run cannot overwrite the Week_15, Week_16 or Week_17 logs.
+    /// </summary>
+    [MenuItem("Tools/Dama/Week 18/3. Regression Run", false, 44)]
+    public static void BeginWeek18() => Begin("regression", "Week_18");
+
     private static void Begin(string label, string week = "Week_15")
     {
         if (EditorApplication.isPlaying)

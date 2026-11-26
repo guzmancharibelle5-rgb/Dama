@@ -91,6 +91,21 @@ public static class SubmissionDocBuilder
                 "Guzman_Charibelle_PT7_Evidence_Index",
                 "Guzman_Charibelle_Week17_Reflection"
             }
+        },
+        new WeekDocuments
+        {
+            Folder = "Week_18",
+            Documents = new[]
+            {
+                "Guzman_Charibelle_PA2",
+                "Guzman_Charibelle_PA2_Technical_Report",
+                "Guzman_Charibelle_PA2_User_Guide",
+                "Guzman_Charibelle_PA2_Evidence_Portfolio",
+                "Guzman_Charibelle_PA2_Originality_Declaration",
+                "Guzman_Charibelle_PA2_Presentation",
+                "Guzman_Charibelle_PA2_Presentation_Speaker_Notes",
+                "Guzman_Charibelle_Week18_Reflection"
+            }
         }
     };
 
@@ -116,6 +131,9 @@ public static class SubmissionDocBuilder
 
     [MenuItem("Tools/Dama/Submission/Build Week 17 HTML", false, 14)]
     public static void BuildWeek17() => Build("Week_17");
+
+    [MenuItem("Tools/Dama/Submission/Build Week 18 HTML", false, 15)]
+    public static void BuildWeek18() => Build("Week_18");
 
     [MenuItem("Tools/Dama/Submission/Build All HTML", false, 20)]
     public static void BuildAll()

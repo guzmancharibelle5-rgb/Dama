@@ -54,9 +54,18 @@ public static class Week17Checks
     private static bool logHooked;
     private static int errorCount;
 
+    /// <summary>
+    /// Set before <see cref="Begin"/> to route the logs into another week's evidence folder. Week 18
+    /// re-runs the same cases against the submitted tree and must not rewrite Week_17's logs, which
+    /// `Week_17/Evidence/readiness_results.md` cites by name.
+    /// </summary>
+    public static string RunDirOverride;
+
     public static string RunDir =>
-        Path.Combine(Directory.GetParent(Application.dataPath).FullName,
-            "docs", "Charibelle Guzman", "Week_17", "Evidence", "test_logs_release");
+        string.IsNullOrEmpty(RunDirOverride)
+            ? Path.Combine(Directory.GetParent(Application.dataPath).FullName,
+                "docs", "Charibelle Guzman", "Week_17", "Evidence", "test_logs_release")
+            : RunDirOverride;
 
     [MenuItem(MenuPath, false, 41)]
     public static void Begin()

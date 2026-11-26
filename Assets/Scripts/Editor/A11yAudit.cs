@@ -90,6 +90,13 @@ public static class A11yAudit
     [MenuItem(MenuWeek17, false, 50)]
     public static void RunWeek17() => Run("Week_17", "a11y_week17_", "WEEK 17", "after");
 
+    /// <summary>
+    /// Week 18 re-audit, against the submitted tree. Its own folder and prefix again, so Week 17's
+    /// after-file - which `Week_17/Evidence/readiness_results.md` cites - is never rewritten.
+    /// </summary>
+    [MenuItem("Tools/Dama/Week 18/2. Accessibility Audit", false, 60)]
+    public static void RunWeek18() => Run("Week_18", "a11y_week18_", "WEEK 18", "after");
+
     private static void Run(string weekFolder, string prefix, string tag, string forcedLabel = null)
     {
         evidenceDir = Path.Combine(Directory.GetParent(Application.dataPath).FullName,
