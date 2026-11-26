@@ -8,28 +8,34 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
-/// Week 14 accessibility audit for Dama.
+/// Accessibility audit for Dama.
 ///
-/// Menu: Tools > Dama > Week 14 > 1. Run Accessibility Audit
+/// Menus:
+///   Tools > Dama > Week 14 > 1. Run Accessibility Audit   -> Week_14/Evidence, a11y_baseline/after.log
+///   Tools > Dama > Week 15 > 0. Accessibility Audit       -> Week_15/Evidence, a11y_week15_baseline/after.log
 ///
-/// Walks every Text, Button and InputField under GameCanvas in the open scene - including the
-/// panels that are inactive, because a hidden panel is still a panel a player will meet - and
-/// writes the result to docs/Charibelle Guzman/Week_14/Evidence/.
+/// Walks every Text, Button and InputField under GameCanvas in the open scene - including the panels
+/// that are inactive, because a hidden panel is still a panel a player will meet.
 ///
-/// The first run of a pair writes a11y_baseline.log; every later run writes a11y_after.log, so
-/// the two files are produced by the same code with the same thresholds. A timestamped copy is
-/// kept on every run so neither file can be quietly hand-edited into agreement.
+/// Two runs make a pair: the first writes the baseline, every later run writes the after file, so the
+/// two files are produced by the same code with the same thresholds. A timestamped copy is kept on
+/// every run so neither file can be quietly hand-edited into agreement. The Week 15 folder is separate
+/// from the Week 14 folder on purpose: re-running the audit after a layout change must not overwrite
+/// the evidence a previous week's document cites.
 ///
-/// Three checks:
-///   C  contrast  - WCAG 2.2 ratio of the label against its nearest opaque-enough backdrop
+/// Five checks:
+///   C  contrast  - WCAG 2.2 SC 1.4.3 ratio of the label against its nearest opaque-enough backdrop
 ///   L  label fit - a legacy uGUI Text whose rect is shorter than its line height spills or clips
-///   T  touch     - Button and InputField size against a 96 canvas-px floor (see the derivation in
-///                  the log header; it is a canvas-px measurement on an assumed phone, not a
-///                  measurement taken on a device)
+///   T  touch     - Button and InputField size against a 96 canvas-px floor
+///   S  type size - caption and label font sizes (added Week 15: the Week 14 audit could always see a
+///                  14 px caption; it had no rule to call it wrong)
+///   N  non-text  - WCAG 2.2 SC 1.4.11 ratio of a control's own fill against the panel behind it
+///                  (added Week 15)
 /// </summary>
 public static class A11yAudit
 {
-    private const string Menu = "Tools/Dama/Week 14/1. Run Accessibility Audit";
+    private const string MenuWeek14 = "Tools/Dama/Week 14/1. Run Accessibility Audit";
+    private const string MenuWeek15 = "Tools/Dama/Week 15/0. Accessibility Audit";
     private const string CanvasName = "GameCanvas";
     private const string SceneName = "DamaGame";
 
@@ -42,23 +48,43 @@ public static class A11yAudit
     private const float LineHeightFactor = 1.12f;
     private const float BackdropAlpha = 0.5f;
 
+    // Week 15 additions.
+    private const float CaptionFloorPx = 20f;
+    private const float LabelFloorPx = 18f;
+    private const float NonTextContrast = 3f;
+
     private static readonly List<string> lines = new List<string>();
     private static int passed;
     private static int failed;
     private static int warnings;
     private static int notMeasurable;
 
-    public static string EvidenceDir =>
-        Path.Combine(Directory.GetParent(Application.dataPath).FullName,
-            "docs", "Charibelle Guzman", "Week_14", "Evidence");
+    private static string evidenceDir;
+    private static string filePrefix;
+    private static string weekTag;
 
-    private static string BaselinePath => Path.Combine(EvidenceDir, "a11y_baseline.log");
-    private static string AfterPath => Path.Combine(EvidenceDir, "a11y_after.log");
+    public static string EvidenceDir => evidenceDir;
+    private static string BaselinePath => Path.Combine(evidenceDir, filePrefix + "baseline.log");
+    private static string AfterPath => Path.Combine(evidenceDir, filePrefix + "after.log");
 
-    [MenuItem(Menu)]
-    public static void RunAudit()
+    [MenuItem(MenuWeek14, false, 10)]
+    public static void RunWeek14() => Run("Week_14", "a11y_", "WEEK 14");
+
+    [MenuItem(MenuWeek15, false, 20)]
+    public static void RunWeek15() => Run("Week_15", "a11y_week15_", "WEEK 15");
+
+    private static void Run(string weekFolder, string prefix, string tag)
     {
-        Directory.CreateDirectory(EvidenceDir);
+        evidenceDir = Path.Combine(Directory.GetParent(Application.dataPath).FullName,
+            "docs", "Charibelle Guzman", weekFolder, "Evidence");
+        filePrefix = prefix;
+        weekTag = tag;
+
+        if (!Directory.Exists(evidenceDir))
+        {
+            Debug.LogError($"[A11yAudit] Evidence folder not found: {evidenceDir}");
+            return;
+        }
 
         lines.Clear();
         passed = 0;
@@ -91,17 +117,19 @@ public static class A11yAudit
 
         AuditLabels(canvas);
         AuditTouchTargets(canvas);
+        AuditTypeSizes(canvas);
+        AuditNonTextContrast(canvas);
         WriteTotals();
 
-        string stamped = Path.Combine(EvidenceDir, $"a11y_audit_{DateTime.Now:yyyyMMdd_HHmmss}.log");
+        string stamped = Path.Combine(evidenceDir, $"{prefix}audit_{DateTime.Now:yyyyMMdd_HHmmss}.log");
         string body = string.Join("\n", lines) + "\n";
 
         File.WriteAllText(stamped, body, new UTF8Encoding(false));
         File.WriteAllText(label == "baseline" ? BaselinePath : AfterPath, body, new UTF8Encoding(false));
 
-        Debug.Log($"[A11yAudit] {label.ToUpper()} run: {passed} passed, {failed} failed, " +
+        Debug.Log($"[A11yAudit] {tag} {label.ToUpper()} run: {passed} passed, {failed} failed, " +
                   $"{warnings} warnings, {notMeasurable} not measurable. " +
-                  $"Written to {(label == "baseline" ? "a11y_baseline.log" : "a11y_after.log")} and {Path.GetFileName(stamped)}");
+                  $"Written to {Path.GetFileName(label == "baseline" ? BaselinePath : AfterPath)} and {Path.GetFileName(stamped)}");
     }
 
     // =====================================================================
@@ -121,13 +149,13 @@ public static class A11yAudit
                 : $"Constant Pixel Size, scaleFactor {scaler.scaleFactor:0.00}";
         }
 
-        lines.Add("DAMA - WEEK 14 ACCESSIBILITY AUDIT (WCAG 2.2 subset)");
+        lines.Add($"DAMA - {weekTag} ACCESSIBILITY AUDIT (WCAG 2.2 subset)");
         lines.Add("Game: Dama  |  Theme: Philippine Games and Sports");
         lines.Add("Student: Charibelle Guzman (BSIT-4)");
         lines.Add("Harness: Assets/Scripts/Editor/A11yAudit.cs");
         lines.Add($"Scene: {SceneName}.unity   Unity: {Application.unityVersion}   Run at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
-        lines.Add($"Run label: {label.ToUpper()}   (the first run writes a11y_baseline.log, later runs write a11y_after.log)");
-        lines.Add($"Canvas: {CanvasName}   CanvasScaler: {scalerText}");
+        lines.Add($"Run label: {label.ToUpper()}   (the first run writes {filePrefix}baseline.log, later runs write {filePrefix}after.log)");
+        lines.Add($"Canvas: {CanvasName}   CanvasScaler: {scalerText}   Game view: {Screen.width}x{Screen.height}");
         lines.Add(new string('-', 108));
         lines.Add("CHECKS AND THRESHOLDS");
         lines.Add($"  C  contrast      {ContrastNormal:0.0}:1 for normal text, {ContrastLarge:0.0}:1 for large text (>=28 px, or >=24 px bold).");
@@ -140,6 +168,14 @@ public static class A11yAudit
         lines.Add("     scale of 1.50 (1920/1280 = 1080/720 = 1.5). Android's 48 dp minimum touch target at xxhdpi (3.0 density) is");
         lines.Add("     144 physical px, and 144 / 1.5 = 96 canvas px. This is a canvas-px measurement against a reference resolution on");
         lines.Add("     an assumed phone class - NOT a measurement taken with a ruler on a handset.");
+        lines.Add($"  S  type size     a caption on a Button >= {CaptionFloorPx:0} px; any other label >= {LabelFloorPx:0} px.   [Week 15]");
+        lines.Add("     These two numbers are a PROJECT DECISION, not a WCAG requirement: the standard asks for 200% resize (SC 1.4.4),");
+        lines.Add("     which a fixed-size uGUI canvas cannot do at all. 20 px at the 1.5 scale above is ~13.3 dp of text, and 18 px is");
+        lines.Add("     ~12 dp; both are floors chosen so no string on screen is smaller than the caption of the control it sits on.");
+        lines.Add($"  N  non-text      a control's own fill >= {NonTextContrast:0.0}:1 against the panel behind it. WCAG 2.2 SC 1.4.11.   [Week 15]");
+        lines.Add("     Measured as the button's Image colour composited over the nearest opaque ancestor panel, against that same panel");
+        lines.Add("     composited over black. A control whose fill cannot be told from its panel has no visible edge, whatever its label");
+        lines.Add("     contrast. Inputs whose own Image is translucent or absent are reported as not measurable, not as passes.");
         lines.Add("  Not measurable   a label with no opaque backdrop (drawn over the 3D board) has no contrast ratio. It is reported as");
         lines.Add("                   not measurable rather than given an invented number.");
         lines.Add(new string('-', 108));
@@ -263,13 +299,101 @@ public static class A11yAudit
         }
     }
 
+    // =====================================================================
+    // S: type sizes  [Week 15]
+    // =====================================================================
+
+    private static void AuditTypeSizes(GameObject canvas)
+    {
+        Text[] texts = canvas.GetComponentsInChildren<Text>(true);
+        lines.Add($"TYPE SIZES ({texts.Length} labels, captions >= {CaptionFloorPx:0} px, other labels >= {LabelFloorPx:0} px)");
+
+        foreach (Text text in texts)
+        {
+            if (text == null) continue;
+
+            string path = RelativePath(text.transform, canvas.transform);
+            bool isCaption = text.transform.parent != null && text.transform.parent.GetComponent<Button>() != null;
+            float floor = isCaption ? CaptionFloorPx : LabelFloorPx;
+            string measured = $"size={text.fontSize:0}px need={floor:0}px role={(isCaption ? "caption" : "label")}";
+
+            if (text.fontSize + 0.01f >= floor)
+            {
+                passed++;
+                lines.Add($"S  PASS  {path}  {measured}");
+            }
+            else
+            {
+                failed++;
+                lines.Add($"S  FAIL  {path}  {measured}  short by {floor - text.fontSize:0} px");
+            }
+        }
+
+        lines.Add(string.Empty);
+    }
+
+    // =====================================================================
+    // N: non-text contrast of the control itself  [Week 15]
+    // =====================================================================
+
+    private static void AuditNonTextContrast(GameObject canvas)
+    {
+        Button[] buttons = canvas.GetComponentsInChildren<Button>(true);
+        InputField[] fields = canvas.GetComponentsInChildren<InputField>(true);
+
+        lines.Add($"NON-TEXT CONTRAST ({buttons.Length} buttons, {fields.Length} input fields, floor {NonTextContrast:0.0}:1, SC 1.4.11)");
+
+        foreach (Button button in buttons) AuditControlEdge(button.gameObject, canvas.transform);
+        foreach (InputField field in fields) AuditControlEdge(field.gameObject, canvas.transform);
+
+        lines.Add(string.Empty);
+    }
+
+    private static void AuditControlEdge(GameObject target, Transform canvasRoot)
+    {
+        string path = RelativePath(target.transform, canvasRoot);
+
+        Image fill = target.GetComponent<Image>();
+        if (fill == null || !fill.enabled || fill.color.a < BackdropAlpha)
+        {
+            notMeasurable++;
+            lines.Add($"N  NOT MEASURABLE  {path}  the control has no opaque fill of its own");
+            return;
+        }
+
+        Image panel = FindBackdrop(target.transform.parent);
+        if (panel == null)
+        {
+            notMeasurable++;
+            lines.Add($"N  NOT MEASURABLE  {path}  no opaque panel behind the control");
+            return;
+        }
+
+        Color panelColor = Composite(panel.color, Color.black);
+        Color fillColor = Composite(fill.color, panelColor);
+        float ratio = Ratio(fillColor, panelColor);
+
+        string measured = $"ratio={ratio:0.00}:1 need={NonTextContrast:0.0} fill={Hex(fill.color)} panel={Hex(panel.color)}";
+
+        if (ratio + 0.005f >= NonTextContrast)
+        {
+            passed++;
+            lines.Add($"N  PASS  {path}  {measured}");
+        }
+        else
+        {
+            failed++;
+            lines.Add($"N  FAIL  {path}  {measured}");
+        }
+    }
+
     private static void WriteTotals()
     {
         lines.Add(new string('-', 108));
         lines.Add($"TOTAL: {passed} passed, {failed} failed, {warnings} warnings, {notMeasurable} not measurable");
 
         if (failed == 0 && warnings == 0)
-            lines.Add("Every measurable control meets the three thresholds. That is a floor, not a ceiling: an audit cannot see a");
+            lines.Add("Every measurable control meets the five thresholds. That is a floor, not a ceiling: an audit cannot see a");
         else
             lines.Add("Failures above are measurable and fixable; warnings and not-measurable rows are not claimed as passes.");
 

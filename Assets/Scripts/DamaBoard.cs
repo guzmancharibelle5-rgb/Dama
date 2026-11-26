@@ -64,6 +64,7 @@ public class DamaBoard : MonoBehaviour
     private Text turnText;
     private Text countsText;
     private Text winText;
+    private Text winSummaryText;
     private GameObject profilePanel;
     private Text soundButtonLabel;
     private GameFeedback feedback;
@@ -137,13 +138,19 @@ public class DamaBoard : MonoBehaviour
         }
 
         Transform win = canvas.transform.Find("WinPanel");
-        if (win != null) winText = win.Find("WinText")?.GetComponent<Text>();
+        if (win != null)
+        {
+            winText = win.Find("WinText")?.GetComponent<Text>();
+            winSummaryText = win.Find("SummaryText")?.GetComponent<Text>();
+        }
 
         WireButton(canvas, "StartPanel/StartButton", StartGame);
         WireButton(canvas, "HUDPanel/PauseButton", PauseGame);
         WireButton(canvas, "PausePanel/ResumeButton", ResumeGame);
         WireButton(canvas, "PausePanel/RestartButtonPause", RestartGame);
+        WireButton(canvas, "PausePanel/MenuButton", ReturnToMenu);
         WireButton(canvas, "WinPanel/RestartButtonWin", RestartGame);
+        WireButton(canvas, "WinPanel/MenuButtonWin", ReturnToMenu);
         WireButton(canvas, "StartPanel/ProfileButton", ShowProfile);
         WireButton(canvas, "ProfilePanel/BackButton", CloseProfile);
         WireButton(canvas, "PausePanel/SoundButton", ToggleSound);
@@ -223,6 +230,20 @@ public class DamaBoard : MonoBehaviour
         if (gameState != GameState.Ready) return;
         Time.timeScale = 1f;
         ShowState(GameState.Profile);
+    }
+
+    /// <summary>
+    /// Pause panel and end screen: abandon the match and go back to the title screen, so a player
+    /// never has to close the app to start over. The board is rebuilt and the clock restored, or the
+    /// title screen would be frozen by the pause the caller came from.
+    /// </summary>
+    public void ReturnToMenu()
+    {
+        RestartGame();
+        ShowState(GameState.Ready);
+        Time.timeScale = 1f;
+
+        Debug.Log("[Week15] ReturnToMenu: board reset, title screen shown, timeScale restored to 1.");
     }
 
     /// <summary>Returns from the profile screen to the title screen.</summary>
@@ -351,6 +372,11 @@ public class DamaBoard : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Shows who won and why. The loser, the two piece counts and the reason are derived here rather
+    /// than passed in: CheckForWin has already made the only decision worth naming - which side won -
+    /// and a second parameter would only add a way for the two to disagree.
+    /// </summary>
     private void DeclareWinner(int winner)
     {
         if (winText != null)
@@ -360,6 +386,21 @@ public class DamaBoard : MonoBehaviour
                 ? new Color(1f, 0.25f, 0.25f)
                 : new Color(0.35f, 0.55f, 1f);
         }
+
+        int loser = winner == 1 ? 2 : 1;
+        string winnerLabel = winner == 1 ? "RED" : "BLUE";
+        string loserLabel = loser == 1 ? "RED" : "BLUE";
+        int winnerCount = CountPieces(winner);
+        int loserCount = CountPieces(loser);
+        string reason = loserCount == 0 ? "no pieces left" : "no legal move";
+
+        if (winSummaryText != null)
+        {
+            winSummaryText.text = $"{winnerLabel} WINS.  {winnerLabel} {winnerCount}-{loserCount}, " +
+                                  $"{loserLabel} has {reason}.";
+        }
+
+        Debug.Log($"[Week15] End screen: {winnerLabel} WINS {winnerCount}-{loserCount}, {loserLabel} has {reason}.");
 
         bool playerWon = (winner == PlayerProfile.PlayerSide);
         if (feedback != null) feedback.PlayResult(playerWon);
