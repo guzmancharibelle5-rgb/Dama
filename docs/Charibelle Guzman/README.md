@@ -46,10 +46,64 @@ A match ends when a side has no pieces left, or has pieces but no legal move.
 |---|---|---|---|
 | 13 | Secure Player Data and Responsible Development | SA5, PT5, reflection, evidence | complete - see `Week_13/` |
 | 14 | Game Usability, Accessibility and Playtesting | SA6, PT6, reflection, playtest kit, evidence | complete - see `Week_14/` |
-| 15 | Game Testing, Defect Correction and Milestones | - | not started |
+| 15 | Game Testing, Defect Correction and Milestones | AS3 milestone, reflection, test logs, defect log, evidence | complete - see `Week_15/` |
 | 16 | Game Performance and Optimization | - | not started |
 | 17 | Release Preparation and Documentation | - | not started |
 | 18 | Final Project, Demonstration and Defense | - | not started |
+
+---
+
+## Week 15 at a glance
+
+The game is now tested rather than trusted. A 28-case harness writes a machine-generated log, and it was run twice:
+against the Week 14 code, where it reported 22 passed, **5 failed** and 1 blocked, and against the corrected build,
+where the same 28 cases report **27 passed, 0 failed** and the same 1 blocked. The five failures name four defects,
+all closed with a re-run of the same case. The accessibility audit grew three checks - caption size, label size and
+non-text contrast - and immediately found three fills that had no visible edge; after the repair pass all 109 scored
+rows are re-measured, **0 have regressed**, and 0 baseline rows were dropped. Two requirements are still covered only
+indirectly, two cases cannot be run without a handset, and both facts are printed in the matrix rather than covered
+by a passing neighbour.
+
+| Item | Value |
+|---|---|
+| Features | `Week15Checks` (the 28 cases), `Week15Fixes` (the idempotent repair), `Week15Captures` (E1-E4), `A11yAudit` (extended to five check kinds) |
+| Code commit | `207376b` - "Week 15 AS3: test harness, defect fixes and play-mode captures" |
+| Documentation commit | see the repository state table below |
+| Baseline | `Week_15/Evidence/test_logs_baseline/` - 22 passed, **5 failed**, 1 blocked, 0 console errors |
+| Final | `Week_15/Evidence/test_logs_final/` - **27 passed, 0 failed**, 1 blocked, 0 console errors |
+| Defects | `Week_15/Evidence/defect_log.md` - DEF-15-01 (S2), DEF-15-02/03/04 (S3), **all closed**, 0 open |
+| Audit before | `Week_15/Evidence/a11y_week15_baseline.log` - 83 passed, **9 failed**, 4 not measurable |
+| Audit after | `Week_15/Evidence/a11y_week15_after.log` - 105 passed, **0 failed**, 4 not measurable |
+| Delta | `Week_15/Evidence/a11y_delta_week15.txt` - 109 rows: 72 unchanged, 15 moved, 9 FIXED, **0 REGRESSED**, 0 dropped, 13 added |
+| Captures | `Week_15/Evidence/E1..E4` - pause panel with MENU, end screen with the summary and MENU, profile at 20 px, mid-match board |
+| Re-running everything | `Week_15/Evidence/HOW_TO_RERUN.txt` |
+
+### Folder map
+
+```
+  Week_15/
+    Guzman_Charibelle_AS3_Milestone.pdf      the test plan, executed tests, defect log and acceptance summary
+    Guzman_Charibelle_Week15_Reflection.pdf  the weekly self-assessment
+    others/                                  the same two as .md and print-ready .html
+    Evidence/
+      requirements.md                        REQ-01..REQ-22, written before any test ran
+      acceptance_criteria.md                 CC-1..CC-4 and AC-5..AC-6, also written before the run
+      traceability_matrix.md                 every requirement to its cases, or to a stated gap
+      defect_log.md                          the four defects: reproduce, root cause, fix, retest
+      test_logs_baseline/                    case_log.tsv, summary.txt, console.log - before the fixes
+      test_logs_final/                       the same three files, after them
+      a11y_week15_baseline.log               the audit before the repairs
+      a11y_week15_after.log                  the audit after them
+      a11y_delta_week15.txt                  every baseline row paired with its after value
+      E1_pause_menu.png                      RESUME, RESTART, SOUND and MENU on the restart line
+      E2_end_screen.png                      the end screen, naming both counts and the reason
+      E3_profile_status.png                  the profile panel, status line at 20 px
+      E4_mid_match.png                       the board after a jump, with the HUD counts
+      week15_shots.txt                       the capture run in order, and the seeding caveat
+      environment.md                         machine, scene, the two adb attempts, four stated limits
+      build_and_commit.txt                   build id, platform settings, scene order, commit id
+      HOW_TO_RERUN.txt                       how to regenerate every artefact above
+```
 
 ---
 
@@ -156,14 +210,17 @@ discover.
 | The save is **tamper-evident, not encrypted** | The HMAC key is a per-install salt on the same device as the file, and there is no server to check a record against. Recorded as `L15 KNOWN LIMIT` in the check log and in PT5 section 5, never counted as a pass |
 | **No human playtest session has been run** | Week 14 shipped the kit - consent, script, five task cards, observation sheet, checklist - but zero volunteers have played. `PT6` section 7 states this in a sentence and in a table whose every cell reads `not run`. No time, count or quote was estimated to fill it |
 | The **haptic is unproven** | `Handheld.Vibrate()` is a no-op in the Editor, and every Week 14 capture was taken in the Editor. The call is in the build; the buzz needs a handset, and neither PT6 nor the transcript claims it |
-| **Text size does not scale** (WCAG 2.2 SC 1.4.4) | The five button captions are 14 px, the smallest strings in the game. The audit measures contrast and box height, not type size, so it cannot see them. Deferred as finding M1 rather than changed late, because changing them would have invalidated every capture and the audit baseline |
+| **Text size does not scale** with the OS setting (WCAG 2.2 SC 1.4.4) | Week 15 raised the floor - five captions from 14 px to 22 px bold and `ProfilePanel/StatusText` from 17 to 20 - and made the audit measure it (`S` check, 20 px caption and 18 px label floors). What is still absent is a **dynamic type** path: the game picks its own sizes and does not follow a system font scale, so a player who enlarges text on the phone gets nothing. Recorded as DEF-15-02, closed for the size floor only |
 | There is **no screen-reader path** | uGUI exposes no accessibility tree. A voice-over user cannot play this game. Fixing it needs a native Android bridge, which is not in this submission - stated in SA6 section 6 rather than implied |
-| Contrast margins are **thin, not comfortable** | Two controls pass at 4.7:1 against 4.5, and `ProfilePanel/NameInput/Placeholder` passes at 3.01:1 against 3.0. The next edit to any of those fills or sizes puts them back under the line, and nothing will warn anyone. The audit is to be re-run before every submission |
-| **No route back to the start screen** once a match begins | The pause panel offers RESUME, RESTART and SOUND; PROFILE exists only on the start screen, so a name or side cannot be changed mid-match. Found by the machine pre-test as M2 (S2), the highest-severity finding of Week 14, and deferred to Week 15's defect log |
-| **No APK was produced this week** | Week 13's runtime evidence is the Editor in play mode, captured from the real scene and the real save file. The Android build settings are applied and recorded, but "the game runs in the Editor" and "the game was installed on a phone" are different claims, and only the first is made here |
+| Contrast margins are **thin, not comfortable** | After the Week 15 repairs, three control fills pass the 3:1 non-text line at `3.16:1`, `3.17:1` and `3.19:1`, `ProfilePanel/SideButton` sits at `3.03:1`, and two labels pass at 4.7:1 against 4.5. Lightening a fill to give a control a visible edge **spends** the contrast of the white label on it - the pass is bounded on both sides - so the next edit to any of those fills or sizes puts them back under the line, and nothing will warn anyone. The audit is to be re-run before every submission |
+| **No route back to the start screen** once a match begins - **fixed in Week 15** | Found by the Week 14 machine pre-test as M2 (S2), the highest-severity finding of that week, and carried into Week 15 as DEF-15-01. `Week15Fixes` builds `PausePanel/MenuButton` and `WinPanel/MenuButtonWin`; `DamaBoard.ReturnToMenu` restores `Time.timeScale = 1`, rebuilds the board and shows the title screen. Closed by `TC-FLOW-06` and `TC-RULE-11` passing in `Week_15/Evidence/test_logs_final/` |
+| **Compatibility is untested** - no device, no APK | `TC-COMPAT-01` is **BLOCKED**, not passed, in both Week 15 logs. `adb devices` returns `List of devices attached` with no serial, and no APK was built this week by decision, so there is no second profile to install on an emulator either. The module asks for two profiles where resources permit; neither was available, and the command and its output are quoted in `Week_15/Evidence/environment.md` |
+| Two requirements have **indirect coverage only** | `REQ-03` (tap to select, tap to move, turn passes) has no case driving `HandleTap` through a board change - the rules are exercised through `ExecuteMove` instead. `REQ-12` (the `lose` clip) is loaded and wired but **never fired**, because RED won every match the harness seeded. Both are marked as gaps in `Week_15/Evidence/traceability_matrix.md` rather than counted as passes |
+| The capture harness **stalls if a script recompiles mid-run** | Domain reload on play-mode entry is disabled, so a recompile that lands while play mode is running leaves the harness with play mode on and no transcript - it happened three times while producing the Week 15 captures. `HOW_TO_RERUN.txt` says to edit nothing and wait for the compile before running it, and to check the transcript's "Run at" line against the PNG timestamps before trusting a set |
+| **No APK was produced this week** either | Week 13, 14 and 15 all rest on the Editor in play mode, captured from the real scene and the real save file. The Android build settings are applied and recorded in each week's `build_and_commit.txt`, but "the game runs in the Editor" and "the game was installed on a phone" are different claims, and only the first is made here |
 | The profile panel has **never run on a physical phone** | All captures are at the Editor's 1151x584 game view. A phone's aspect ratio and touch precision are untested |
 | The UI's earlier scaler note was wrong | Week 13's README said the UI had **no** `CanvasScaler`. It has one: the Week 14 audit header reads `Scale With Screen Size, reference 1280x720, match 0.50`. That scaler is what makes the touch floor definable at all - 48 dp at xxhdpi is 144 physical px, and 144 / 1.50 = 96 canvas px - and it is why the audit measures canvas pixels against a stated reference instead of raw pixels. When it was added is not recorded; this row replaces the old claim rather than dating it |
-| Commits are still **per week, not per step** | Week 13 said splitting commits per working step would start in Week 14, and it did not: Week 14 landed as one code commit and one documentation commit. The cost is that the three repair-script bugs are invisible in the history. Admitted rather than quietly dropped, in the Week 14 reflection section 4 |
+| Commits are still **per week, not per step** | Week 13 said splitting commits per working step would start in Week 14, and it did not: Weeks 14 and 15 both landed as one code commit and one documentation commit. In Week 15 the cost is visible - the harness that produced the baseline and the harness that produced the final log are the same file, but the fixes it measured landed in the same commit as the fixes' own tests, so the history cannot show the baseline run happening first. The test logs can, and they do. Admitted rather than quietly dropped, in the Week 15 reflection section 4 |
 | The project has **domain reload on play-mode entry disabled** | Fast iteration, but Editor-time statics survive into play mode. Every harness run resets the store to the default data directory first |
 
 ---
@@ -174,8 +231,10 @@ Code, document structure and phrasing were produced with AI assistance and then 
 corrected against the actual build. Every measured value in PT5 section 6 is copied from
 `pt5_checks.log`, which the harness generated; none is typed from memory. The same rule holds in Week
 14: every ratio, size and paired value in PT6 section 3 comes from `a11y_delta.txt`, generated by
-pairing the two logs mechanically. The full disclosure tables are PT5 section 9 and PT6 section 10,
-and both reflections carry the required declaration.
+pairing the two logs mechanically. Week 15 adds a third: every status, ratio and size in `AS3_Milestone.pdf` is
+copied from `case_log.tsv`, the two audit logs or the delta, and the milestone's section 14 lists what was assisted
+and how each item was checked. The full disclosure tables are PT5 section 9, PT6 section 10 and AS3 section 14, and
+all three reflections carry the required declaration.
 
 One use worth naming separately: the Week 14 machine pre-test was **run by an automation agent**, not
 by a person. It is reported as such in `Week_14/Evidence/autopilot_session.md`, it is labelled a
@@ -192,6 +251,8 @@ machine pre-test everywhere it is mentioned, and it is never referred to as a pl
 | Documentation commit (Week 13) | `a215f34` |
 | Code commit (Week 14) | `1998b0c` |
 | Documentation commit (Week 14) | `58976b7` |
+| Code commit (Week 15) | `207376b` |
+| Documentation commit (Week 15) | see `Week_15/Evidence/build_and_commit.txt` |
 | Build target | Android, ARM64 only, IL2CPP, minimum API 26, `com.defaultcompany.dama` |
 | Scenes in build | `DamaGame.unity` (index 0), `SampleScene.unity` (disabled) |
 

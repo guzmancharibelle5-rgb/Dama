@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Week 15 Reflection - Game Testing, Defect Correction and Quality Evidence</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>Week 15 Reflection - Game Testing, Defect Correction and Quality Evidence</h1>
+<p class="meta"><strong>Game:</strong> Dama (Philippine Games and Sports theme)</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Week:</strong> 15</p>
+<p class="meta"><strong>Build:</strong> <code>dama-editor-w15-rc1</code> - scene <code>DamaGame.unity</code> at commit <code>207376b</code>, branch <code>main</code></p>
+<p class="meta"><strong>Date:</strong> November 26, 2026</p>
+<hr/>
+<h2>1. The defect that taught me the most</h2>
+<p><code>TC-FLOW-06</code>, the route back to the title screen. I carried that finding forward from Week 14 as M2 and thought I already understood it. I understood the symptom. What the test taught me was the size of the cause. The case does not ask whether a MENU button exists; it asks whether the game can be left. The baseline measured value was <code>PausePanel/MenuButton present=False, DamaBoard.ReturnToMenu present=False</code>, and the second half is the part that mattered: there was no method to call. <code>DamaBoard</code> had no transition from <code>Paused</code> or <code>GameOver</code> back to <code>Ready</code>. So this was not a missing button, it was a missing direction in the game's own model, and the pause panel had been offering RESTART as its only exit because there was nothing else to offer.</p>
+<p>That reframed the other three findings. Each was the game keeping a fact and never carrying it to the screen: the end screen said only <code>RED WIN!</code> because <code>DeclareWinner</code> received the winner and the reason derived in <code>CheckForWin</code> was thrown away; the smallest caption anywhere was 14 px because each panel builder picked its own number and nothing owned "the smallest text". Three defects, one habit.</p>
+<h2>2. Reproducing and correcting it</h2>
+<p>Reproducing took two taps, written down: START, then PAUSE, and the panel offers RESUME, RESTART and SOUND and nothing else. Making it reproducible for someone else became <code>TC-FLOW-06</code> in <code>Assets/Scripts/Editor/Week15Checks.cs</code> - the same file produced the failing line above and the passing line after the fix. The correction had two halves that had to agree:</p>
+<ul>
+<li><code>Week15Fixes.EnsureButton</code> builds <code>PausePanel/MenuButton</code> beside <code>RestartButtonPause</code> and <code>WinPanel/MenuButtonWin</code> beside <code>RestartButtonWin</code>: same anchor line, 340 px right, 320 x 96. It went beside RESTART and not under it because the arithmetic refused it - four 96 px controls plus three 12 px gaps need 420 px and the pause title leaves a 357 px band. Stacked, I would have shipped a second defect while fixing the first.</li>
+<li><code>DamaBoard.ReturnToMenu</code> restores <code>Time.timeScale = 1</code> <strong>before</strong> it shows the title screen. Both screens are reached with the clock stopped, so without that line the title screen is drawn and dead to the touch, and a screenshot would not have told me. The case asserts it: <code>StartPanel=True PausePanel=False HUDPanel=False timeScale=1.00</code>.</li>
+</ul>
+<p>The retest is the same case, the same assertion, against the corrected build. Nothing about the test moved - only the code under it - which is the only reason I trust the result.</p>
+<h2>3. The regression risk I discovered</h2>
+<p>Two, and I found neither by reasoning.</p>
+<p><strong>The contrast margins got thinner because of a fix.</strong> Raising five captions from 14 px to 22 px touches no colour, so I assumed contrast was untouched. The delta file says otherwise: <code>PausePanel/SoundButton/Text</code> fell from <code>9.29:1</code> to <code>6.59:1</code>, because lightening a fill to give the control a visible edge spends the contrast of the white label on it. The edge needs 3.0:1 against the panel and the label needs 4.5:1 against the fill, and those pull against each other. The pass is bounded on both sides and the label wins, but three controls now sit at 3.16:1, 3.17:1 and 3.19:1 against a 3.0 floor and <code>ProfilePanel/SideButton</code> sits at 3.03:1. Nothing warns me if the next edit pushes them under. The audit runs before every submission from now on.</p>
+<p><strong>The screenshots were lying, and only the numbers caught it.</strong> My first capture run drew the board from the 24 opening pieces while the grid held a seeded end position, so <code>E2_end_screen.png</code> showed a HUD reading <code>Red: 12   Blue: 12</code> beside a summary reading <code>RED 1-1</code>. Both were rendered correctly from two different sources of truth: seeding by reflection changes what the game believes, not what is drawn. The harness now rebuilds the visible pieces before every capture, and the <code>Rebuilt N visible piece(s)</code> lines in <code>week15_shots.txt</code> are what let a reviewer check the counts in a picture against the state it claims. I left that disclosure in the transcript rather than re-taking the images quietly, because a screenshot that agrees with the log by accident is worse than one that documents why it once did not.</p>
+<h2>4. My confidence, and its limits</h2>
+<p>Confident about what was measured, deliberately unconfident about the rest.</p>
+<p>What supports it: 27 of 28 cases pass against a baseline of 22 passed and <strong>5 failed</strong> - the same five cases, now passing, none removed or renamed. The audit passes every scored row, 105 of 105, with 0 regressed and 0 dropped when all 109 rows are paired across two runs. The repair script proved idempotence instead of asserting it: <code>5BB40B04 -&gt; 8C0D040E</code> on the first run, <code>8C0D040E -&gt; 8C0D040E (UNCHANGED - this run was a no-op)</code> on the second. The console is clean at the end of both runs, which answers the module's "repeatedly crashes" condition with a number.</p>
+<p>What limits it, written down rather than rounded up: one case is <strong>BLOCKED</strong> - <code>adb devices</code> returns no serial and no APK exists, so nothing here ran outside the Editor, at one resolution, on one machine. <code>REQ-03</code> and <code>REQ-12</code> are covered only indirectly; the <code>lose</code> clip is loaded and wired but RED won every match I seeded, so it never fired. Both are marked as gaps rather than counted as passes through neighbouring cases.</p>
+<p>The excerpt I leaned on hardest, the same case before and after, from <code>Evidence/test_logs_baseline/case_log.tsv</code> and <code>Evidence/test_logs_final/case_log.tsv</code>:</p>
+<pre><code>TC-RULE-10  FAIL  ...  WinPanel/SummaryText missing
+TC-RULE-10  PASS  ...  SummaryText='RED WINS.  RED 1-1, BLUE has no legal move.'</code></pre>
+<p>Two sentences from one method, and the second exists because the first did not. My verdict: the Editor build at commit <code>207376b</code> passes the acceptance criteria I wrote before running it, and no evidence this week claims it ran anywhere but in the Editor.</p>
+<hr/>
+<p>I confirm that this reflection describes my own development experience and that all assistance, including AI assistance, has been disclosed.</p>
+
+</body>
+</html>

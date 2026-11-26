@@ -1,0 +1,126 @@
+DAMA - WEEK 15 - HOW TO RE-RUN EVERY ARTEFACT
+Student : Charibelle Guzman (BSIT-4)
+Build   : dama-editor-w15-rc1   scene Assets/Scenes/DamaGame.unity   Unity 6000.6.0f1
+Written : 2026-11-26
+
+Everything in this folder was produced by a menu item, not by hand. The order
+below reproduces the record from an unmodified Week 14 checkout.
+
+----------------------------------------------------------------------------
+ORDER MATTERS
+----------------------------------------------------------------------------
+  1  baseline case run      (on the Week 14 code)
+  2  baseline audit         (on the Week 14 code)
+  3  defect fixes           (run twice)
+  4  final case run
+  5  final audit
+  6  captures
+  7  delta                  (generated from the two audit logs)
+
+If the audit is run after the fixes, the baseline log cannot be reproduced, and
+the delta has nothing to pair. The audit decides which file it writes by
+checking whether a baseline log already exists, so a stray re-run can overwrite
+the baseline. Copy the folder before repeating steps 1-2.
+
+----------------------------------------------------------------------------
+1. BASELINE CASE RUN
+----------------------------------------------------------------------------
+  Tools > Dama > Week 15 > 1. Baseline Test Run
+
+Writes Evidence/test_logs_baseline/{case_log.tsv, summary.txt, console.log}.
+Expected on the Week 14 code: 22 passed, 5 failed, 1 blocked, 0 console errors.
+The five failures are TC-FLOW-06, TC-RULE-08, TC-RULE-10, TC-RULE-11 and
+TC-A11Y-03. On a corrected build this run reports 27 passed.
+
+----------------------------------------------------------------------------
+2. BASELINE AUDIT
+----------------------------------------------------------------------------
+  Tools > Dama > Week 15 > 0. Accessibility Audit
+
+Writes Evidence/a11y_week15_baseline.log plus a timestamped copy.
+Expected on the Week 14 code: 83 passed, 9 failed, 0 warnings, 4 not measurable.
+Week 14's own audit (Tools > Dama > Week 14 > 1. Run Accessibility Audit) writes
+a11y_baseline.log / a11y_after.log into Week_14/Evidence and is left alone -
+those three files are committed evidence for Week 14 and re-running Week 14's
+audit would overwrite them.
+
+Known snag: the editor's menu dispatch can report success without the run
+reaching the log. If no new a11y_week15_*.log appears with a fresh timestamp,
+invoke the entry point directly from a C# editor script:
+
+    A11yAudit.RunWeek15();
+
+The timestamped file is the proof it ran, not the menu's return value.
+
+----------------------------------------------------------------------------
+3. DEFECT FIXES
+----------------------------------------------------------------------------
+  Tools > Dama > Week 15 > 3. Apply Defect Fixes
+
+Run it twice. The first run reports
+  3 control(s) created, 6 label(s) resized, 5 fill(s) lightened
+  Layout hash 5BB40B04 -> 8C0D040E (changed)
+and the second reports
+  0 / 0 / 0
+  Layout hash 8C0D040E -> 8C0D040E (UNCHANGED - this run was a no-op)
+That pair is the idempotence proof quoted in the milestone, section 8. Its
+Verify() step then prints the caption and label counts and the button-fill
+count. A second run that reports anything other than 0/0/0 means the script is
+not idempotent and the fix is not finished.
+
+----------------------------------------------------------------------------
+4. FINAL CASE RUN
+----------------------------------------------------------------------------
+  Tools > Dama > Week 15 > 2. Final Test Run
+
+Writes Evidence/test_logs_final/{case_log.tsv, summary.txt, console.log}.
+Expected: 27 passed, 0 failed, 1 blocked, 0 console errors. The blocked case is
+TC-COMPAT-01 and it is blocked on purpose.
+
+----------------------------------------------------------------------------
+5. FINAL AUDIT
+----------------------------------------------------------------------------
+  Tools > Dama > Week 15 > 0. Accessibility Audit   (again, after the fixes)
+
+Writes Evidence/a11y_week15_after.log.
+Expected: 105 passed, 0 failed, 0 warnings, 4 not measurable. The four not
+measurable rows are unchanged from the baseline and are reported, never scored.
+
+----------------------------------------------------------------------------
+6. CAPTURES
+----------------------------------------------------------------------------
+  Tools > Dama > Week 15 > 4. Capture Evidence
+
+Writes E1_pause_menu.png, E2_end_screen.png, E3_profile_status.png,
+E4_mid_match.png and week15_shots.txt. The harness enters play mode once, gates
+every screenshot on the PNG existing with a non-zero length, then leaves play
+mode.
+
+Known snag, seen three times while producing this record: a script recompile
+that lands while play mode is running stalls the harness with play mode still
+on and no transcript written. Domain reload on play-mode entry is disabled in
+this project, so a recompile mid-run is not handled by the editor. Before
+running it: edit nothing, let the editor finish compiling, and confirm the
+console has no pending compile. If a run does stall, stop play mode, fix the
+compile, and run it again - the PNGs from the stalled run are incomplete and the
+transcript is from the previous run, so check the "Run at" line in
+week15_shots.txt against the file timestamps before trusting the set.
+
+----------------------------------------------------------------------------
+7. THE DELTA
+----------------------------------------------------------------------------
+There is no menu item: the file is generated programmatically by pairing the two
+audit logs line by line on (check kind, control path). Regenerating it means
+re-running steps 2 and 5 and pairing again; the header of the file states the
+pairing rule and the verdict vocabulary, and the last line states the counts
+(109 rows: 72 unchanged, 15 moved value, 9 FIXED, 0 REGRESSED, 0 DROPPED, 13
+ADDED). If a pairing ever reports a DROPPED row, a baseline row was lost between
+the two runs - that is a defect in the process, not a formatting problem.
+
+----------------------------------------------------------------------------
+WHAT IS NOT REPRODUCIBLE HERE
+----------------------------------------------------------------------------
+TC-COMPAT-01 (second device or configuration) cannot be run: no APK is produced
+this week and no Android handset is attached. `adb devices` returns
+"List of devices attached" with no serial. That is recorded in environment.md
+with the command and its output, and the case stays BLOCKED in both logs.

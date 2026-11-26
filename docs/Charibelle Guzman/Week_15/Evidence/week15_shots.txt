@@ -1,0 +1,55 @@
+DAMA - WEEK 15 - CAPTURE RUN TRANSCRIPT
+Student : Charibelle Guzman (BSIT-4)
+Scene   : Assets/Scenes/DamaGame.unity
+Harness : Tools > Dama > Week 15 > 4. Capture Evidence
+Run at  : 2026-11-26 05:25:06 UTC   Unity 6000.6.0f1
+Canvas  : 1280x720 reference, match 0.50   Game view at capture: 1151x584
+
+This file is the harness's own record of the run, in order. The "Requested" line is the
+screenshot call; the "Wrote" line for the same file is the moment the PNG existed on disk with
+a non-zero length. Those pairs are the gate doing its work: ScreenCapture completes a frame or
+two after the call, so a run that does not wait writes empty files.
+------------------------------------------------------------------------------------------------
+RUN LOG
+------------------------------------------------------------------------------------------------
+13:25:00  Entering play mode for the Week 15 captures.
+13:25:02  Rebuilt 3 visible piece(s) from the grid so the image matches the state.
+13:25:02  E4 state: turn=Turn: BLUE counts=Red: 1   Blue: 2.
+13:25:02  Requested E4_mid_match.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_15\Evidence\E4_mid_match.png
+13:25:02  Wrote E4_mid_match.png (24921 bytes).
+13:25:03  E1 state: PausePanel active=True, MenuButton=320x96 at (340, 0), SoundButton=320x96 at (0, 0).
+13:25:03  Requested E1_pause_menu.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_15\Evidence\E1_pause_menu.png
+13:25:03  Wrote E1_pause_menu.png (37677 bytes).
+13:25:04  ReturnToMenu left: StartPanel=True HUDPanel=False PausePanel=False timeScale=1.00.
+13:25:04  Seeded the profile: wins=2 losses=1 best=2 entries.
+13:25:04  E3 state: StatusText 20 px, RecordText='Matches: 3   Wins: 2   Losses: 1
+Current streak: 1   Best streak: 1'.
+13:25:04  Requested E3_profile_status.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_15\Evidence\E3_profile_status.png
+13:25:04  Wrote E3_profile_status.png (71024 bytes).
+13:25:05  Rebuilt 2 visible piece(s) from the grid so the image matches the state.
+13:25:05  E2 state: WinPanel=True summary='RED WINS.  RED 1-1, BLUE has no legal move.' MenuButtonWin=320x96 at (340, 0).
+13:25:05  Requested E2_end_screen.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_15\Evidence\E2_end_screen.png
+13:25:05  Wrote E2_end_screen.png (42736 bytes).
+------------------------------------------------------------------------------------------------
+WHAT EACH IMAGE IS
+  E1_pause_menu.png      the pause panel: RESUME, RESTART, SOUND, and MENU on the restart line.
+                         MENU sits beside RESTART, not under it - four 96 px controls do not fit
+                         vertically in the 357 px band the title leaves.
+  E2_end_screen.png      the end screen after BLUE was left with a man and no legal move. The
+                         summary line names the winner, both counts and the reason, and MENU
+                         sits beside RESTART.
+  E3_profile_status.png  the profile panel, seeded to wins=2 losses=1, with the status line at
+                         20 px - it was 17 px before this week's fix.
+  E4_mid_match.png       the board after RED jumped a BLUE man at (3,4) and landed at (4,5),
+                         with the HUD showing whose turn it is and both counts.
+
+The states were produced through the game's own entry points (StartGame, PauseGame,
+ReturnToMenu, ShowProfile, ExecuteMove, CheckForWin). Only the board seeding is done by
+reflection, the same way the Week 13-15 harnesses seed a position.
+
+Seeding the grid by reflection changes what the game believes is on the board, not what is
+drawn on it: on the first attempt E2 showed a HUD reading Red: 12 Blue: 12 beside a summary
+reading RED 1-1. The two disagreed because the 24 opening pieces were still rendered. The
+harness now rebuilds the visible pieces from the grid before each capture and refreshes the HUD,
+so every image shows the state it claims to show. The "Rebuilt N visible piece(s)" lines above are
+that step, and they are what makes the counts in the pictures checkable.

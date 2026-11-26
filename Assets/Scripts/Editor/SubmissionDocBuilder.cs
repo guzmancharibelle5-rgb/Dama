@@ -11,6 +11,7 @@ using UnityEngine;
 ///
 /// Menu: Tools > Dama > Submission > Build Week 13 HTML
 ///       Tools > Dama > Submission > Build Week 14 HTML
+///       Tools > Dama > Submission > Build Week 15 HTML
 ///       Tools > Dama > Submission > Build All HTML
 ///
 /// Converts the markdown documents in a week's others/ folder into print-ready HTML beside them.
@@ -57,6 +58,15 @@ public static class SubmissionDocBuilder
                 "Guzman_Charibelle_PT6",
                 "Guzman_Charibelle_Week14_Reflection"
             }
+        },
+        new WeekDocuments
+        {
+            Folder = "Week_15",
+            Documents = new[]
+            {
+                "Guzman_Charibelle_AS3_Milestone",
+                "Guzman_Charibelle_Week15_Reflection"
+            }
         }
     };
 
@@ -73,6 +83,9 @@ public static class SubmissionDocBuilder
 
     [MenuItem("Tools/Dama/Submission/Build Week 14 HTML", false, 11)]
     public static void BuildWeek14() => Build("Week_14");
+
+    [MenuItem("Tools/Dama/Submission/Build Week 15 HTML", false, 12)]
+    public static void BuildWeek15() => Build("Week_15");
 
     [MenuItem("Tools/Dama/Submission/Build All HTML", false, 20)]
     public static void BuildAll()

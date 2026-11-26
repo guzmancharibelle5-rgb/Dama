@@ -1,0 +1,130 @@
+DAMA - WEEK 15 ACCESSIBILITY DELTA (baseline -> after the defect fixes)
+Student: Charibelle Guzman (BSIT-4)   Theme: Philippine Games and Sports
+Baseline: a11y_week15_baseline.log
+          Scene: DamaGame.unity  Unity: 6000.6.0f1  Run at: 2026-11-26 05:10:14 UTC
+Final:    a11y_week15_after.log
+          Scene: DamaGame.unity  Unity: 6000.6.0f1  Run at: 2026-11-26 05:16:25 UTC
+--------------------------------------------------------------------------------------------------------------
+TOTAL: 83 passed, 9 failed, 0 warnings, 4 not measurable
+TOTAL: 105 passed, 0 failed, 0 warnings, 4 not measurable
+--------------------------------------------------------------------------------------------------------------
+PAIRING RULE
+  Every scored row in either log is keyed by its check kind and its control path, e.g. 'S  WinPanel/RestartButtonWin/Text'.
+  A row is FIXED when the baseline recorded FAIL and the final log records PASS for the same key, REGRESSED the other way
+  round, and changed when only the measurement moved. DROPPED is a baseline row with no final measurement - the delta
+  reports zero, which is the claim that every baseline row was re-measured rather than quietly dropped. ADDED is a row for
+  a control the fixes created, so it has no baseline to pair with.
+--------------------------------------------------------------------------------------------------------------
+KIND  PATH  |  BASELINE  |  AFTER  |  VERDICT
+--------------------------------------------------------------------------------------------------------------
+C  StartPanel/TitleText  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=96  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=96  |  unchanged
+L  StartPanel/TitleText  |  PASS  height=150.4 need=107.5 size=96  |  PASS  height=150.4 need=107.5 size=96  |  unchanged
+C  StartPanel/InstructionsText  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=30  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=30  |  unchanged
+L  StartPanel/InstructionsText  |  PASS  height=150.4 need=33.6 size=30  |  PASS  height=150.4 need=33.6 size=30  |  unchanged
+C  StartPanel/StartButton/Text  |  PASS  ratio=4.94:1 need=4.5 fg=#FFFFFF bg=#D92626 size=14  |  PASS  ratio=4.94:1 need=4.5 fg=#FFFFFF bg=#D92626 size=22  |  changed
+L  StartPanel/StartButton/Text  |  PASS  height=100.0 need=15.7 size=14  |  PASS  height=100.0 need=24.6 size=22  |  changed
+C  StartPanel/ProfileButton/Text  |  PASS  ratio=6.91:1 need=3.0 fg=#FFFFFF bg=#335999 size=30  |  PASS  ratio=6.91:1 need=3.0 fg=#FFFFFF bg=#335999 size=30  |  unchanged
+L  StartPanel/ProfileButton/Text  |  PASS  height=96.0 need=33.6 size=30  |  PASS  height=96.0 need=33.6 size=30  |  unchanged
+C  HUDPanel/TurnText  |  NOT MEASURABLE  fg=#FFFFFF on the board (no opaque backdrop)  |  NOT MEASURABLE  fg=#FFFFFF on the board (no opaque backdrop)  |  unchanged
+L  HUDPanel/TurnText  |  PASS  height=54.0 need=38.1 size=34  |  PASS  height=54.0 need=38.1 size=34  |  unchanged
+C  HUDPanel/CountsText  |  NOT MEASURABLE  fg=#FFFFFF on the board (no opaque backdrop)  |  NOT MEASURABLE  fg=#FFFFFF on the board (no opaque backdrop)  |  unchanged
+L  HUDPanel/CountsText  |  PASS  height=46.0 need=31.4 size=28  |  PASS  height=46.0 need=31.4 size=28  |  unchanged
+C  HUDPanel/PauseButton/Text  |  PASS  ratio=12.44:1 need=4.5 fg=#FFFFFF bg=#333340 size=14  |  PASS  ratio=12.44:1 need=4.5 fg=#FFFFFF bg=#333340 size=22  |  changed
+L  HUDPanel/PauseButton/Text  |  PASS  height=96.0 need=15.7 size=14  |  PASS  height=96.0 need=24.6 size=22  |  changed
+C  PausePanel/PauseTitleText  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=80  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=80  |  unchanged
+L  PausePanel/PauseTitleText  |  PASS  height=120.0 need=89.6 size=80  |  PASS  height=120.0 need=89.6 size=80  |  unchanged
+C  PausePanel/ResumeButton/Text  |  PASS  ratio=4.73:1 need=4.5 fg=#FFFFFF bg=#24843C size=14  |  PASS  ratio=4.73:1 need=4.5 fg=#FFFFFF bg=#24843C size=22  |  changed
+L  PausePanel/ResumeButton/Text  |  PASS  height=96.0 need=15.7 size=14  |  PASS  height=96.0 need=24.6 size=22  |  changed
+C  PausePanel/RestartButtonPause/Text  |  PASS  ratio=4.71:1 need=4.5 fg=#FFFFFF bg=#A06713 size=14  |  PASS  ratio=4.71:1 need=4.5 fg=#FFFFFF bg=#A06713 size=22  |  changed
+L  PausePanel/RestartButtonPause/Text  |  PASS  height=96.0 need=15.7 size=14  |  PASS  height=96.0 need=24.6 size=22  |  changed
+C  PausePanel/SoundButton/Text  |  PASS  ratio=9.29:1 need=4.5 fg=#FFFFFF bg=#404759 size=22  |  PASS  ratio=6.59:1 need=4.5 fg=#FFFFFF bg=#545D74 size=22  |  changed
+L  PausePanel/SoundButton/Text  |  PASS  height=96.0 need=24.6 size=22  |  PASS  height=96.0 need=24.6 size=22  |  unchanged
+C  WinPanel/WinText  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=110  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=110  |  unchanged
+L  WinPanel/WinText  |  PASS  height=136.8 need=123.2 size=110  |  PASS  height=136.8 need=123.2 size=110  |  unchanged
+C  WinPanel/RestartButtonWin/Text  |  PASS  ratio=4.71:1 need=4.5 fg=#FFFFFF bg=#A06713 size=14  |  PASS  ratio=4.71:1 need=4.5 fg=#FFFFFF bg=#A06713 size=22  |  changed
+L  WinPanel/RestartButtonWin/Text  |  PASS  height=96.0 need=15.7 size=14  |  PASS  height=96.0 need=24.6 size=22  |  changed
+C  ProfilePanel/TitleText  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=44  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=44  |  unchanged
+L  ProfilePanel/TitleText  |  PASS  height=56.0 need=49.3 size=44  |  PASS  height=56.0 need=49.3 size=44  |  unchanged
+C  ProfilePanel/NameLabel  |  PASS  ratio=14.98:1 need=4.5 fg=#D9D9E6 bg=#000000 size=22  |  PASS  ratio=14.98:1 need=4.5 fg=#D9D9E6 bg=#000000 size=22  |  unchanged
+L  ProfilePanel/NameLabel  |  PASS  height=26.0 need=24.6 size=22  |  PASS  height=26.0 need=24.6 size=22  |  unchanged
+C  ProfilePanel/NameInput/Text  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=30  |  PASS  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=30  |  unchanged
+L  ProfilePanel/NameInput/Text  |  PASS  height=88.0 need=33.6 size=30  |  PASS  height=88.0 need=33.6 size=30  |  unchanged
+C  ProfilePanel/NameInput/Placeholder  |  PASS  ratio=3.01:1 need=3.0 fg=#FFFFFF bg=#000000 size=28  |  PASS  ratio=3.01:1 need=3.0 fg=#FFFFFF bg=#000000 size=28  |  unchanged
+L  ProfilePanel/NameInput/Placeholder  |  PASS  height=88.0 need=31.4 size=28  |  PASS  height=88.0 need=31.4 size=28  |  unchanged
+C  ProfilePanel/SideButton/SideLabel  |  PASS  ratio=6.92:1 need=4.5 fg=#FFFFFF bg=#40598C size=22  |  PASS  ratio=6.92:1 need=4.5 fg=#FFFFFF bg=#40598C size=22  |  unchanged
+L  ProfilePanel/SideButton/SideLabel  |  PASS  height=96.0 need=24.6 size=22  |  PASS  height=96.0 need=24.6 size=22  |  unchanged
+C  ProfilePanel/RecordText  |  PASS  ratio=18.80:1 need=4.5 fg=#F2F2F2 bg=#000000 size=22  |  PASS  ratio=18.80:1 need=4.5 fg=#F2F2F2 bg=#000000 size=22  |  unchanged
+L  ProfilePanel/RecordText  |  PASS  height=64.0 need=24.6 size=22  |  PASS  height=64.0 need=24.6 size=22  |  unchanged
+C  ProfilePanel/BestText  |  PASS  ratio=15.06:1 need=4.5 fg=#F2D98C bg=#000000 size=20  |  PASS  ratio=15.06:1 need=4.5 fg=#F2D98C bg=#000000 size=20  |  unchanged
+L  ProfilePanel/BestText  |  PASS  height=110.0 need=22.4 size=20  |  PASS  height=110.0 need=22.4 size=20  |  unchanged
+C  ProfilePanel/StatusText  |  PASS  ratio=12.86:1 need=4.5 fg=#BFCCD9 bg=#000000 size=17  |  PASS  ratio=12.86:1 need=4.5 fg=#BFCCD9 bg=#000000 size=20  |  changed
+L  ProfilePanel/StatusText  |  PASS  height=40.0 need=19.0 size=17  |  PASS  height=40.0 need=22.4 size=20  |  changed
+C  ProfilePanel/SaveButton/Text  |  PASS  ratio=5.88:1 need=3.0 fg=#FFFFFF bg=#267333 size=24  |  PASS  ratio=5.88:1 need=3.0 fg=#FFFFFF bg=#267333 size=24  |  unchanged
+L  ProfilePanel/SaveButton/Text  |  PASS  height=96.0 need=26.9 size=24  |  PASS  height=96.0 need=26.9 size=24  |  unchanged
+C  ProfilePanel/ResetButton/ResetLabel  |  PASS  ratio=8.24:1 need=4.5 fg=#FFFFFF bg=#8C2E2E size=20  |  PASS  ratio=6.63:1 need=4.5 fg=#FFFFFF bg=#A43636 size=20  |  changed
+L  ProfilePanel/ResetButton/ResetLabel  |  PASS  height=96.0 need=22.4 size=20  |  PASS  height=96.0 need=22.4 size=20  |  unchanged
+C  ProfilePanel/BackButton/Text  |  PASS  ratio=9.24:1 need=4.5 fg=#FFFFFF bg=#404759 size=22  |  PASS  ratio=6.64:1 need=4.5 fg=#FFFFFF bg=#535C74 size=22  |  changed
+L  ProfilePanel/BackButton/Text  |  PASS  height=96.0 need=24.6 size=22  |  PASS  height=96.0 need=24.6 size=22  |  unchanged
+T  StartPanel/StartButton  |  PASS  320x100 px  |  PASS  320x100 px  |  unchanged
+T  StartPanel/ProfileButton  |  PASS  320x96 px  |  PASS  320x96 px  |  unchanged
+T  HUDPanel/PauseButton  |  PASS  170x96 px  |  PASS  170x96 px  |  unchanged
+T  PausePanel/ResumeButton  |  PASS  320x96 px  |  PASS  320x96 px  |  unchanged
+T  PausePanel/RestartButtonPause  |  PASS  320x96 px  |  PASS  320x96 px  |  unchanged
+T  PausePanel/SoundButton  |  PASS  320x96 px  |  PASS  320x96 px  |  unchanged
+T  WinPanel/RestartButtonWin  |  PASS  320x96 px  |  PASS  320x96 px  |  unchanged
+T  ProfilePanel/SideButton  |  PASS  260x96 px  |  PASS  260x96 px  |  unchanged
+T  ProfilePanel/SaveButton  |  PASS  200x96 px  |  PASS  200x96 px  |  unchanged
+T  ProfilePanel/ResetButton  |  PASS  200x96 px  |  PASS  200x96 px  |  unchanged
+T  ProfilePanel/BackButton  |  PASS  200x96 px  |  PASS  200x96 px  |  unchanged
+T  ProfilePanel/NameInput  |  PASS  420x96 px  |  PASS  420x96 px  |  unchanged
+S  StartPanel/TitleText  |  PASS  size=96px need=18px role=label  |  PASS  size=96px need=18px role=label  |  unchanged
+S  StartPanel/InstructionsText  |  PASS  size=30px need=18px role=label  |  PASS  size=30px need=18px role=label  |  unchanged
+S  StartPanel/StartButton/Text  |  FAIL  size=14px need=20px role=caption  short by 6 px  |  PASS  size=22px need=20px role=caption  |  FIXED
+S  StartPanel/ProfileButton/Text  |  PASS  size=30px need=20px role=caption  |  PASS  size=30px need=20px role=caption  |  unchanged
+S  HUDPanel/TurnText  |  PASS  size=34px need=18px role=label  |  PASS  size=34px need=18px role=label  |  unchanged
+S  HUDPanel/CountsText  |  PASS  size=28px need=18px role=label  |  PASS  size=28px need=18px role=label  |  unchanged
+S  HUDPanel/PauseButton/Text  |  FAIL  size=14px need=20px role=caption  short by 6 px  |  PASS  size=22px need=20px role=caption  |  FIXED
+S  PausePanel/PauseTitleText  |  PASS  size=80px need=18px role=label  |  PASS  size=80px need=18px role=label  |  unchanged
+S  PausePanel/ResumeButton/Text  |  FAIL  size=14px need=20px role=caption  short by 6 px  |  PASS  size=22px need=20px role=caption  |  FIXED
+S  PausePanel/RestartButtonPause/Text  |  FAIL  size=14px need=20px role=caption  short by 6 px  |  PASS  size=22px need=20px role=caption  |  FIXED
+S  PausePanel/SoundButton/Text  |  PASS  size=22px need=20px role=caption  |  PASS  size=22px need=20px role=caption  |  unchanged
+S  WinPanel/WinText  |  PASS  size=110px need=18px role=label  |  PASS  size=110px need=18px role=label  |  unchanged
+S  WinPanel/RestartButtonWin/Text  |  FAIL  size=14px need=20px role=caption  short by 6 px  |  PASS  size=22px need=20px role=caption  |  FIXED
+S  ProfilePanel/TitleText  |  PASS  size=44px need=18px role=label  |  PASS  size=44px need=18px role=label  |  unchanged
+S  ProfilePanel/NameLabel  |  PASS  size=22px need=18px role=label  |  PASS  size=22px need=18px role=label  |  unchanged
+S  ProfilePanel/NameInput/Text  |  PASS  size=30px need=18px role=label  |  PASS  size=30px need=18px role=label  |  unchanged
+S  ProfilePanel/NameInput/Placeholder  |  PASS  size=28px need=18px role=label  |  PASS  size=28px need=18px role=label  |  unchanged
+S  ProfilePanel/SideButton/SideLabel  |  PASS  size=22px need=20px role=caption  |  PASS  size=22px need=20px role=caption  |  unchanged
+S  ProfilePanel/RecordText  |  PASS  size=22px need=18px role=label  |  PASS  size=22px need=18px role=label  |  unchanged
+S  ProfilePanel/BestText  |  PASS  size=20px need=18px role=label  |  PASS  size=20px need=18px role=label  |  unchanged
+S  ProfilePanel/StatusText  |  FAIL  size=17px need=18px role=label  short by 1 px  |  PASS  size=20px need=18px role=label  |  FIXED
+S  ProfilePanel/SaveButton/Text  |  PASS  size=24px need=20px role=caption  |  PASS  size=24px need=20px role=caption  |  unchanged
+S  ProfilePanel/ResetButton/ResetLabel  |  PASS  size=20px need=20px role=caption  |  PASS  size=20px need=20px role=caption  |  unchanged
+S  ProfilePanel/BackButton/Text  |  PASS  size=22px need=20px role=caption  |  PASS  size=22px need=20px role=caption  |  unchanged
+N  StartPanel/StartButton  |  PASS  ratio=4.25:1 need=3.0 fill=#D92626 panel=#000000  |  PASS  ratio=4.25:1 need=3.0 fill=#D92626 panel=#000000  |  unchanged
+N  StartPanel/ProfileButton  |  PASS  ratio=3.04:1 need=3.0 fill=#335999 panel=#000000  |  PASS  ratio=3.04:1 need=3.0 fill=#335999 panel=#000000  |  unchanged
+N  HUDPanel/PauseButton  |  NOT MEASURABLE  no opaque panel behind the control  |  NOT MEASURABLE  no opaque panel behind the control  |  unchanged
+N  PausePanel/ResumeButton  |  PASS  ratio=4.44:1 need=3.0 fill=#24843C panel=#000000  |  PASS  ratio=4.44:1 need=3.0 fill=#24843C panel=#000000  |  unchanged
+N  PausePanel/RestartButtonPause  |  PASS  ratio=4.46:1 need=3.0 fill=#A06713 panel=#000000  |  PASS  ratio=4.46:1 need=3.0 fill=#A06713 panel=#000000  |  unchanged
+N  PausePanel/SoundButton  |  FAIL  ratio=2.26:1 need=3.0 fill=#404759 panel=#000000  |  PASS  ratio=3.19:1 need=3.0 fill=#545D74 panel=#000000  |  FIXED
+N  WinPanel/RestartButtonWin  |  PASS  ratio=4.46:1 need=3.0 fill=#A06713 panel=#000000  |  PASS  ratio=4.46:1 need=3.0 fill=#A06713 panel=#000000  |  unchanged
+N  ProfilePanel/SideButton  |  PASS  ratio=3.03:1 need=3.0 fill=#40598C panel=#000000  |  PASS  ratio=3.03:1 need=3.0 fill=#40598C panel=#000000  |  unchanged
+N  ProfilePanel/SaveButton  |  PASS  ratio=3.57:1 need=3.0 fill=#267333 panel=#000000  |  PASS  ratio=3.57:1 need=3.0 fill=#267333 panel=#000000  |  unchanged
+N  ProfilePanel/ResetButton  |  FAIL  ratio=2.55:1 need=3.0 fill=#8C2E2E panel=#000000  |  PASS  ratio=3.17:1 need=3.0 fill=#A43636 panel=#000000  |  FIXED
+N  ProfilePanel/BackButton  |  FAIL  ratio=2.27:1 need=3.0 fill=#404759 panel=#000000  |  PASS  ratio=3.16:1 need=3.0 fill=#535C74 panel=#000000  |  FIXED
+N  ProfilePanel/NameInput  |  NOT MEASURABLE  the control has no opaque fill of its own  |  NOT MEASURABLE  the control has no opaque fill of its own  |  unchanged
+C  PausePanel/MenuButton/Text  |  (absent)  |  PASS  ratio=6.59:1 need=4.5 fg=#FFFFFF bg=#545D74 size=22  |  ADDED
+L  PausePanel/MenuButton/Text  |  (absent)  |  PASS  height=96.0 need=24.6 size=22  |  ADDED
+C  WinPanel/MenuButtonWin/Text  |  (absent)  |  PASS  ratio=6.59:1 need=4.5 fg=#FFFFFF bg=#545D74 size=22  |  ADDED
+L  WinPanel/MenuButtonWin/Text  |  (absent)  |  PASS  height=96.0 need=24.6 size=22  |  ADDED
+C  WinPanel/SummaryText  |  (absent)  |  PASS  ratio=15.87:1 need=4.5 fg=#D9E0ED bg=#000000 size=22  |  ADDED
+L  WinPanel/SummaryText  |  (absent)  |  PASS  height=75.2 need=24.6 size=22  |  ADDED
+T  PausePanel/MenuButton  |  (absent)  |  PASS  320x96 px  |  ADDED
+T  WinPanel/MenuButtonWin  |  (absent)  |  PASS  320x96 px  |  ADDED
+S  PausePanel/MenuButton/Text  |  (absent)  |  PASS  size=22px need=20px role=caption  |  ADDED
+S  WinPanel/MenuButtonWin/Text  |  (absent)  |  PASS  size=22px need=20px role=caption  |  ADDED
+S  WinPanel/SummaryText  |  (absent)  |  PASS  size=22px need=18px role=label  |  ADDED
+N  PausePanel/MenuButton  |  (absent)  |  PASS  ratio=3.19:1 need=3.0 fill=#545D74 panel=#000000  |  ADDED
+N  WinPanel/MenuButtonWin  |  (absent)  |  PASS  ratio=3.19:1 need=3.0 fill=#545D74 panel=#000000  |  ADDED
+--------------------------------------------------------------------------------------------------------------
+PAIRING SUMMARY: 109 scored rows re-measured. 72 unchanged, 15 moved value, 9 FIXED, 0 REGRESSED. Baseline rows with no final measurement (DROPPED): 0. New controls introduced by the fixes (ADDED): 13.

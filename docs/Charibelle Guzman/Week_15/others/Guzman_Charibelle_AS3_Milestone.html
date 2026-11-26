@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>AS3 Milestone - Test Plan, Executed Tests, Defect Log and Acceptance Evidence</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>AS3 Milestone - Test Plan, Executed Tests, Defect Log and Acceptance Evidence</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Theme:</strong> Philippine Games and Sports</p>
+<p class="meta"><strong>Week:</strong> 15 - Game Testing, Defect Correction and Quality Evidence</p>
+<p class="meta"><strong>Build:</strong> <code>dama-editor-w15-rc1</code> - scene <code>DamaGame.unity</code> at commit <code>207376b</code>, executed in the Unity Editor in play mode</p>
+<p class="meta"><strong>Platform range:</strong> Android 8.0 (API 26) and above, ARM64, IL2CPP, <code>com.defaultcompany.dama</code></p>
+<p class="meta"><strong>Engine:</strong> Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), C#</p>
+<p class="meta"><strong>Repository:</strong> local Git repository, branch <code>main</code>, code commit <code>207376b</code></p>
+<p class="meta"><strong>Components under test:</strong> <code>Assets/Scripts/Editor/Week15Checks.cs</code>, <code>Assets/Scripts/Editor/A11yAudit.cs</code>,</p>
+<p><code>Assets/Scripts/Editor/Week15Fixes.cs</code>, <code>Assets/Scripts/Editor/Week15Captures.cs</code>, <code>Assets/Scripts/DamaBoard.cs</code>, <code>Assets/Scripts/Core/PlayerProfile.cs</code>, <code>Assets/Scenes/DamaGame.unity</code></p>
+<hr/>
+<h2>1. What this milestone is, and the build it describes</h2>
+<p>This document is the acceptance record for one specific build. The build is identified by the scene, the commit and the way it was executed, because a test result that does not name its subject proves nothing:</p>
+<table>
+<thead><tr>
+<th>---</th>
+<th>---</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Build identifier</td>
+<td><code>dama-editor-w15-rc1</code></td>
+</tr>
+<tr>
+<td>Source revision</td>
+<td><code>207376b</code> ("Week 15 AS3: test harness, defect fixes and play-mode captures")</td>
+</tr>
+<tr>
+<td>Scene</td>
+<td><code>Assets/Scenes/DamaGame.unity</code>, build index 0</td>
+</tr>
+<tr>
+<td>Execution mode</td>
+<td>Unity Editor 6000.6.0f1, play mode, game view 1151 x 584</td>
+</tr>
+<tr>
+<td>Save location</td>
+<td><code>C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama/Dama/profile.json</code></td>
+</tr>
+<tr>
+<td>Produced</td>
+<td>2026-11-26</td>
+</tr>
+</tbody></table>
+<p>Two runs of the <strong>same harness file</strong> are the spine of the record. The baseline run was executed against the code as Week 14 left it, before a single line was changed. The final run was executed against the code at the commit above. Both write a machine-generated case log, and the accessibility audit writes a second pair of logs that are paired row by row. Every status in this document is a cell copied from one of those files.</p>
+<table>
+<thead><tr>
+<th>Artefact</th>
+<th>Run at (UTC)</th>
+<th>Result</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Evidence/test_logs_baseline/</code></td>
+<td>2026-11-26 05:13</td>
+<td>22 passed, <strong>5 failed</strong>, 1 blocked, 0 console errors</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_week15_baseline.log</code></td>
+<td>2026-11-26 05:10</td>
+<td>83 passed, <strong>9 failed</strong>, 0 warnings, 4 not measurable</td>
+</tr>
+<tr>
+<td><code>Evidence/test_logs_final/</code></td>
+<td>2026-11-26 05:15</td>
+<td><strong>27 passed</strong>, 0 failed, 1 blocked, 0 console errors</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_week15_after.log</code></td>
+<td>2026-11-26 05:16</td>
+<td><strong>105 passed</strong>, 0 failed, 0 warnings, 4 not measurable</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_delta_week15.txt</code></td>
+<td>generated</td>
+<td>109 rows re-measured: 72 unchanged, 15 moved, <strong>9 FIXED</strong>, <strong>0 REGRESSED</strong>, 0 dropped, 13 added</td>
+</tr>
+</tbody></table>
+<hr/>
+<h2>2. The test environment, and what it cannot decide</h2>
+<table>
+<thead><tr>
+<th>Item</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Machine</td>
+<td>Windows 10 Home 10.0.19045, x64, 16,277 MB RAM</td>
+</tr>
+<tr>
+<td>Editor</td>
+<td>Unity 6000.6.0f1, Windows Editor target</td>
+</tr>
+<tr>
+<td>Render pipeline</td>
+<td>URP 17.6.0, 2D Renderer</td>
+</tr>
+<tr>
+<td>Input</td>
+<td>Input System 1.20.0, new input path only</td>
+</tr>
+<tr>
+<td>UI</td>
+<td>uGUI 2.6.0; <code>CanvasScaler</code> Scale With Screen Size, reference 1280 x 720, match 0.50</td>
+</tr>
+<tr>
+<td>Canvas rect</td>
+<td>1347.73 x 683.82</td>
+</tr>
+<tr>
+<td>Game view</td>
+<td>1151 x 584</td>
+</tr>
+<tr>
+<td>Domain reload</td>
+<td><strong>disabled</strong> on play-mode entry</td>
+</tr>
+</tbody></table>
+<p>The canvas scaler is what makes a touch floor definable at all: 48 dp at xxhdpi is 144 physical pixels, and 144 / 1.50 = <strong>96 canvas pixels</strong>. That derivation is written into the header of both audit logs so the number is not an opinion. The two type floors - 20 px for a caption, 18 px for any other label - are a <strong>project decision</strong>, not a WCAG number, and both audit headers say so: 20 px is roughly 13.3 dp at this scale.</p>
+<p>What the environment cannot decide is stated in <code>Evidence/environment.md</code> and repeated here, because an acceptance record that hides its blind spots is worth less than one that names them:</p>
+<ul>
+<li><strong>No handset.</strong> <code>adb devices</code> returns <code>List of devices attached</code> with no serial. No device, no logcat.</li>
+<li><strong>No APK.</strong> Editor-only evidence by decision; the Android settings are applied and recorded but nothing was installed.</li>
+<li><strong>One renderer, one resolution.</strong> Every measurement is against the 1280 x 720 reference on one machine.</li>
+<li><strong>Domain reload disabled</strong> means Editor-time statics survive into play mode, so both harnesses reset the profile store to the default data directory before seeding. That reset wipes the real local profile; the consequence is recorded in <code>environment.md</code> section 3 rather than fixed by deleting the code.</li>
+</ul>
+<hr/>
+<h2>3. Acceptance criteria, written before the run</h2>
+<p>The module's completion checkpoint is the frame: no unresolved defect may cause data loss, prevent completion of the core gameplay loop, expose another player's information, or repeatedly crash the application. Those four conditions were turned into four criteria, and two more were added from the Week 14 audit, <strong>before</strong> any test was executed. The order matters: a criterion written after seeing the result is a rationalisation.</p>
+<table>
+<thead><tr>
+<th>Id</th>
+<th>Criterion</th>
+<th>Final</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>CC-1</td>
+<td>A finished match, a saved name and a saved side survive a reload; a corrupt save does not lose the profile silently</td>
+<td><strong>PASS</strong> (<code>TC-DATA-01</code>, <code>TC-DATA-04</code>)</td>
+</tr>
+<tr>
+<td>CC-2</td>
+<td>A match can be started, played, ended and restarted without leaving the app</td>
+<td><strong>PASS</strong> (<code>TC-FLOW-03</code>, <code>TC-RULE-07</code>, <code>TC-RULE-09</code>, <code>TC-RULE-11</code>)</td>
+</tr>
+<tr>
+<td>CC-3</td>
+<td>No other player's information is exposed, because there is no other player and no network path</td>
+<td><strong>PASS</strong> (<code>TC-DATA-05</code>, network absence stated in <code>environment.md</code>)</td>
+</tr>
+<tr>
+<td>CC-4</td>
+<td>No repeated crash: the console must be clean at the end of a full run</td>
+<td><strong>PASS</strong> (0 console errors in both runs)</td>
+</tr>
+<tr>
+<td>AC-5</td>
+<td>Every control is at least 96 x 96 canvas px and nothing overlaps</td>
+<td><strong>PASS</strong> (13 buttons, 1 input field, 0 below floor, 0 overlapping pairs)</td>
+</tr>
+<tr>
+<td>AC-6</td>
+<td>Every caption is at least 20 px, every other label at least 18 px, every control fill at least 3:1</td>
+<td><strong>PASS</strong> (0 <code>S</code> failures, 0 <code>N</code> failures after the fixes)</td>
+</tr>
+</tbody></table>
+<hr/>
+<h2>4. The test suite</h2>
+<p>One harness, <code>Assets/Scripts/Editor/Week15Checks.cs</code>, 1021 lines, two menu items:</p>
+<ul>
+<li><code>Tools &gt; Dama &gt; Week 15 &gt; 1. Baseline Test Run</code></li>
+<li><code>Tools &gt; Dama &gt; Week 15 &gt; 2. Final Test Run</code></li>
+</ul>
+<p>Both write <code>case_log.tsv</code>, <code>summary.txt</code> and <code>console.log</code> into <code>Evidence/test_logs_baseline/</code> or <code>Evidence/test_logs_final/</code>. There are no two scripts to drift apart: the case list, the seeding helpers and the assertions are the same code, and only the output folder differs.</p>
+<table>
+<thead><tr>
+<th>Group</th>
+<th>Cases</th>
+<th>What it asks</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>TC-FLOW</code></td>
+<td>6</td>
+<td>the title screen, starting a match, pause and resume, the sound toggle, leaving a match</td>
+</tr>
+<tr>
+<td><code>TC-RULE</code></td>
+<td>11</td>
+<td>mandatory capture, the jump, the chain, both promotion rows, the flying Dama, both win conditions, the end screen's three obligations</td>
+</tr>
+<tr>
+<td><code>TC-DATA</code></td>
+<td>5</td>
+<td>reload of name and side, banking once, reset, a corrupt save, the sandbox</td>
+</tr>
+<tr>
+<td><code>TC-A11Y</code></td>
+<td>3</td>
+<td>the 96 px floor, overlap, the type floor</td>
+</tr>
+<tr>
+<td><code>TC-BOUND</code></td>
+<td>2</td>
+<td>100 rapid taps, 50 pause/resume cycles</td>
+</tr>
+<tr>
+<td><code>TC-COMPAT</code></td>
+<td>1</td>
+<td>a second device or configuration profile</td>
+</tr>
+</tbody></table>
+<p>Twenty-eight cases. Every one of them records a <strong>measured value</strong>, not a sentence: <code>pieces=24</code>, <code>turn='Turn: RED'</code>, <code>offered=[(1,1), (2,2), ... (6,6)]</code>, <code>repeatRefused=True</code>, <code>timeScale=1.00</code>. A case that can only print <code>PASS</code> is a case that cannot fail.</p>
+<p>The rules are seeded by reflection into the board's grid and then driven through the game's own entry points (<code>ExecuteMove</code>, <code>EndTurn</code>, <code>CheckForWin</code>), so a case exercises the same code a tap does, not a parallel copy of it.</p>
+<hr/>
+<h2>5. Traceability, at a glance</h2>
+<p>The full requirements-side matrix is <code>Evidence/traceability_matrix.md</code>: 22 requirements, each with its cases, its baseline status, its final status and its evidence. The case-side view is below, and it is the honest one, because it shows the five failures in the column where they were found.</p>
+<table>
+<thead><tr>
+<th>Case</th>
+<th>REQ</th>
+<th>Baseline</th>
+<th>Final</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>TC-FLOW-01</code></td>
+<td>REQ-01</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-FLOW-02</code></td>
+<td>REQ-01</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-FLOW-03</code></td>
+<td>REQ-02</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-FLOW-04</code></td>
+<td>REQ-10</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-FLOW-05</code></td>
+<td>REQ-11</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-FLOW-06</code></td>
+<td>REQ-17</td>
+<td><strong>FAIL</strong></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-01</code></td>
+<td>REQ-04</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-02</code></td>
+<td>REQ-04</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-03</code></td>
+<td>REQ-05</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-04</code></td>
+<td>REQ-06</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-05</code></td>
+<td>REQ-06</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-06</code></td>
+<td>REQ-06</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-07</code></td>
+<td>REQ-07</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-08</code></td>
+<td>REQ-09</td>
+<td><strong>FAIL</strong></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-09</code></td>
+<td>REQ-08</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-10</code></td>
+<td>REQ-09</td>
+<td><strong>FAIL</strong></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-RULE-11</code></td>
+<td>REQ-09</td>
+<td><strong>FAIL</strong></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-DATA-01</code></td>
+<td>REQ-13</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-DATA-02</code></td>
+<td>REQ-14</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-DATA-03</code></td>
+<td>REQ-15</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-DATA-04</code></td>
+<td>REQ-16</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-DATA-05</code></td>
+<td>REQ-22</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-A11Y-01</code></td>
+<td>REQ-19</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-A11Y-02</code></td>
+<td>REQ-19</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-A11Y-03</code></td>
+<td>REQ-20</td>
+<td><strong>FAIL</strong></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-BOUND-01</code></td>
+<td>REQ-21</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-BOUND-02</code></td>
+<td>REQ-10</td>
+<td>PASS</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td><code>TC-COMPAT-01</code></td>
+<td>-</td>
+<td><strong>BLOCKED</strong></td>
+<td><strong>BLOCKED</strong></td>
+</tr>
+</tbody></table>
+<p>Two requirements are covered <strong>indirectly</strong> and are marked as gaps rather than passes, in the matrix and here:</p>
+<ul>
+<li><strong>REQ-03</strong> (tap a piece, tap a highlighted square, the turn passes) has no case that drives <code>HandleTap</code> through a board change. <code>TC-RULE-01..06</code> exercise the same move engine by reflection and <code>TC-BOUND-01</code> taps a real piece 100 times without changing the board, but neither is the same claim.</li>
+<li><strong>REQ-12</strong> (move, capture, crown, win <strong>and lose</strong> each play their own clip) has no numbered case. Four of the five clips are observed in <code>test_logs_final/console.log</code>; the <code>lose</code> clip is loaded and wired but <strong>never fired</strong>, because RED won every seeded match. It is written as a partial, not a pass.</li>
+</ul>
+<hr/>
+<h2>6. The baseline run: five failures, in the harness's own words</h2>
+<p>The five failures were not predicted. They were what the first execution produced:</p>
+<pre><code>TC-FLOW-06    FAIL    PausePanel/MenuButton present=False, DamaBoard.ReturnToMenu present=False
+TC-RULE-08    FAIL    WinPanel/SummaryText missing
+TC-RULE-10    FAIL    WinPanel/SummaryText missing
+TC-RULE-11    FAIL    RestartButtonWin=True MenuButtonWin=False
+TC-A11Y-03    FAIL    5 caption(s), 1 label(s) below floor
+                      Text=14px(need 20); Text=14px(need 20); Text=14px(need 20);
+                      Text=14px(need 20); Text=14px(need 20); StatusText=17px(need 18);</code></pre>
+<p>The new accessibility checks found three more failures the Week 14 audit had no way to see, all of them a control whose own fill could not be told from the panel behind it:</p>
+<pre><code>N  FAIL  PausePanel/SoundButton      ratio=2.26:1 need=3.0 fill=#404759 panel=#000000
+N  FAIL  ProfilePanel/ResetButton    ratio=2.55:1 need=3.0 fill=#8C2E2E panel=#000000
+N  FAIL  ProfilePanel/BackButton     ratio=2.27:1 need=3.0 fill=#404759 panel=#000000</code></pre>
+<p>Nine audit failures and five case failures describe <strong>four</strong> defects: two cases can fail for one defect, and one check kind can report the same defect on three controls.</p>
+<hr/>
+<h2>7. The defects, and how each was corrected</h2>
+<p>Full reproduction steps, expected and actual results, and the paired retest quotes are in <code>Evidence/defect_log.md</code>. This is the summary an assessor needs:</p>
+<table>
+<thead><tr>
+<th>ID</th>
+<th>Sev</th>
+<th>What it was</th>
+<th>Requirement</th>
+<th>Correction</th>
+<th>Retest</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>DEF-15-01</td>
+<td><strong>S2</strong></td>
+<td>A match could not be left for the title screen; the pause menu and the end screen had no route out</td>
+<td>REQ-17, REQ-09</td>
+<td><code>Week15Fixes.EnsureButton</code> builds <code>PausePanel/MenuButton</code> and <code>WinPanel/MenuButtonWin</code> beside RESTART; <code>DamaBoard.ReturnToMenu</code> restores <code>Time.timeScale = 1</code>, rebuilds the board, shows <code>GameState.Ready</code></td>
+<td><code>TC-FLOW-06</code> PASS <code>timeScale=1.00</code>; <code>TC-RULE-11</code> PASS <code>MenuButtonWin=True</code></td>
+</tr>
+<tr>
+<td>DEF-15-02</td>
+<td>S3</td>
+<td>Five button captions at 14 px, <code>ProfilePanel/StatusText</code> at 17 px - the smallest text on screen was the caption of the control it sat on</td>
+<td>REQ-20</td>
+<td><code>Week15Fixes.RaiseTypeSizes</code>: a caption below 20 px becomes 22 px bold, a label below 18 px becomes 20 px; nothing already passing is touched</td>
+<td><code>TC-A11Y-03</code> PASS <code>0 caption(s), 0 label(s) below floor</code>; six <code>S</code> rows <code>FIXED</code></td>
+</tr>
+<tr>
+<td>DEF-15-03</td>
+<td>S3</td>
+<td>The end screen named the winner and nothing else - the two ways a match can end were indistinguishable</td>
+<td>REQ-09</td>
+<td><code>Week15Fixes.EnsureSummaryText</code> builds <code>WinPanel/SummaryText</code> in the only free band; <code>DamaBoard.DeclareWinner</code> derives the loser, both counts and the reason from the board and writes them</td>
+<td><code>TC-RULE-08</code> PASS <code>RED WINS.  RED 1-0, BLUE has no pieces left.</code>; <code>TC-RULE-10</code> PASS <code>RED WINS.  RED 1-1, BLUE has no legal move.</code></td>
+</tr>
+<tr>
+<td>DEF-15-04</td>
+<td>S3</td>
+<td>Three control fills at roughly half the required ratio against the black overlay, and no check that could report them</td>
+<td>REQ-20 (WCAG 2.2 SC 1.4.11, 3:1)</td>
+<td><code>A11yAudit.AuditNonTextContrast</code> is the missing check; <code>Week15Fixes.LiftFills</code> lightens a failing fill in its own hue until it clears 3.15:1, but never so far that its white label drops below 4.6:1</td>
+<td>three <code>N</code> rows <code>FIXED</code> at 3.19:1, 3.17:1, 3.16:1</td>
+</tr>
+</tbody></table>
+<p>Open defects after the pass: <strong>none</strong>. Open S1/S2: <strong>none</strong>.</p>
+<p>Two decisions inside those corrections are worth naming, because they are the ones a reviewer would otherwise have to guess at:</p>
+<ul>
+<li><strong><code>DeclareWinner</code> keeps a single parameter.</strong> The plan said it would take <code>(winner, reason)</code>. It does not. A second parameter would have made <code>Week14Checks</code>'s reflection lookup throw <code>AmbiguousMatchException</code>, and it would have created a second place for the winner and the reason to disagree. The method derives both from the board it is already looking at.</li>
+<li><strong>The label wins the tension in DEF-15-04.</strong> Lightening a fill to buy a visible edge spends the contrast of the white text on it. The pass is bounded on both sides - 3.15:1 for the edge, 4.6:1 for the text - and the text bound is the harder one. All three controls still pass their own label contrast at 6.59:1, 6.63:1 and 6.64:1.</li>
+</ul>
+<hr/>
+<h2>8. Regression: what the fixes cost, and what moved</h2>
+<p>A fix pass that is only checked against the failing cases is not a regression test. Three independent checks were made.</p>
+<p><strong>1. The repair script is idempotent, by fingerprint.</strong> <code>Week15Fixes.Fingerprint()</code> hashes the layout it is about to change. The first run reports <code>3 control(s) created, 6 label(s) resized, 5 fill(s) lightened</code> and a hash change <code>5BB40B04 -&gt; 8C0D040E</code>. The second run reports <code>0 / 0 / 0</code> and <code>8C0D040E -&gt; 8C0D040E (UNCHANGED - this run was a no-op)</code>. Its <code>Verify()</code> step then prints <code>13 caption(s) and 14 label(s), 0 below its size floor. 0 button fill(s) below 3.0:1.</code></p>
+<p><strong>2. The audit is re-run in full, and every baseline row is paired.</strong> <code>a11y_delta_week15.txt</code> re-measures all 109 scored rows and reports <strong>0 REGRESSED</strong> and <strong>0 DROPPED</strong> - no baseline row was quietly lost between the two runs. Fifteen rows keep their verdict while their measurement moved, and each is paired rather than ignored. Two examples, both copied from the delta: <code>StartPanel/StartButton/Text L</code> still passes with <code>height=100.0</code>, but the requirement it must clear rose from <code>need=15.7</code> to <code>need=24.6</code> as the caption went from 14 to 22 px; and <code>PausePanel/SoundButton/Text C</code> dropped from <code>9.29:1</code> to <code>6.59:1</code> when the fill behind it was lightened from <code>#404759</code> to <code>#545D74</code>. Both still pass. Both are closer to their line than they were.</p>
+<p><strong>3. The full case suite is re-run, not just the failures.</strong> The final run is 27 passed, 0 failed, 1 blocked - the same 28 cases, with <code>TC-A11Y-01</code> now measuring <strong>13</strong> buttons where the baseline measured 11. The two arrivals are the two MENU buttons, and <code>TC-A11Y-02</code> still reports <code>0 overlapping pairs</code> with them in place.</p>
+<p>The residual risk this section names rather than hides: three controls now sit between 3.16:1 and 3.19:1 against a 3.0 floor, and <code>ProfilePanel/SideButton</code> sits at 3.03:1. The next edit to any of those fills puts them back under the line, and nothing will warn anyone. The audit is to be re-run before every submission.</p>
+<hr/>
+<h2>9. Boundary and negative tests</h2>
+<table>
+<thead><tr>
+<th>Case</th>
+<th>What it does</th>
+<th>Result</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>TC-BOUND-01</code></td>
+<td>100 taps in one frame on a real piece</td>
+<td><code>pieces 24-&gt;24 matchId 0-&gt;0 throws='' stillAnswers=True</code> - no crash, no board change, no match banked</td>
+</tr>
+<tr>
+<td><code>TC-BOUND-02</code></td>
+<td>50 pause/resume cycles</td>
+<td><code>timeScale=1.00 pausePanel=False</code> - the clock is restored every time</td>
+</tr>
+<tr>
+<td><code>TC-DATA-04</code></td>
+<td>A corrupt save file, written on purpose, then a load</td>
+<td><code>error='JSON parse error: Invalid value.' quarantined=True emptyDefaults=True recovered=True reloaded=True</code> - the bad file is set aside, not overwritten in place, and the game starts</td>
+</tr>
+<tr>
+<td><code>TC-DATA-02</code></td>
+<td>The same finished match banked twice</td>
+<td><code>afterFirst=1 afterRepeat=1 repeatRefused=True afterReload=1</code> - a repeat cannot inflate the record</td>
+</tr>
+<tr>
+<td><code>TC-DATA-05</code></td>
+<td>A save path outside the sandbox, refused</td>
+<td><code>insideSandbox=True rejectedCopyInsideSandbox=True</code></td>
+</tr>
+</tbody></table>
+<p>The invalid-value and interrupted-network cases from the module's list are answered where they exist in this game: the corrupt save is the invalid value, and there is no network path to interrupt. <code>REQ-22</code> is that absence, stated and checked - the project contains no networking code, as recorded in <code>environment.md</code> - rather than silently omitted.</p>
+<hr/>
+<h2>10. Compatibility: blocked, with the command that failed</h2>
+<p>The module asks for at least two approved device or configuration profiles where resources permit, otherwise one physical device and one approved emulator or configuration. Neither was available.</p>
+<pre><code>&gt; adb devices
+List of devices attached</code></pre>
+<p>No serial, so no device. There is no APK this week by decision, so no emulator profile could be installed either. <code>TC-COMPAT-01</code> is recorded <strong>BLOCKED</strong> in both logs. It is not counted as a pass, and no reviewer should read the 22 or 27 pass counts as covering it. What would clear it: an Android build, one handset on <code>adb</code>, and this same harness run against it - the harness is Editor-only today, so the honest next step is a build with on-device <code>logcat</code> capture rather than pretending the Editor is a phone.</p>
+<hr/>
+<h2>11. Acceptance summary</h2>
+<table>
+<thead><tr>
+<th></th>
+<th>Count</th>
+<th>Items</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Cases</td>
+<td>28</td>
+<td>6 flow, 11 rules, 5 data, 3 accessibility, 2 boundary, 1 compatibility</td>
+</tr>
+<tr>
+<td>Passed (final)</td>
+<td><strong>27</strong></td>
+<td>every case except the blocked one</td>
+</tr>
+<tr>
+<td>Failed (final)</td>
+<td><strong>0</strong></td>
+<td>the five baseline failures are the same five cases, now passing</td>
+</tr>
+<tr>
+<td>Blocked</td>
+<td><strong>1</strong></td>
+<td><code>TC-COMPAT-01</code>, reason quoted above</td>
+</tr>
+<tr>
+<td>Deferred</td>
+<td>2</td>
+<td><code>REQ-03</code> and <code>REQ-12</code>, covered indirectly and labelled as gaps, not passes</td>
+</tr>
+<tr>
+<td>Open defects</td>
+<td>0</td>
+<td>0 at S1, 0 at S2, 0 at S3</td>
+</tr>
+<tr>
+<td>Audit rows (final)</td>
+<td>109 scored</td>
+<td>105 passed, 0 failed, 4 not measurable in both runs</td>
+</tr>
+</tbody></table>
+<p><strong>Is the build ready for optimization (Week 16)?</strong> Yes, with conditions, and the conditions are the point:</p>
+<ul>
+<li><strong>Ready:</strong> the four conditions of the module's completion checkpoint each have a case and all four pass. The core loop completes and can be left and re-entered. Data loss is survivable - the corrupt-save case recovers. Nothing crashes twice, and nothing crashed once: 0 console errors in both runs. There is no shared data to expose. The accessibility floors are met and mechanised, so Week 16's profiling runs cannot quietly break them without the audit saying so.</li>
+<li><strong>Not ready to call finished:</strong> one case is blocked (compatibility), two requirements are covered indirectly, and every measurement was taken in the Editor at one resolution. Week 16 measures performance; it must not be read as the week compatibility or on-device behaviour was proven.</li>
+</ul>
+<p>The honest one-line verdict: <strong>the Editor build of commit <code>207376b</code> passes its own written acceptance criteria, and nothing in this record claims it was tested on a phone.</strong></p>
+<hr/>
+<h2>12. Evidence index</h2>
+<table>
+<thead><tr>
+<th>File</th>
+<th>Proves</th>
+<th>Does <strong>not</strong> prove</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Evidence/requirements.md</code></td>
+<td>22 requirements, each testable and naming the script that implements it, written before any test</td>
+<td>That they are the right requirements</td>
+</tr>
+<tr>
+<td><code>Evidence/acceptance_criteria.md</code></td>
+<td>CC-1..CC-4 and AC-5..AC-6, written before the run</td>
+<td>Anything about a device</td>
+</tr>
+<tr>
+<td><code>Evidence/traceability_matrix.md</code></td>
+<td>Every requirement linked to its cases or to a stated gap</td>
+<td>That indirect coverage is coverage</td>
+</tr>
+<tr>
+<td><code>Evidence/test_logs_baseline/</code></td>
+<td>22 passed, 5 failed, 1 blocked, with the measured value of every case</td>
+<td>That the failures were known in advance</td>
+</tr>
+<tr>
+<td><code>Evidence/test_logs_final/</code></td>
+<td>27 passed, 0 failed, 1 blocked, same cases</td>
+<td>On-device behaviour</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_week15_baseline.log</code></td>
+<td>83 passed, 9 failed, 4 not measurable, thresholds derived in the header</td>
+<td>That a passing ratio is comfortable</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_week15_after.log</code></td>
+<td>105 passed, 0 failed, 4 not measurable</td>
+<td>That the layout is pleasant</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_delta_week15.txt</code></td>
+<td>All 109 rows paired, 0 regressed, 0 dropped</td>
+<td>That nothing outside the audit changed</td>
+</tr>
+<tr>
+<td><code>Evidence/defect_log.md</code></td>
+<td>Four defects with reproduction, root cause, fix, commit reference and retest quote</td>
+<td>That no other defect exists unrecorded</td>
+</tr>
+<tr>
+<td><code>Evidence/environment.md</code></td>
+<td>The machine, the scene, the disabled domain reload, the two <code>adb</code> attempts, four stated limits</td>
+<td>Anything about performance</td>
+</tr>
+<tr>
+<td><code>Evidence/E1..E4</code> (play mode)</td>
+<td>The pause panel with MENU, the end screen with the summary and MENU, the profile at 20 px, a mid-match board</td>
+<td>How it looks on a phone</td>
+</tr>
+<tr>
+<td><code>Evidence/week15_shots.txt</code></td>
+<td>The capture run in order, with each screenshot's write confirmed on disk</td>
+<td>That the images are the only states the game can reach</td>
+</tr>
+</tbody></table>
+<p>The four captures exist because a log can be right while the screen is wrong. They were taken through the game's own entry points, and the harness rebuilds the drawn pieces from the seeded grid before each one - the first attempt did not, and E2 showed <code>Red: 12 Blue: 12</code> in the HUD beside a <code>1-1</code> summary. That discrepancy is disclosed inside <code>week15_shots.txt</code>, and the rebuilt-piece lines in the same file are what make the counts in the pictures checkable.</p>
+<hr/>
+<h2>13. Reproducing the runs</h2>
+<pre><code>1. Tools &gt; Dama &gt; Week 15 &gt; 1. Baseline Test Run     (on the Week 14 code, before any fix)
+      -&gt; Evidence/test_logs_baseline/
+2. A11yAudit.RunWeek15() from the Week 15 baseline audit path
+      -&gt; Evidence/a11y_week15_baseline.log
+3. Tools &gt; Dama &gt; Week 15 &gt; 3. Apply Defect Fixes    (run twice: the second run must report 0/0/0)
+4. Tools &gt; Dama &gt; Week 15 &gt; 2. Final Test Run
+      -&gt; Evidence/test_logs_final/
+5. A11yAudit.RunWeek15() again
+      -&gt; Evidence/a11y_week15_after.log
+6. Tools &gt; Dama &gt; Week 15 &gt; 4. Capture Evidence
+      -&gt; Evidence/E1..E4, Evidence/week15_shots.txt</code></pre>
+<p><code>Evidence/HOW_TO_RERUN.txt</code> carries the same sequence with the two known interruptions written down: a script recompile that lands while play mode is running stalls the capture harness (domain reload is disabled), and the accessibility audit's menu item can return success without emitting a log line, so the timestamped file is the proof it ran.</p>
+<hr/>
+<h2>14. Disclosure record</h2>
+<p>AI assistance was used for the structure of this document, for drafting, and for writing the harness, the fix pass and the audit extension. Every number in this document is copied from a generated artefact - <code>case_log.tsv</code>, <code>summary.txt</code>, the two audit logs, the delta file or the fix pass's own console output - and none is typed from memory. Every claim was re-read against those files before submission.</p>
+<table>
+<thead><tr>
+<th>Item</th>
+<th>Assisted</th>
+<th>By whom</th>
+<th>How it was checked</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Test plan and case list</td>
+<td>Structure and wording drafted with AI</td>
+<td>Charibelle Guzman</td>
+<td>Every case was executed; the five failures were not predicted and were not removed</td>
+</tr>
+<tr>
+<td><code>Week15Checks.cs</code> (1021 lines)</td>
+<td>Written with AI</td>
+<td>Charibelle Guzman</td>
+<td>Run twice against two code revisions; the logs are the output of the file, not a description of it</td>
+</tr>
+<tr>
+<td><code>Week15Fixes.cs</code></td>
+<td>Written with AI</td>
+<td>Charibelle Guzman</td>
+<td>Run twice to prove idempotence; the fingerprint values are printed by the script</td>
+</tr>
+<tr>
+<td><code>DamaBoard.cs</code> changes</td>
+<td>Written with AI</td>
+<td>Charibelle Guzman</td>
+<td>Driven by the harness through the game's own entry points, and captured in play mode</td>
+</tr>
+<tr>
+<td><code>A11yAudit.cs</code> extension</td>
+<td>Written with AI</td>
+<td>Charibelle Guzman</td>
+<td>The thresholds are derived in the log header; Week 14's three logs are unchanged and still committed</td>
+</tr>
+<tr>
+<td>This document</td>
+<td>Drafted with AI, corrected against the logs</td>
+<td>Charibelle Guzman</td>
+<td>Cell-by-cell against the files named in every table</td>
+</tr>
+</tbody></table>
+<p>What was <strong>not</strong> done by AI: the decision to fix all four findings rather than defer them, the decision to record the missing handset as BLOCKED instead of estimating a result, and the decision to mark <code>REQ-03</code> and <code>REQ-12</code> as gaps. Those are the three places where the record could have been made to look better, and was not.</p>
+<hr/>
+<h2>15. How this meets the Week 15 laboratory requirements</h2>
+<table>
+<thead><tr>
+<th>Required</th>
+<th>Where</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Build identifier, supported platform range, test environment, acceptance criteria</td>
+<td>Sections 1, 2 and 3; <code>Evidence/environment.md</code></td>
+</tr>
+<tr>
+<td>Requirements-to-test traceability matrix</td>
+<td>Section 5 and <code>Evidence/traceability_matrix.md</code> (22 requirements, 28 cases)</td>
+</tr>
+<tr>
+<td>Functional tests for navigation, input, scoring, win and loss, saving, audio, pause and reset</td>
+<td>Section 4: <code>TC-FLOW</code>, <code>TC-RULE</code>, <code>TC-DATA</code>, <code>TC-A11Y</code></td>
+</tr>
+<tr>
+<td>Negative and boundary tests: rapid repeated input, missing or invalid data, interrupted network, low resources, backgrounding</td>
+<td>Section 9: <code>TC-BOUND-01</code>, <code>TC-BOUND-02</code>, <code>TC-DATA-04</code>; interrupted network is not applicable and <code>REQ-22</code> is that absence, stated</td>
+</tr>
+<tr>
+<td>Compatibility on two profiles, or one device and one approved configuration</td>
+<td>Section 10: <strong>BLOCKED</strong>, with the command output and what would clear it</td>
+</tr>
+<tr>
+<td>Defect record with id, severity, reproduction, expected, actual, evidence, status, commit</td>
+<td><code>Evidence/defect_log.md</code> (DEF-15-01 to DEF-15-04)</td>
+</tr>
+<tr>
+<td>Correct high-priority defects, rerun the failed cases, regress the affected features</td>
+<td>Sections 7 and 8: baseline to final on the same cases, plus the idempotence proof and the paired audit</td>
+</tr>
+<tr>
+<td>Acceptance summary: passed, failed, blocked, deferred, and whether the build is ready for optimization</td>
+<td>Section 11</td>
+</tr>
+<tr>
+<td>The tested build and commit identified</td>
+<td>Section 1: <code>dama-editor-w15-rc1</code>, commit <code>207376b</code></td>
+</tr>
+<tr>
+<td>Completion checkpoint: no unresolved defect causing data loss, blocking the loop, exposing another player's data, or repeatedly crashing</td>
+<td>Section 3, CC-1 to CC-4, all PASS, with the cases named</td>
+</tr>
+</tbody></table>
+
+</body>
+</html>
