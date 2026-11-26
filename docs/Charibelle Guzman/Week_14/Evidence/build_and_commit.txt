@@ -1,0 +1,127 @@
+DAMA - WEEK 14 - BUILD SETTINGS AND COMMIT RECORD
+Student : Charibelle Guzman (BSIT-4)
+Theme   : Philippine Games and Sports
+Unity   : 6000.6.0f1
+Written : 2026-11-26
+
+----------------------------------------------------------------------------
+1. TARGET PLATFORM SETTINGS (read back from ProjectSettings/ProjectSettings.asset)
+----------------------------------------------------------------------------
+Build target            : Android
+Bundle identifier       : com.defaultcompany.dama
+Product name            : dama        bundleVersion 1.0
+Minimum API level       : Android 8.0 (API 26)          AndroidMinSdkVersion: 26
+Target API level        : Automatic - highest installed AndroidTargetSdkVersion: 0
+CPU architecture        : ARM64 only                     AndroidTargetArchitectures: 2
+Scripting backend       : IL2CPP                         scriptingBackend: (Android: 1)
+Internet permission     : NOT requested                  ForceInternetPermission: 0
+
+These are the same values Week 13 recorded. They were not changed this week and
+nothing in Week 14 needed them changed: an accessibility pass and an audio layer
+do not touch the platform configuration. They are recorded again because they are
+the settings a build of THIS commit would use, and the audit's touch floor is
+derived from the screen class they imply.
+
+Why these values, in one line each:
+  - API 26 is the floor current Unity 6 Android builds support, so no device that
+    can install the game is excluded by a needless restriction.
+  - ARM64 only: 32-bit ARM is no longer accepted by Google Play for new
+    submissions, and one architecture keeps the download small.
+  - IL2CPP: a native build is harder to decompile than the Mono backend, which
+    backs up the Week 13 point that the delivered game resists casual editing.
+  - No internet permission: Dama is offline and two-player. The app declares only
+    what it uses.
+
+----------------------------------------------------------------------------
+2. HOW THESE SETTINGS ARE APPLIED
+----------------------------------------------------------------------------
+They are not clicked together by hand. They are applied by a script:
+
+  Assets/Scripts/Editor/AndroidBuildSetup.cs
+  Unity menu:  Tools > Android > Apply Mobile Build Settings
+
+Re-running it is idempotent - it re-applies the same values - so the platform
+declaration can be reproduced from the repository instead of described.
+
+----------------------------------------------------------------------------
+3. BUILD LIST (ProjectSettings/EditorBuildSettings.asset)
+----------------------------------------------------------------------------
+  Index 0 : Assets/Scenes/DamaGame.unity     enabled
+  Index 1 : Assets/Scenes/SampleScene.unity  disabled
+
+DamaGame must stay index 0, or the installed game would open the empty sample
+scene. The machine pre-test's harness alert ("the run played the editor's own
+level") is exactly this class of problem; the build list itself is correct.
+
+----------------------------------------------------------------------------
+4. WHAT WAS BUILT FOR THIS WEEK
+----------------------------------------------------------------------------
+No APK or AAB is attached to this submission.
+
+The runtime evidence for Week 14 is the Editor in play mode, driven by
+Tools > Dama > Week 14 > 3. Capture Week 14 Evidence. Those three captures
+(E1-E3 in the Evidence folder) are of the real GameCanvas in the real
+DamaGame.unity scene, with the real GameFeedback component playing the five
+clips and the real profile store being written.
+
+The accessibility audit runs in the Editor, not in play mode, because it walks
+the scene's canvas hierarchy including the panels that are switched off. That is
+a deliberate difference from the captures: the audit measures the layout as
+authored, and the captures prove the layout as drawn.
+
+Stated plainly, so there is no false impression: "the game runs in the Editor"
+and "the game was installed on a phone and launched" are two different claims.
+Only the first one is made here. Consequences of that limit are named where they
+belong - the haptic in PT6 section 5, the 96 px floor's derivation in both audit
+log headers, and the phone-size question in the README limitations.
+
+----------------------------------------------------------------------------
+5. COMMIT
+----------------------------------------------------------------------------
+Branch          : main
+Commit          : 1998b0ca (short 1998b0c)   "Week 14 PT6: accessibility audit,
+                  repair pass, audio feedback and play-mode evidence"
+Files in commit : 35 changed, 2499 insertions, 59 deletions
+
+What the commit contains:
+  Assets/Scripts/Editor/A11yAudit.cs           the three-check audit
+  Assets/Scripts/Editor/AccessibilityBuild.cs  the idempotent repair pass
+  Assets/Scripts/Editor/Week14Checks.cs        gated captures + feedback transcript
+  Assets/Scripts/Editor/SubmissionDocBuilder.cs  replaces Week13DocBuilder.cs,
+                                               generalised to a week + doc list
+  Assets/Scripts/Core/GameFeedback.cs          five clips, one haptic, one toggle
+  Assets/Audio/Generated/Dama_{Move,Capture,Crown,Win,Lose}.mp3   the five clips
+  Assets/Scripts/DamaBoard.cs                  the call sites and [Feedback] logs
+  Assets/Scenes/DamaGame.unity                 raised controls, darkened fills,
+                                               the new PausePanel/SoundButton
+  docs/Charibelle Guzman/Week_14/Evidence/*    the two audit logs, the delta, the
+                                               three captures, the transcript and
+                                               the machine pre-test record
+
+Deliberately left out of this commit, so they cannot be mistaken for the game:
+  - Assets/Plugins/NuGet/*.dll   editor tool dependencies, unrelated to Dama.
+  - Packages/Aura/               assistant tooling.
+  - docs/Zedrich Abrera/ and the module .docx   reference material, not this
+                                 student's work and never cited.
+  - The written documents. A document cannot contain the hash of the commit that
+    contains it, so SA6, PT6, the reflection, the playtest kit and this file are
+    in the documentation commit that follows.
+
+Git reports this commit as a 70% rename of Week13DocBuilder.cs to
+SubmissionDocBuilder.cs, which is accurate: the converter was carried forward
+with a week table and blockquote support added.
+
+To check the commit from a terminal:
+
+  git show --stat 1998b0c
+  git log -1 --format="%H %s"
+
+----------------------------------------------------------------------------
+6. WHAT THIS RECORD IS AND IS NOT
+----------------------------------------------------------------------------
+IS     : proof of the platform configuration, of the scene order, and of an
+         exact source revision that every number in SA6, PT6 and the reflection
+         refers to.
+IS NOT : proof that the game was built and installed, proof that the haptic
+         fires, or proof of anything about a physical phone. Those claims are
+         not made anywhere in this submission.

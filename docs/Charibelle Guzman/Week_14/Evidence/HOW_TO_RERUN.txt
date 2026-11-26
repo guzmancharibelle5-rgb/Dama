@@ -1,0 +1,213 @@
+DAMA - WEEK 14 - HOW TO RE-RUN THE CHECKS, THE CAPTURES AND THE DOCUMENTS
+Student : Charibelle Guzman (BSIT-4)
+Unity   : 6000.6.0f1
+Written : 2026-11-26
+
+Everything in this folder can be regenerated from the project. Nothing was typed
+out by hand. Three editor menu items produce every measured artefact, and two more
+build and print the documents:
+
+  Tools > Dama > Week 14 > 1. Run Accessibility Audit      -> a11y_baseline.log, then a11y_after.log
+  Tools > Dama > Week 14 > 2. Apply Accessibility Fixes    -> the repairs, plus a fingerprint
+  Tools > Dama > Week 14 > 3. Capture Week 14 Evidence     -> E1-E3 + feedback_lines.txt
+  Tools > Dama > Submission > Build Week 14 HTML           -> others/*.html
+  (then one print-to-PDF command, section 5)
+
+----------------------------------------------------------------------------
+BEFORE YOU START
+----------------------------------------------------------------------------
+1. Open the project at:  E:\Damath Charry\dama
+2. Open the scene:       Assets/Scenes/DamaGame.unity
+3. Compile clean first. If the Console shows compile errors, the menu items do
+   not exist yet - Unity hides menu items from scripts that failed to compile.
+4. Menu 3 needs the editor OUT of play mode - it starts play mode itself.
+
+----------------------------------------------------------------------------
+RUN 1 - THE ACCESSIBILITY AUDIT
+----------------------------------------------------------------------------
+Menu: Tools > Dama > Week 14 > 1. Run Accessibility Audit
+
+What happens:
+  - It walks every Text, Button and InputField under GameCanvas, including the
+    panels that are switched OFF. The pause panel and the profile panel are the
+    ones that matter, and neither is visible from the start screen.
+  - It runs three checks: C contrast (4.5:1 normal, 3.0:1 large), L label fit
+    (rect.height >= fontSize x 1.12), T touch target (96 x 96 canvas px).
+  - It writes, on the FIRST run only, a11y_baseline.log; on every later run it
+    writes a11y_after.log. Both get a timestamped copy alongside.
+
+What to look for in the Console:
+  [A11yAudit] BASELINE run: 45 passed, 10 failed, 0 warnings, 2 not measurable.
+  [A11yAudit] AFTER run:    58 passed,  0 failed, 0 warnings, 2 not measurable.
+
+*** THE TRAP, said loudly because it is silent: ***
+The label is chosen by File.Exists(BaselinePath) - "if the baseline exists, this
+is an after run". Deleting a11y_baseline.log therefore does NOT reset the audit;
+it silently relabels the NEXT run as the baseline and destroys the comparison this
+week is built on. If you want a genuine new baseline, delete a11y_baseline.log AND
+a11y_after.log AND a11y_delta.txt together, then run menu 1 twice.
+
+Why 96 px and not 144: on the 1280x720 reference canvas at match 0.50, a 1080p
+phone (1920x1080) gives a uniform 1.50 scale. Android's 48 dp at xxhdpi is
+48 x 3 = 144 physical px, and 144 / 1.5 = 96 canvas px. The header of every log
+states this derivation; the number is not arbitrary and must not be raised to 144
+without redoing that arithmetic.
+
+----------------------------------------------------------------------------
+RUN 2 - THE REPAIR PASS
+----------------------------------------------------------------------------
+Menu: Tools > Dama > Week 14 > 2. Apply Accessibility Fixes
+
+Order matters on a fresh clone: run menu 1 FIRST (to have a baseline), then menu 2,
+then menu 1 again (to have the after log). Menu 2 on a build that has already been
+repaired is a no-op, and says so.
+
+What it does, each by rule rather than by hand-picked value:
+  contrast   darkens a failing fill by 3% in its own hue and re-measures, until
+             the label clears its threshold. It never changes the hue and never
+             swaps the palette, so RESUME stays green and RESTART stays amber.
+  touch      raises any Button or InputField below 96 px, keeping its top edge, so
+             captions do not move.
+  layout     re-stacks only the columns whose sizes changed (12 px gap, 12 px
+             bottom margin), then separates any two sibling controls that still
+             overlap, clamped to the panel's own rect.yMin.
+  new        adds GameCanvas/PausePanel/SoundButton (320 x 96) if it is missing.
+
+Proof that it is safe to run twice - the fingerprint covers every control's anchor,
+size and position:
+
+  [AccessibilityBuild] fingerprint 4C3E2E0C -> 4C3E2E0C (UNCHANGED - this run was a no-op)
+
+If the two hashes differ on a second run, the pass is not idempotent and something
+in it is nudging the layout by a pixel each time. Do not simply run it a third
+time - find the line that moved.
+
+Two coordinate traps this pass already fell into, in case it is edited later:
+  1. RectTransform.rect is PIVOT-LOCAL. rect.yMax is a distance from the control's
+     own pivot, not a position in its panel. Comparing two controls' yMax values
+     compares nothing. Use world corners (GetWorldCorners) converted with
+     panel.InverseTransformPoint, which is what PanelRect() does.
+  2. A panel's floor is panel.rect.yMin, not 0. A clamp against 0 parks controls in
+     the middle of a pivot-centred panel.
+  And a third: to move "the row" of profile buttons, select siblings by anchorMin.y,
+  not by position - BACK, SAVE and RESET sit at three different anchors on one row.
+
+----------------------------------------------------------------------------
+RUN 3 - THE CAPTURES AND THE FEEDBACK TRANSCRIPT
+----------------------------------------------------------------------------
+Menu: Tools > Dama > Week 14 > 3. Capture Week 14 Evidence
+
+  1. It resets the real profile, enters play mode, and seeds wins=2 losses=1.
+  2. It captures, in this order:
+       E3_profile_panel.png   the profile panel with real content
+       E2_hud_in_match.png    the HUD over the board after StartGame()
+       E1_pause_sound.png     the pause panel, reading SOUND: ON
+  3. It then drives the rules through one move, one capture, one promotion, a win
+     and a loss, and writes feedback_lines.txt.
+  4. It stops play mode on its own. About 5 seconds.
+
+Do not click in the Game view while it runs. Expected tail:
+  [Week14Checks] Pause panel active=True, SOUND label='SOUND: ON'.
+  [Week14Checks] Wrote feedback_lines.txt with 14 line(s).
+
+Open feedback_lines.txt and check the second-to-last line reads:
+  Kinds fired: move, capture, crown, win, lose (5 of 5)
+
+If it reads 4 of 5 with crown missing, the harness put the promotion test piece on
+the wrong square - BLUE promotes at y == 0 and RED at y == 7, and a BLUE piece
+"being promoted" plays a move sound and no crown. That is what happened here; see
+week14_shots.txt section 3.
+
+----------------------------------------------------------------------------
+THE TWO PROJECT QUIRKS THAT WILL TRIP YOU UP
+----------------------------------------------------------------------------
+1. Domain reload on entering play mode is DISABLED. Editor-time statics survive
+   into play mode. Every harness in this project calls
+   PlayerProfile.UseDefaultDataDirectory() and ResetProfile() before seeding, and
+   GameFeedback reads its own state from PlayerPrefs, not from a static. If you add
+   a run, do the same.
+2. The game pauses and ends by setting Time.timeScale = 0. Anything keyed to
+   deltaTime freezes with it - including any new feedback code. Audio itself is
+   unaffected, but the decision to play it must not be gated on a scaled clock.
+
+----------------------------------------------------------------------------
+RUN 4 - THE DOCUMENTS
+----------------------------------------------------------------------------
+Menu: Tools > Dama > Submission > Build Week 14 HTML
+      (or Build Week 13 HTML, or Build All HTML)
+
+It converts others/*.md to print-ready HTML beside them, with one shared print
+stylesheet. The HTML is generated from the markdown, so the two cannot disagree.
+Supported subset: headings, paragraphs, tables, bullet and numbered lists, fenced
+code, blockquotes, inline code, bold, italic, rules and one figure image.
+
+SubmissionDocBuilder.cs replaced Week13DocBuilder.cs this week. The converter is
+the same code with a week table on top, so Week 13's HTML can still be rebuilt -
+that is what Tools > Dama > Submission > Build Week 13 HTML is for. Rebuilding
+it changes nothing inside the three documents; the only difference is that the
+shared stylesheet grows by the blockquote rule, which Week 13 does not use
+(verified by rebuilding and diffing: 10 added lines, 0 removed).
+
+----------------------------------------------------------------------------
+RUN 5 - PRINTING THE THREE PDFs
+----------------------------------------------------------------------------
+The PDFs at the week root are printed from the HTML above with a headless browser,
+which is the only step outside Unity:
+
+  "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" ^
+    --headless=new --disable-gpu --no-pdf-header-footer ^
+    --print-to-pdf="<week>\Guzman_Charibelle_SA6.pdf" ^
+    "file:///<week>/others/Guzman_Charibelle_SA6.html"
+
+...and the same for PT6 and the Week14 reflection. Spaces in the path must be
+encoded as %20 in the file:// URL. The @page rule in the stylesheet is what sets
+A4 and the margins; do not remove it or the PDF comes out letter-sized.
+
+----------------------------------------------------------------------------
+WHAT LANDS WHERE
+----------------------------------------------------------------------------
+docs/Charibelle Guzman/Week_14/
+  Guzman_Charibelle_SA6.pdf                the usability and accessibility analysis
+  Guzman_Charibelle_PT6.pdf                the feature, its measurements and its proof
+  Guzman_Charibelle_Week14_Reflection.pdf  the weekly self-assessment
+  others/                                  the same three as .md and .html, plus
+                                           SA6_audit_loop.svg
+  Playtest/01_consent_form.md              consent and information sheet
+  Playtest/02_session_script.md            the moderator's exact wording and the five tasks
+  Playtest/03_task_cards.md                the participant's cards
+  Playtest/04_observation_sheet.md         one sheet per participant
+  Playtest/05_facilitator_checklist.md     setup, rules, and what to do when a session goes wrong
+  Evidence/
+    a11y_baseline.log                      the audit before any fix
+    a11y_after.log                         the audit after the repair pass
+    a11y_delta.txt                         every failure paired with its after value
+    a11y_audit_20261126_*.log              timestamped copies of both runs
+    E1_pause_sound.png                     the pause panel with SOUND: ON
+    E2_hud_in_match.png                    the HUD over the board
+    E3_profile_panel.png                   the profile panel
+    feedback_lines.txt                     the [Feedback] transcript
+    autopilot_session.md                   the machine pre-test - not a human session
+    week14_shots.txt                       this week's Console transcript
+    build_and_commit.txt                   settings, scene order, commit id
+    HOW_TO_RERUN.txt                       this file
+
+----------------------------------------------------------------------------
+IF SOMETHING GOES WRONG
+----------------------------------------------------------------------------
+No menu item at all        -> compile errors. Fix them, wait for the recompile.
+Audit says "baseline" when you wanted "after"
+                           -> a11y_baseline.log was deleted. See the trap above.
+A control is off-screen    -> the de-overlap pass ran with pivot-local boxes. Check
+                              that PanelRect() is used for every comparison.
+Audit passes but the game looks wrong
+                           -> it is telling you the truth: contrast, fit and target
+                              size are three things. Type size, meaning and order
+                              are not among them.
+Captures show the wrong panel
+                           -> the wait-for-PNG gate was bypassed. CaptureLanded must
+                              be in the stage condition, and the state must not
+                              change until it returns true.
+PDF is letter-sized        -> the @page rule was dropped from the stylesheet.
+Moved the whole project    -> every path is built from the project root, so
+                              everything follows the project. Nothing is hardcoded
+                              to E:\Damath Charry.

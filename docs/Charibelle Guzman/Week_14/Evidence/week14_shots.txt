@@ -1,0 +1,97 @@
+DAMA - WEEK 14 - CAPTURE RUN TRANSCRIPT
+Student : Charibelle Guzman (BSIT-4)
+Scene   : Assets/Scenes/DamaGame.unity
+Harness : Tools > Dama > Week 14 > 3. Capture Week 14 Evidence
+
+This file is the Unity Console's own record of the capture run, transcribed line
+for line with the editor's timestamps. It is not a summary and nothing was
+rewritten: the three runs below are three consecutive attempts, because the first
+two revealed a bug in the harness itself (see section 3).
+
+Times are the editor's local clock (+08:00). The audit logs quote UTC; the two are
+eight hours apart and are not a discrepancy.
+
+----------------------------------------------------------------------------
+1. FINAL RUN - 2026-11-26 12:10:06 to 12:10:11 (+08:00)
+----------------------------------------------------------------------------
+12:10:06  [Week14Checks] Entering play mode for the Week 14 captures.
+12:10:08  [Week14Checks] Seeded the profile: wins=2 losses=1 best=2 entries.
+12:10:08  [Week14Checks] Requested E3_profile_panel.png ->
+          ...\Week_14\Evidence\E3_profile_panel.png
+12:10:08  [Week14Checks] Wrote E3_profile_panel.png (68997 bytes).
+12:10:09  [Week14Checks] Requested E2_hud_in_match.png ->
+          ...\Week_14\Evidence\E2_hud_in_match.png
+12:10:09  [Week14Checks] Wrote E2_hud_in_match.png (49357 bytes).
+12:10:10  [Week14Checks] Pause panel active=True, SOUND label='SOUND: ON'.
+12:10:10  [Week14Checks] Requested E1_pause_sound.png ->
+          ...\Week_14\Evidence\E1_pause_sound.png
+12:10:10  [Week14Checks] Wrote E1_pause_sound.png (47464 bytes).
+12:10:11  [Week14Checks] Wrote feedback_lines.txt with 14 line(s).
+
+Reading it: the requested/wrote pairs are the gate working. A PNG is only "written"
+once the file exists on disk with a non-zero length, and the run does not advance
+to the next stage until then, because ScreenCapture.CaptureScreenshot completes a
+frame or two after the call.
+
+The three images are the submission's E3, E2 and E1. They were inspected by eye
+after the run: the pause panel shows SOUND: ON with no control overlapping a
+neighbour, the HUD shows the turn and both counts over the board, and the profile
+panel shows all five raised controls inside the canvas with nothing clipped.
+
+----------------------------------------------------------------------------
+2. WHAT THE THREE CAPTURES SHOW
+----------------------------------------------------------------------------
+E3  profile panel    seeded to wins=2 losses=1 and two best-time entries, so the
+                     panel is photographed with real content rather than empty
+E2  in-match HUD     after StartGame(), over the board
+E1  pause panel      after PauseGame(): the panel with the new SOUND control
+
+Each capture is requested only after the state it photographs has settled, and
+the state is not changed until its PNG has landed.
+
+----------------------------------------------------------------------------
+3. THE TWO EARLIER RUNS - AND THE BUG THEY EXPOSED
+----------------------------------------------------------------------------
+12:08:44 - 12:08:49   wrote E3, E2, E1 ... then
+                      [Week14Checks] Wrote feedback_lines.txt with 12 line(s).
+
+12:09:31 - 12:09:34   the same three captures, then
+                      [Week14Checks] Wrote feedback_lines.txt with 12 line(s).
+
+12:10:06 - 12:10:11   the final run: 14 line(s).
+
+The transcript's last section prints how many of the five event kinds fired. Both
+early runs printed:
+
+    Kinds fired: move, capture, win, lose (4 of 5)
+    Not observed in this run: crown. It is not claimed as working.
+
+The cause was in the harness, not in the game. It put a RED man on (3, 6) and
+moved it to (2, 7) expecting a promotion - but (3, 6) was occupied by a BLUE
+piece, so the move was BLUE's, and BLUE promotes on the row at the OTHER end of
+the board (y == 0, not y == 7). The move played. The move sound played. Nothing
+was thrown and nothing looked wrong on screen. Only the "kinds fired" count
+noticed that one of the five was missing.
+
+The fix was one cell: (3, 6, 1) instead of (3, 6, 2). The final run reports five
+of five, and the 14-line transcript in feedback_lines.txt is the fixed one.
+
+This is recorded rather than deleted because it is the only reason to trust the
+count: a harness that only checked "some audio played" would have passed all three
+runs.
+
+----------------------------------------------------------------------------
+4. REPRODUCING THIS
+----------------------------------------------------------------------------
+  1. Open the project and Assets/Scenes/DamaGame.unity.
+  2. Make sure the editor is NOT in play mode - the menu item starts it itself and
+     refuses otherwise, saying so in the Console.
+  3. Tools > Dama > Week 14 > 3. Capture Week 14 Evidence
+  4. Do not click in the Game view and do not press Play/Stop while it runs.
+  5. It stops play mode on its own.
+
+Expected Console tail: three "Wrote ...png" lines, the "Pause panel active=True,
+SOUND label='SOUND: ON'" line, and "Wrote feedback_lines.txt with 14 line(s)."
+
+If the line count drops to 12, check the promotion cell in DriveFeedback() before
+suspecting the game - that is exactly what happened here.

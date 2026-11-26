@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PT6 - Accessibility Audit, Audio Feedback, and the Playtest Package</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>PT6 - Accessibility Audit, Audio Feedback, and the Playtest Package</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Theme:</strong> Philippine Games and Sports</p>
+<p class="meta"><strong>Week:</strong> 14 - Game Usability, Accessibility and Playtesting</p>
+<p class="meta"><strong>Build:</strong> Dama MVP (Android target: ARM64 / IL2CPP, <code>com.defaultcompany.dama</code>, minimum API 26)</p>
+<p class="meta"><strong>Engine:</strong> Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), C#</p>
+<p class="meta"><strong>Repository:</strong> local Git repository, branch <code>main</code>, code commit <code>1998b0c</code></p>
+<p class="meta"><strong>Components under test:</strong> <code>Assets/Scripts/Editor/A11yAudit.cs</code>, <code>Assets/Scripts/Core/GameFeedback.cs</code>,</p>
+<p><code>Assets/Scripts/Editor/AccessibilityBuild.cs</code>, <code>Assets/Scripts/Editor/Week14Checks.cs</code>, <code>Assets/Scripts/DamaBoard.cs</code></p>
+<hr/>
+<h2>1. What was built</h2>
+<p>Three things, and a fourth that is a document rather than code.</p>
+<table>
+<thead><tr>
+<th>Piece</th>
+<th>File</th>
+<th>Responsibility</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Accessibility audit</td>
+<td><code>Assets/Scripts/Editor/A11yAudit.cs</code></td>
+<td>Menu <code>Tools/Dama/Week 14/1. Run Accessibility Audit</code>. Walks every <code>Text</code>, <code>Button</code> and <code>InputField</code> under <code>GameCanvas</code> <strong>including inactive panels</strong>; three check codes; writes <code>a11y_baseline.log</code> on the first run and <code>a11y_after.log</code> on later runs, plus a timestamped copy</td>
+</tr>
+<tr>
+<td>Repair pass</td>
+<td><code>Assets/Scripts/Editor/AccessibilityBuild.cs</code></td>
+<td>Menu <code>Tools/Dama/Week 14/2. Apply Accessibility Fixes</code>. Darkens a failing fill in its own hue until the label clears its threshold, raises sub-floor controls from their top edge, re-stacks only the columns that changed, de-overlaps, adds <code>PausePanel/SoundButton</code>. Idempotent, proved by a layout fingerprint</td>
+</tr>
+<tr>
+<td>Feedback layer</td>
+<td><code>Assets/Scripts/Core/GameFeedback.cs</code></td>
+<td>One <code>AudioSource</code>, five clips, <code>Handheld.Vibrate()</code> on a capture, a persisted mute. Listens, never decides</td>
+</tr>
+<tr>
+<td>Evidence harness</td>
+<td><code>Assets/Scripts/Editor/Week14Checks.cs</code></td>
+<td>Menu <code>Tools/Dama/Week 14/3. Capture Week 14 Evidence</code>. Enters play mode once, captures E3 / E2 / E1 gated on each PNG landing on disk, then drives the rules through a move, a capture, a promotion and both end screens and writes every <code>[Feedback]</code> line to <code>feedback_lines.txt</code></td>
+</tr>
+<tr>
+<td>Playtest kit</td>
+<td><code>Week_14/Playtest/01</code> - <code>05</code></td>
+<td>Consent form, session script, task cards, observation sheet, facilitator checklist - written now, run later</td>
+</tr>
+</tbody></table>
+<h3>Public surface of <code>GameFeedback</code></h3>
+<table>
+<thead><tr>
+<th>Member</th>
+<th>Purpose</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>SoundPrefsKey</code> = <code>"audio.feedback"</code></td>
+<td>The one <code>PlayerPrefs</code> key the layer owns</td>
+</tr>
+<tr>
+<td><code>SoundEnabled</code></td>
+<td>The current state, read and written by the pause panel</td>
+</tr>
+<tr>
+<td><code>PlayMove()</code>, <code>PlayCapture()</code>, <code>PlayCrown()</code>, <code>PlayResult(bool playerWon)</code></td>
+<td>The four call sites. <code>PlayResult</code> picks win or lose from a bool, so the rules never choose a clip</td>
+</tr>
+<tr>
+<td><code>ToggleSound()</code>, <code>SetSoundEnabled(bool)</code>, <code>static SoundLabel(bool)</code></td>
+<td>The toggle, and the words <code>SOUND: ON</code> / <code>SOUND: OFF</code> it produces. The label is a static pure function so it can be asserted without a scene</td>
+</tr>
+</tbody></table>
+<p><code>DamaBoard</code> gained the calls and nothing else structural: <code>feedback</code> and <code>soundButtonLabel</code> fields, <code>ToggleSound()</code> and <code>RefreshSoundLabel()</code> for the button, and one <code>Debug.Log("[Feedback] ...")</code> per event so the run produces a transcript instead of a claim.</p>
+<hr/>
+<h2>2. Four pieces of evidence, and what each one proves</h2>
+<table>
+<thead><tr>
+<th>Evidence</th>
+<th>Proves</th>
+<th>Does <strong>not</strong> prove</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>a11y_baseline.log</code> / <code>a11y_after.log</code> + <code>a11y_delta.txt</code></td>
+<td>That ten measurable controls failed three published thresholds, and that the same ten now pass those same thresholds</td>
+<td>That the game is usable or accessible</td>
+</tr>
+<tr>
+<td><code>E1</code>, <code>E2</code>, <code>E3</code> (play mode)</td>
+<td>That the layout the audit measured is the layout the game draws, on the pause panel, the HUD and the profile panel</td>
+<td>How it looks on a phone</td>
+</tr>
+<tr>
+<td><code>feedback_lines.txt</code></td>
+<td>That the five clips are wired to the rules, and fired from a real move, capture, promotion and both end screens</td>
+<td>That a player hears them, or that the phone buzzes</td>
+</tr>
+<tr>
+<td><code>autopilot_session.md</code></td>
+<td>That a machine can complete the five tasks, and four specific defects it found on the way</td>
+<td>Anything about a person</td>
+</tr>
+</tbody></table>
+<hr/>
+<h2>3. The accessibility check results</h2>
+<p>Both runs were executed by <code>A11yAudit.cs</code> in the Unity editor against <code>DamaGame.unity</code>, at the thresholds stated in the log headers. Every number below is copied from <code>Evidence/a11y_delta.txt</code>, which pairs the two logs mechanically - none is typed from memory.</p>
+<pre><code>before   TOTAL: 45 passed, 10 failed, 0 warnings, 2 not measurable
+after    TOTAL: 58 passed, 0 failed, 0 warnings, 2 not measurable
+Baseline failures: 10   paired with a measured after value: 10   unmatched: 0</code></pre>
+<h3>The ten failures, paired</h3>
+<table>
+<thead><tr>
+<th>#</th>
+<th>Check</th>
+<th>Control</th>
+<th>Before</th>
+<th>After</th>
+<th>Requirement</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>C</td>
+<td><code>PausePanel/ResumeButton/Text</code></td>
+<td>4.27:1, <code>bg=#268C40</code></td>
+<td><strong>4.73:1</strong>, <code>bg=#24843C</code></td>
+<td>4.5:1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>C</td>
+<td><code>PausePanel/RestartButtonPause/Text</code></td>
+<td>2.72:1, <code>bg=#D98C1A</code></td>
+<td><strong>4.71:1</strong>, <code>bg=#A06713</code></td>
+<td>4.5:1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>C</td>
+<td><code>WinPanel/RestartButtonWin/Text</code></td>
+<td>2.72:1, <code>bg=#D98C1A</code></td>
+<td><strong>4.71:1</strong>, <code>bg=#A06713</code></td>
+<td>4.5:1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>T</td>
+<td><code>StartPanel/ProfileButton</code></td>
+<td>320 x 84, short by 12</td>
+<td><strong>320 x 96</strong></td>
+<td>96 x 96</td>
+</tr>
+<tr>
+<td>5</td>
+<td>T</td>
+<td><code>HUDPanel/PauseButton</code></td>
+<td>170 x 64, short by 32</td>
+<td><strong>170 x 96</strong></td>
+<td>96 x 96</td>
+</tr>
+<tr>
+<td>6</td>
+<td>T</td>
+<td><code>ProfilePanel/SideButton</code></td>
+<td>260 x 52, short by 44</td>
+<td><strong>260 x 96</strong></td>
+<td>96 x 96</td>
+</tr>
+<tr>
+<td>7</td>
+<td>T</td>
+<td><code>ProfilePanel/SaveButton</code></td>
+<td>200 x 54, short by 42</td>
+<td><strong>200 x 96</strong></td>
+<td>96 x 96</td>
+</tr>
+<tr>
+<td>8</td>
+<td>T</td>
+<td><code>ProfilePanel/ResetButton</code></td>
+<td>200 x 54, short by 42</td>
+<td><strong>200 x 96</strong></td>
+<td>96 x 96</td>
+</tr>
+<tr>
+<td>9</td>
+<td>T</td>
+<td><code>ProfilePanel/BackButton</code></td>
+<td>200 x 46, short by 50</td>
+<td><strong>200 x 96</strong></td>
+<td>96 x 96</td>
+</tr>
+<tr>
+<td>10</td>
+<td>T</td>
+<td><code>ProfilePanel/NameInput</code></td>
+<td>420 x 56, short by 40</td>
+<td><strong>420 x 96</strong></td>
+<td>96 x 96</td>
+</tr>
+</tbody></table>
+<h3>The three checks the new control adds</h3>
+<table>
+<thead><tr>
+<th>Check</th>
+<th>Control</th>
+<th>Measured</th>
+<th>Requirement</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>C</td>
+<td><code>PausePanel/SoundButton/Text</code></td>
+<td>9.29:1, <code>bg=#404759</code>, 22 px bold, white</td>
+<td>4.5:1</td>
+</tr>
+<tr>
+<td>L</td>
+<td><code>PausePanel/SoundButton/Text</code></td>
+<td>height 96, need 24.6</td>
+<td>1.12 x font size</td>
+</tr>
+<tr>
+<td>T</td>
+<td><code>PausePanel/SoundButton</code></td>
+<td>320 x 96</td>
+<td>96 x 96</td>
+</tr>
+</tbody></table>
+<p>That is why the passed total rises by 13 and not 10: 57 checks became 60.</p>
+<h3>What is still not measured, and why that is not a pass</h3>
+<p><code>HUDPanel/TurnText</code> (34 px) and <code>HUDPanel/CountsText</code> (28 px) have <strong>no opaque backdrop</strong> - they are drawn straight over the 3D board, so their contrast changes as pieces move. Both logs report them <code>NOT MEASURABLE</code>, both logs say so in the total line, and neither is counted as a pass in either run. The audit's closing line says what the whole exercise is worth:</p>
+<blockquote><p><em>"Every measurable control meets the three thresholds. That is a floor, not a ceiling: an audit cannot see an accessible game, and it cannot read a label that is the right size and still says nothing."</em></p></blockquote>
+<h3>One near-miss, stated rather than rounded up</h3>
+<p><code>ProfilePanel/NameInput/Placeholder</code> passes at <strong>3.01:1 against a 3.0 requirement</strong>. It is 28 px, so it is judged as large text and needs only 3.0. A hundredth of a ratio point is not a pass worth being pleased about, and the repair pass deliberately does not touch a passing control, so it is left as it is and listed here and in the README.</p>
+<hr/>
+<h2>4. The three bugs the repair pass had, and how they were found</h2>
+<p>The repair script is itself code, and it broke things before it fixed them. All three failures were caught by running it, looking at the result, and measuring - not by reading it.</p>
+<p><strong>4.1 It pushed controls off the bottom of their panels.</strong> The de-overlap pass sorted siblings by <code>rect.yMax</code> to find what sat where. <code>RectTransform.rect</code> is <strong>pivot-local</strong>: <code>yMax</code> is a distance from that control's own pivot, not a position in the panel, so two controls in different rows compared as though they were in the same place and the pass shoved them 96 to 137 px down. Some left the canvas entirely. The fix was a <code>PanelRect()</code> helper that takes real world corners (<code>GetWorldCorners</code>) and converts them into the panel's local space with <code>InverseTransformPoint</code>, so every comparison is in one coordinate system. The damaged positions were then restored with a one-off scripted pass before running again.</p>
+<p><strong>4.2 It clamped to zero instead of the panel's floor.</strong> The follow-up clamp compared a control's bottom against <code>0</code> - the panel's pivot - rather than <code>panel.rect.yMin</code>. On a panel whose pivot sits at its middle, "0" is the middle of the screen, and the clamp happily left controls parked below a boundary it thought was a wall.</p>
+<p><strong>4.3 A row nudge moved one button of three.</strong> Three buttons sit on one row of the profile panel - BACK, SAVE, RESET - at three different anchors. The nudge looked for a control at a given position, found the first, and left the other two behind: a row that visibly broke apart. The fix is <code>ShiftRow()</code>, which selects siblings by <strong><code>anchorMin.y</code> being equal</strong> rather than by where they happen to be, and moves all of them by the same amount.</p>
+<p>After the fix, the final geometry, printed by the script and visible in <code>E3</code>:</p>
+<table>
+<thead><tr>
+<th>Control</th>
+<th>Size</th>
+<th>Anchor</th>
+<th>Note</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>NameInput</code></td>
+<td>420 x 96</td>
+<td><code>(0.395, 0.72)</code></td>
+<td>Raised; nudged down 4.6 px to keep a 12 px gap under the label</td>
+</tr>
+<tr>
+<td><code>SideButton</code></td>
+<td>260 x 96</td>
+<td><code>(0.665, 0.72)</code></td>
+<td>Raised; sits beside the name field, not under it</td>
+</tr>
+<tr>
+<td><code>BackButton</code></td>
+<td>200 x 96</td>
+<td><code>(0.220, 0.19)</code></td>
+<td>Bottom row, nudged down 25.3 px as one row</td>
+</tr>
+<tr>
+<td><code>SaveButton</code></td>
+<td>200 x 96</td>
+<td><code>(0.500, 0.19)</code></td>
+<td>Same row</td>
+</tr>
+<tr>
+<td><code>ResetButton</code></td>
+<td>200 x 96</td>
+<td><code>(0.780, 0.19)</code></td>
+<td>Same row</td>
+</tr>
+</tbody></table>
+<p><strong>Idempotence, proved by hash.</strong> Running the pass a second time prints</p>
+<pre><code>[AccessibilityBuild] fingerprint 4C3E2E0C -&gt; 4C3E2E0C (UNCHANGED - this run was a no-op)</code></pre>
+<p>The fingerprint covers every control's anchor, size and position. A build script that nudges the UI by a pixel on every run would make each new screenshot incomparable with the evidence already submitted, so "it is idempotent" is a measured claim here, not a design intention.</p>
+<hr/>
+<h2>5. Sound and haptics - what fired, and what cannot be claimed</h2>
+<p><code>feedback_lines.txt</code>, captured in play mode at 2026-11-26 04:10:11 UTC by menu 3:</p>
+<table>
+<thead><tr>
+<th>Event kind</th>
+<th>Fires from</th>
+<th>Line in the transcript</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>move</td>
+<td><code>DamaBoard</code> after a legal move resolves</td>
+<td><code>[Feedback] move -&gt; Dama_Move</code></td>
+</tr>
+<tr>
+<td>capture</td>
+<td>the capture resolution, with the haptic call</td>
+<td><code>[Feedback] capture -&gt; Dama_Capture</code></td>
+</tr>
+<tr>
+<td>crown</td>
+<td><code>PromoteToDama</code></td>
+<td><code>[Feedback] crown - a man reached the back row at (2,7) -&gt; Crown</code></td>
+</tr>
+<tr>
+<td>win</td>
+<td><code>DeclareWinner</code>, winner is the profile's side</td>
+<td><code>[Feedback] win - winner RED, your side RED -&gt; Win</code></td>
+</tr>
+<tr>
+<td>lose</td>
+<td><code>DeclareWinner</code>, winner is the other side</td>
+<td><code>[Feedback] lose - winner BLUE, your side RED -&gt; Lose</code></td>
+</tr>
+</tbody></table>
+<pre><code>Kinds fired: move, capture, crown, win, lose (5 of 5)</code></pre>
+<p><strong>The haptic is not proven and is not claimed.</strong> <code>Handheld.Vibrate()</code> is a no-op in the Editor, and this transcript was captured in the Editor. The call is in the build; the buzz needs a handset. The transcript says so on its own last two lines, so a reader of the file cannot come away believing a phone was involved.</p>
+<p><strong>One bug worth recording, because it was silent.</strong> The first version of the harness put a RED man on <code>(3, 6)</code> and moved it to <code>(2, 7)</code> expecting a crown - and no crown fired, because <code>(3, 6)</code> was occupied as a BLUE piece, so the move was a BLUE move and BLUE promotes at <code>y == 0</code>. The move played, the sound played, and only the transcript showed that one of the five kinds was missing. <code>Kinds fired: 4 of 5</code> is what caught it; a run that had only listened for "some audio played" would have passed.</p>
+<hr/>
+<h2>6. Machine pre-test results</h2>
+<p><code>Evidence/autopilot_session.md</code> is the full record. It is a <strong>machine pre-test</strong>: an automated agent played the same five tasks a volunteer will be given, to find mechanical defects before a person's twenty minutes are spent on them.</p>
+<table>
+<thead><tr>
+<th>Task</th>
+<th>What the run did</th>
+<th>Time</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>T1 - profile name and save</td>
+<td><code>PLAYTEST</code> -&gt; <code>PLAYTEST2</code>, status line confirmed, <code>profile.json</code> written</td>
+<td>1.6 s</td>
+</tr>
+<tr>
+<td>T2 - start a match</td>
+<td>Start panel hidden, HUD <code>Turn: RED</code>, <code>Red: 12  Blue: 12</code></td>
+<td>2.8 s</td>
+</tr>
+<tr>
+<td>T3 - catch a piece</td>
+<td>BLUE count 12 -&gt; 11 on a real click pair</td>
+<td>12.9 s</td>
+</tr>
+<tr>
+<td>T4 - crown a Dama</td>
+<td>RED chain <code>(4,3) x(5,4) -&gt; (6,5)</code>, then <code>x(5,6) -&gt; (4,7)</code>; ring visible, BLUE 10</td>
+<td>13.3 s</td>
+</tr>
+<tr>
+<td>T5 - finish the match</td>
+<td><code>RED WIN!</code>, profile matches 5 -&gt; 6, wins 3 -&gt; 4</td>
+<td>53.2 s</td>
+</tr>
+</tbody></table>
+<p>The match ended 6-1 with BLUE still holding a piece but having no legal move - the immobilisation rule, exercised for real.</p>
+<h3>The four findings</h3>
+<table>
+<thead><tr>
+<th>#</th>
+<th>Finding</th>
+<th>Severity</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>M1</td>
+<td><strong>The five button captions are 14 px while every other label is 17-110 px.</strong> START, <code>II PAUSE</code>, RESUME, RESTART (pause) and RESTART (end screen) are the smallest strings in the game, on the largest controls. The audit cannot see this - it measures contrast and box height, not type size</td>
+<td>S3</td>
+</tr>
+<tr>
+<td>M2</td>
+<td><strong>There is no way back to the start screen once a match has begun.</strong> The pause panel offers RESUME, RESTART, SOUND; the end screen offers RESTART. PROFILE exists only on the start screen, so a name or side cannot be changed without restarting</td>
+<td>S2</td>
+</tr>
+<tr>
+<td>M3</td>
+<td><strong>The end screen states only the winner.</strong> <code>RED WIN!</code> and RESTART: no final counts, and nothing that explains a win by immobilisation, in a match that ended 6-1</td>
+<td>S3</td>
+</tr>
+<tr>
+<td>M4</td>
+<td><strong><code>ProfilePanel/StatusText</code> is the faintest text on the profile panel</strong> at 17 px, beside a 20 px best-times line. Legible in the capture, marginal at arm's length</td>
+<td>S4</td>
+</tr>
+</tbody></table>
+<p>M2 is the one to act on first: it is the only finding that stops a player doing something they would reasonably want to, and it lengthens every future session for no reason.</p>
+<h3>The harness's own contradiction, disclosed</h3>
+<p>The run raised an alert at the start - <em>"the game didn't answer session within 60 s; the run played the editor's own level"</em> - and then played Dama anyway. Every observation in its trace names a <code>DamaGame</code> object (pointer targets on <code>DamaGame:/DamaBoard/Squares/...</code>, the HUD text, the profile store, the win panel). The alert is recorded in <code>autopilot_session.md</code> section 5 rather than dropped, because a harness that contradicts itself should be described, not smoothed over. The findings above are drawn only from observations that name a DamaGame object or a Dama script.</p>
+<p><strong>A side effect to disclose:</strong> the run banked a sixth match into the local profile on this machine (matches 5 -&gt; 6, wins 4). The profile is a local file, and the Week 13 two-press RESET erases it.</p>
+<hr/>
+<h2>7. Human playtest results - <strong>not yet run</strong></h2>
+<p><strong>Sessions run to date: 0.</strong> No volunteer has played this build. This section is empty because the sessions have not happened yet, not because the results were thin.</p>
+<table>
+<thead><tr>
+<th>Participant</th>
+<th>Build</th>
+<th>T1</th>
+<th>T2</th>
+<th>T3</th>
+<th>T4</th>
+<th>T5</th>
+<th>Total time</th>
+<th>Notes</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>P1</code></td>
+<td>-</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>P2</code></td>
+<td>-</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>P3</code></td>
+<td>-</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>P4</code></td>
+<td>-</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>P5</code></td>
+<td>-</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>not run</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<p><strong>What is deliberately absent from this table:</strong> no participant codes are filled in, no times, no success counts, no quotes, no ratings. An estimated row would read exactly like a measured one and would be the worst thing in this submission, so the table says <code>not run</code> in every cell it cannot honestly fill.</p>
+<p>The kit that will fill it is complete and in <code>../Playtest/</code>:</p>
+<table>
+<thead><tr>
+<th>File</th>
+<th>What it is</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>01_consent_form.md</code></td>
+<td>What the participant is told and what they sign. Name-bearing sheets stay out of the submission</td>
+</tr>
+<tr>
+<td><code>02_session_script.md</code></td>
+<td>The moderator's exact wording, the five tasks, the no-help rule, the 3-minute stall rule, the debrief</td>
+</tr>
+<tr>
+<td><code>03_task_cards.md</code></td>
+<td>The participant's cards, one task per card, large type</td>
+</tr>
+<tr>
+<td><code>04_observation_sheet.md</code></td>
+<td>One sheet per participant: result, time, help, wrong taps, verbatim quotes, severity, ratings</td>
+</tr>
+<tr>
+<td><code>05_facilitator_checklist.md</code></td>
+<td>Setup, reset, environment, the four rules that keep notes worth having, and what to do when a session goes wrong</td>
+</tr>
+</tbody></table>
+<p><strong>When the sessions are run</strong>, this section gains one row per participant and the summary sentence above changes to state how many were run, on which commit, and on what device. Until then the honest statement is the one at the top of this section: zero sessions, zero results.</p>
+<h3>Why the machine pre-test is not a substitute</h3>
+<p>It completed the five tasks in 53.2 seconds because it was <em>told what to do</em> - catch a piece, crown a man. A volunteer will not be told, and the gap between those two situations is the entire reason to run a session. The pre-test found four mechanical defects; it cannot say whether a rule is understandable, how long understanding takes, or at what moment a player gives up.</p>
+<hr/>
+<h2>8. Reproducing every check</h2>
+<p><code>Evidence/HOW_TO_RERUN.txt</code> holds the exact procedure. Three editor menu items produce everything:</p>
+<pre><code>Tools &gt; Dama &gt; Week 14 &gt; 1. Run Accessibility Audit     -&gt; a11y_baseline.log, then a11y_after.log
+Tools &gt; Dama &gt; Week 14 &gt; 2. Apply Accessibility Fixes   -&gt; the repairs, and a fingerprint to prove no-op
+Tools &gt; Dama &gt; Week 14 &gt; 3. Capture Week 14 Evidence    -&gt; E1-E3 + feedback_lines.txt, in play mode</code></pre>
+<p>Two project quirks that will break a naive re-run, both recorded there: <strong>domain reload on entering play mode is disabled</strong>, so Editor-time statics survive into play mode and every harness resets the profile first; and the game sets <strong><code>Time.timeScale = 0</code></strong> when it pauses or ends, so any new timing code must use unscaled time.</p>
+<p>One trap specific to this week: the audit decides its own label with <code>File.Exists(BaselinePath) ? "after" : "baseline"</code>. <strong>Deleting <code>a11y_baseline.log</code> silently relabels the next run as a baseline</strong> - which would quietly destroy the comparison this whole document rests on.</p>
+<hr/>
+<h2>9. Evidence</h2>
+<table>
+<thead><tr>
+<th>File</th>
+<th>What it shows</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Evidence/a11y_baseline.log</code></td>
+<td>57 checks before the fixes: 45 passed, 10 failed, 2 not measurable, with the 96 px derivation in the header</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_after.log</code></td>
+<td>60 checks after: 58 passed, 0 failed, 2 not measurable, same thresholds and same control set plus the SOUND button</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_delta.txt</code></td>
+<td>The ten failures paired with their measured after values; 10 of 10 paired, 0 unmatched, generated mechanically</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_audit_20261126_115656.log</code></td>
+<td>The timestamped copy of the baseline run</td>
+</tr>
+<tr>
+<td><code>Evidence/a11y_audit_20261126_120637.log</code></td>
+<td>The timestamped copy of the after run</td>
+</tr>
+<tr>
+<td><code>Evidence/E1_pause_sound.png</code></td>
+<td>The pause panel showing <code>SOUND: ON</code>, nothing overlapping its neighbour</td>
+</tr>
+<tr>
+<td><code>Evidence/E2_hud_in_match.png</code></td>
+<td>The in-match HUD over the board: whose turn, and the counts</td>
+</tr>
+<tr>
+<td><code>Evidence/E3_profile_panel.png</code></td>
+<td>The profile panel with all five raised controls inside the canvas and none clipped</td>
+</tr>
+<tr>
+<td><code>Evidence/feedback_lines.txt</code></td>
+<td>14 <code>[Feedback]</code> lines from one scripted match; 5 of 5 event kinds</td>
+</tr>
+<tr>
+<td><code>Evidence/autopilot_session.md</code></td>
+<td>The machine pre-test: five tasks, four findings, the harness alert, the banked match</td>
+</tr>
+<tr>
+<td><code>Evidence/week14_shots.txt</code></td>
+<td>The timestamped console transcript of the capture run</td>
+</tr>
+<tr>
+<td><code>Evidence/build_and_commit.txt</code></td>
+<td>The platform settings, the scene order, the commit id, and what was not built</td>
+</tr>
+<tr>
+<td><code>Evidence/HOW_TO_RERUN.txt</code></td>
+<td>How to regenerate every artefact above</td>
+</tr>
+<tr>
+<td><code>Playtest/01</code> - <code>05</code></td>
+<td>The human-session kit</td>
+</tr>
+</tbody></table>
+<p>The three screenshots were taken in play mode from the real game canvas - not a mock-up - and each capture is gated on its PNG existing with a non-zero length, because <code>ScreenCapture.CaptureScreenshot</code> writes asynchronously. A shot requested and a shot written are not the same moment, which is how the Week 13 evidence once ended up showing the wrong panel.</p>
+<hr/>
+<h2>10. Disclosure record</h2>
+<table>
+<thead><tr>
+<th>Activity</th>
+<th>How it was done</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>SA6 analysis, PT6 write-up, reflection drafting</td>
+<td>Written by me with AI assistance for structure and phrasing, then reviewed and corrected against the code and the logs</td>
+</tr>
+<tr>
+<td><code>A11yAudit.cs</code>, <code>AccessibilityBuild.cs</code>, <code>GameFeedback.cs</code>, <code>Week14Checks.cs</code></td>
+<td>Written with AI assistance, then read line by line; every threshold, hex value and measured ratio in this document is copied from a generated log, not from the plan</td>
+</tr>
+<tr>
+<td>The two audit runs</td>
+<td>Executed by the editor script; the tables in section 3 are <code>a11y_delta.txt</code></td>
+</tr>
+<tr>
+<td>The three screenshots</td>
+<td>Captured in play mode by menu 3; they are the real canvas</td>
+</tr>
+<tr>
+<td>The five audio clips</td>
+<td>Generated from text descriptions by an audio tool, then assigned to five fields on <code>GameFeedback</code> and verified firing from the rules in <code>feedback_lines.txt</code>. No clip is a recording of anything, and none is claimed to be</td>
+</tr>
+<tr>
+<td>The machine pre-test</td>
+<td>Run by an automation agent in play mode; reported as a machine result, with its own contradiction disclosed in section 6</td>
+</tr>
+<tr>
+<td>The five human sessions</td>
+<td><strong>Not run.</strong> Section 7 says so in every cell</td>
+</tr>
+<tr>
+<td>The decision to leave the 14 px captions alone</td>
+<td>Mine: changing them would have re-authorised every capture and invalidated the audit baseline this document is built on. Deferred as M1 rather than done badly and late</td>
+</tr>
+</tbody></table>
+<p>Nothing in the project was fabricated for this write-up. The build is short of five human sessions, short of a device run and short of a screen-reader path, and each of those is stated where it belongs rather than left out.</p>
+<hr/>
+<h2>11. Build and repository state</h2>
+<table>
+<thead><tr>
+<th>Item</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>APK</td>
+<td>none attached this week - the runtime evidence is the play-mode captures</td>
+</tr>
+<tr>
+<td>Build target</td>
+<td>Android, ARM64 only, IL2CPP, minimum API 26, package <code>com.defaultcompany.dama</code></td>
+</tr>
+<tr>
+<td>Scenes in build</td>
+<td><code>DamaGame.unity</code> (enabled, index 0), <code>SampleScene.unity</code> (disabled)</td>
+</tr>
+<tr>
+<td>Signing</td>
+<td>not applicable - no build produced</td>
+</tr>
+<tr>
+<td>Repository branch</td>
+<td><code>main</code></td>
+</tr>
+<tr>
+<td>Code commit</td>
+<td><code>1998b0c</code> - "Week 14 PT6: accessibility audit, repair pass, audio feedback and play-mode evidence"</td>
+</tr>
+<tr>
+<td>Documentation commit</td>
+<td>recorded in <code>README.md</code>, which is the file that can hold a hash of the commit that contains these documents</td>
+</tr>
+</tbody></table>
+<p><code>Evidence/build_and_commit.txt</code> records the same settings and the same commit id.</p>
+<hr/>
+<h2>12. How this meets the Week 14 laboratory requirements</h2>
+<table>
+<thead><tr>
+<th>Module requirement</th>
+<th>Where it is satisfied</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>A usability evaluation of the game</td>
+<td>The five-task script, the observation sheet, and the machine pre-test that ran the same five tasks (sections 6, 7)</td>
+</tr>
+<tr>
+<td>An accessibility assessment with a standard behind it</td>
+<td>The WCAG 2.2 subset in <code>A11yAudit.cs</code>, the mapping table in SA6 section 6, and the two runs plus delta in section 3</td>
+</tr>
+<tr>
+<td>Evidence of improvement, not an assertion of it</td>
+<td><code>a11y_baseline.log</code> -&gt; <code>a11y_after.log</code> -&gt; <code>a11y_delta.txt</code>: 10 failures, 10 paired after values, 0 unmatched</td>
+</tr>
+<tr>
+<td>Feedback so that events are not silent</td>
+<td>Five clips, a haptic call on the capture, a worded <code>SOUND: ON/OFF</code> toggle persisted in <code>PlayerPrefs</code>, and a transcript proving 5 of 5 kinds fire (section 5)</td>
+</tr>
+<tr>
+<td>A playtest kit a real session can run</td>
+<td><code>Playtest/01</code> - <code>05</code>, including consent, the no-help rule, the severity scale and the four rules that keep notes worth having</td>
+</tr>
+<tr>
+<td>Honest reporting of what was not done</td>
+<td>Section 7 (zero human sessions), section 5 (haptics unproven), section 3 (one near-miss at 3.01:1), section 6 (the harness alert and the banked match)</td>
+</tr>
+<tr>
+<td>A reflective account of the work</td>
+<td><code>Guzman_Charibelle_Week14_Reflection.md</code></td>
+</tr>
+</tbody></table>
+
+</body>
+</html>

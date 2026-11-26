@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Week 14 Reflection - Game Usability, Accessibility and Playtesting</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>Week 14 Reflection - Game Usability, Accessibility and Playtesting</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Week:</strong> 14</p>
+<p class="meta"><strong>Date:</strong> November 26, 2026</p>
+<p>The structure follows the module's Weekly Self-Assessment and Reflection Guide: the four Week 14 prompts in order, then the required authenticity declaration.</p>
+<hr/>
+<h2>1. What I built this week, and which decisions were actually mine</h2>
+<p>An accessibility audit that measures the game instead of describing it, a repair pass that fixes what it measures, a playtest kit for sessions that have not happened yet - and sound, because a game with no audio at all cannot be evaluated for usability. Half of what a player needs to know was arriving after they had to look for it.</p>
+<p>The first decision was the touch floor. Everyone quotes 48 dp and the tempting move is to copy the number. But this project draws in canvas units at a 1.50 scale on a 1080p phone, so 48 dp at xxhdpi (144 physical px) is <strong>96 canvas px</strong>, not 144. Using 144 would have meant rebuilding the HUD to satisfy an arithmetic error - a build that looks more accessible on paper and is wrong. The derivation is in the log header, in both runs, in words a reader can check.</p>
+<p>The second was that contrast should be a <strong>rule, not a palette swap</strong>. I could have picked three darker hex values and ticked the box. Instead the pass takes whatever fill it finds, darkens it 3 % at a time in its own hue, and re-measures until the label clears its threshold. Green still means go and amber still means careful, and the rule will still work on a button that does not exist yet. <code>#268C40</code> became <code>#24843C</code> and <code>#D98C1A</code> became <code>#A06713</code>; I chose neither value, the rule did.</p>
+<p>The third is small: the toggle says <strong><code>SOUND: ON</code></strong> in words. An icon needs a second icon to explain itself, on the panel where a player is least willing to decode anything.</p>
+<p>The fourth was the order of the work. "Playtest" is the week's title, so the temptation is to book volunteers first. Running a machine pass over the same five tasks first meant the four defects found cost nobody twenty minutes - and two of them, a 14 px caption and no route back to the start screen, are exactly what a volunteer would have hit in the first two minutes.</p>
+<hr/>
+<h2>2. How I reported it, and where I stopped claiming things</h2>
+<p><strong>Zero human sessions were run.</strong> PT6 section 7 says so at the top, and its results table has five rows reading <code>not run</code> in every cell. I could have written plausible times - a first-time player takes about forty seconds to find a name field - and no reader could have told. That would have been the worst thing in this submission, because it would look exactly like measured data.</p>
+<p>Three smaller refusals. Two HUD labels are drawn over the board, so their backdrop moves; both logs report them <code>NOT MEASURABLE</code> and neither counts them as a pass, which is why the after-total is 58 and not 60. The haptic is not claimed, because <code>Handheld.Vibrate()</code> is a no-op in the Editor and every capture this week is from the Editor. And one control passes at <strong>3.01:1 against a 3.0</strong> requirement - a hundredth of a point, listed in PT6 and the README rather than rounded up, because the next person to edit that placeholder will put it back under the line and nothing will warn them.</p>
+<p>The machine pre-test also contradicted itself: it alerted that it was about to play the wrong level, then played mine. I recorded the alert and said which observations I would draw findings from, rather than deleting the line that made the run look unreliable.</p>
+<hr/>
+<h2>3. A problem I hit, and how the checks found it</h2>
+<p>Two failures, both of which produced output that looked correct.</p>
+<p>The first was in the repair script - code I wrote to fix code I wrote. Its de-overlap pass sorted controls by <code>rect.yMax</code> to work out what sat where, and <code>RectTransform.rect</code> is <strong>pivot-local</strong>: <code>yMax</code> is a distance from that control's own pivot, not a position on the panel. Two buttons in different rows compared as if they shared a place, and the pass shoved them 96 to 137 px down, some off the canvas entirely. Nothing threw. The scene came back wrong and I only knew because I opened it and looked. The fix was to compare real world corners converted into the panel's own space. Two more bugs fell out behind it: a clamp against <code>0</code> instead of the panel's <code>yMin</code>, and a row nudge that moved one button of three because it looked for a control <em>at a position</em> instead of for the siblings sharing an anchor row.</p>
+<p>The second taught me more. My harness moved a man to the back row expecting a crown. No crown fired. The move played, the sound played, the log filled up - and only the transcript's last line caught it: <code>Kinds fired: 4 of 5</code>. That square held a BLUE piece, so it was a BLUE move, and BLUE promotes at the other end of the board. A check for "did some audio play" would have passed. The check that noticed compared the <em>set</em> of event kinds against the set that should exist.</p>
+<hr/>
+<h2>4. What I would do differently, and what carries forward</h2>
+<p><strong>I said I would commit per step, and I did not.</strong> Week 13's reflection ends with that intention in writing; this week landed as one code commit and one documentation commit again. The cost is concrete: the three bugs above are invisible in the history, so a reviewer sees a finished repair script with no evidence it ever pushed a button off a screen. I kept the promise in the code and not in the habit, and saying so is worth more than quietly dropping the sentence.</p>
+<p><strong>Run the audit before believing a layout is finished.</strong> Every one of the seven touch failures was a control that was wide enough and too short - exactly what a screenshot makes easy to miss, because the eye judges width. Run in Week 13, those seven would have cost one menu item instead of a rebuild and a re-taken set of captures.</p>
+<p><strong>A pass with 0.2 of margin is a warning.</strong> <code>4.73:1</code> against <code>4.5</code>, twice, and <code>3.01:1</code> against <code>3.0</code>. The audit is a floor, and it is now a thing to re-run before every submission rather than a thing I did once. The four findings the machine pre-test already produced are the first entries in Week 15's defect log.</p>
+<hr/>
+<h2>Declaration</h2>
+<p>I confirm that this reflection describes my own development experience, and that the use of AI assistance in this week's work - for code, for structure and for phrasing - is disclosed in PT6 section 10 as the module requires.</p>
+
+</body>
+</html>
