@@ -71,7 +71,7 @@ Week 15 suite still reports 27 passed / 0 failed / 1 blocked with the accessibil
 |---|---|
 | Features | `Week16Profile` (one scenario, three runs), allocation-free move generation, piece pooling, `Week15Checks` regression seam, `A11yAudit.RunWeek16()` |
 | Code commits | `f9503e8` (harness + baseline), `d6c4ba7` (optimization 1), `3b396b9` (optimization 2 + harness seams) |
-| Documentation commit | recorded below once the documentation is committed |
+| Documentation commit | `87aea89` - "Week 16 SA6 analysis, AS3 performance record, reflection and printed PDFs" |
 | Targets | `Week_16/Evidence/targets.md` - PT-1 frame 33.3 ms, PT-2 0 B per turn, PT-3 restart under 16.7 ms, PT-4 record draw calls. Written **before** the baseline |
 | Baseline | `Week_16/Evidence/profile_baseline/` - 2.062 ms mean, legality scan **6,975.9 B**, restart 5,701.2 B, worst restart frame 5.296 ms, hash `0xE432E83D` |
 | After optimization 1 | `Week_16/Evidence/profile_after_alloc/` - legality scan **below the resolution of the method** (-0.1 B +/- 0.1), restart still ~5.6 KB |
