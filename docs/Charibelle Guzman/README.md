@@ -69,6 +69,8 @@ beneath, and both new panels are state-driven, so they cannot leak into a match.
 
 | Item | Where |
 |---|---|
+| Code commit | `10006a4` - "Week 17: release identity 1.0.0-rc1, HOW TO PLAY / CREDITS / EXIT panels, release checks and captures" |
+| Documentation commit | `183b603` - "Week 17: PT7 package, release evidence, six captures and printed PDFs" |
 | Release identity | `Week_17/Evidence/build_record.txt` - `1.0.0-rc1` / code 2, `productName` `dama` and `companyName` `DefaultCompany` unchanged |
 | Release checks | `Week_17/Evidence/test_logs_release/` - **5 passed, 0 failed, 0 console errors** (`TC-REL-01…05`) |
 | Regression at `Week_17` | `Week_17/Evidence/test_logs_regression/` - **27 passed, 0 failed, 1 blocked** (`TC-COMPAT-01`), 0 console errors |
@@ -379,6 +381,10 @@ machine pre-test everywhere it is mentioned, and it is never referred to as a pl
 | Documentation commit (Week 14) | `58976b7` |
 | Code commit (Week 15) | `207376b` |
 | Documentation commit (Week 15) | `3f4bb95` |
+| Code commits (Week 16) | `f9503e8` (profiling harness + baseline), `d6c4ba7` (optimization 1), `3b396b9` (optimization 2) |
+| Documentation commit (Week 16) | `87aea89` |
+| Code commit (Week 17) | `10006a4` |
+| Documentation commit (Week 17) | `183b603` |
 | Build target | Android, ARM64 only, IL2CPP, minimum API 26, `com.defaultcompany.dama` |
 | Scenes in build | `DamaGame.unity` (index 0), `SampleScene.unity` (disabled) |
 
