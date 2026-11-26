@@ -66,7 +66,7 @@ sound for the first time: five clips, a haptic on a capture, and a `SOUND: ON/OF
 |---|---|
 | Features | `A11yAudit` (the measurement), `AccessibilityBuild` (the repair, idempotent), `GameFeedback` (five clips, one haptic, one toggle), `Week14Checks` (the captures) |
 | Code commit | `1998b0c` - "Week 14 PT6: accessibility audit, repair pass, audio feedback and play-mode evidence" |
-| Documentation commit | recorded by the commit after it - a file cannot contain the hash of the commit that contains it |
+| Documentation commit | `58976b7` - "Week 14 SA6, PT6, reflection, playtest kit and the printed PDFs" |
 | Audit before | `Week_14/Evidence/a11y_baseline.log` - 45 passed, **10 failed**, 2 not measurable |
 | Audit after | `Week_14/Evidence/a11y_after.log` - 58 passed, **0 failed**, 2 not measurable |
 | Delta | `Week_14/Evidence/a11y_delta.txt` - 10 of 10 failures paired, 0 unmatched |
@@ -191,7 +191,7 @@ machine pre-test everywhere it is mentioned, and it is never referred to as a pl
 | Code commit (Week 13) | `b6b477b` |
 | Documentation commit (Week 13) | `a215f34` |
 | Code commit (Week 14) | `1998b0c` |
-| Documentation commit (Week 14) | see `git log` - recorded by the commit that follows the documents |
+| Documentation commit (Week 14) | `58976b7` |
 | Build target | Android, ARM64 only, IL2CPP, minimum API 26, `com.defaultcompany.dama` |
 | Scenes in build | `DamaGame.unity` (index 0), `SampleScene.unity` (disabled) |
 
