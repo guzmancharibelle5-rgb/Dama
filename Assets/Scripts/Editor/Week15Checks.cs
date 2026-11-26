@@ -33,6 +33,10 @@ public static class Week15Checks
     private const string BaselineMenu = "Tools/Dama/Week 15/1. Baseline Test Run";
     private const string FinalMenu = "Tools/Dama/Week 15/2. Final Test Run";
 
+    // Week 16 seam: the same 28 cases, run again to prove the two optimizations changed no
+    // behaviour. It writes under Week_16 so Week 15's committed logs cannot be overwritten.
+    private const string RegressionMenu = "Tools/Dama/Week 16/4. Regression Run";
+
     private const float TouchFloorCanvasPx = 96f;
     private const float CaptionFloorPx = 20f;
     private const float LabelFloorPx = 18f;
@@ -56,6 +60,7 @@ public static class Week15Checks
     private static double nextActionAt;
     private static double deadlineAt;
     private static string runLabel = "baseline";
+    private static string runWeek = "Week_15";
     private static DamaBoard board;
     private static bool logHooked;
     private static int errorCount;
@@ -67,15 +72,18 @@ public static class Week15Checks
 
     public static string RunDir =>
         Path.Combine(Directory.GetParent(Application.dataPath).FullName,
-            "docs", "Charibelle Guzman", "Week_15", "Evidence", "test_logs_" + runLabel);
+            "docs", "Charibelle Guzman", runWeek, "Evidence", "test_logs_" + runLabel);
 
     [MenuItem(BaselineMenu, false, 30)]
-    public static void BeginBaseline() => Begin("baseline");
+    public static void BeginBaseline() => Begin("baseline", "Week_15");
 
     [MenuItem(FinalMenu, false, 31)]
-    public static void BeginFinal() => Begin("final");
+    public static void BeginFinal() => Begin("final", "Week_15");
 
-    private static void Begin(string label)
+    [MenuItem(RegressionMenu, false, 41)]
+    public static void BeginRegression() => Begin("regression", "Week_16");
+
+    private static void Begin(string label, string week = "Week_15")
     {
         if (EditorApplication.isPlaying)
         {
@@ -84,6 +92,7 @@ public static class Week15Checks
         }
 
         runLabel = label;
+        runWeek = week;
         results.Clear();
         console.Clear();
         steps.Clear();
@@ -817,7 +826,8 @@ public static class Week15Checks
         }
 
         StringBuilder builder = new StringBuilder();
-        builder.AppendLine("DAMA - WEEK 15 TEST RUN (" + runLabel.ToUpper() + ")");
+        builder.AppendLine("DAMA - " + runWeek.Replace('_', ' ').ToUpperInvariant() +
+                           " TEST RUN (" + runLabel.ToUpper() + ")");
         builder.AppendLine("Game: Dama  |  Theme: Philippine Games and Sports  |  Student: Charibelle Guzman (BSIT-4)");
         builder.AppendLine("Harness: Assets/Scripts/Editor/Week15Checks.cs");
         builder.AppendLine($"Scene: DamaGame.unity   Unity: {Application.unityVersion}   Editor: {Application.platform}");

@@ -36,6 +36,7 @@ public static class A11yAudit
 {
     private const string MenuWeek14 = "Tools/Dama/Week 14/1. Run Accessibility Audit";
     private const string MenuWeek15 = "Tools/Dama/Week 15/0. Accessibility Audit";
+    private const string MenuWeek16 = "Tools/Dama/Week 16/0. Accessibility Audit";
     private const string CanvasName = "GameCanvas";
     private const string SceneName = "DamaGame";
 
@@ -73,7 +74,15 @@ public static class A11yAudit
     [MenuItem(MenuWeek15, false, 20)]
     public static void RunWeek15() => Run("Week_15", "a11y_week15_", "WEEK 15");
 
-    private static void Run(string weekFolder, string prefix, string tag)
+    /// <summary>
+    /// Week 16 re-audit. Both optimizations are already committed, so there is no pre-state left to
+    /// record: the run is labelled "after" explicitly instead of letting the file-existence rule
+    /// call the first file a baseline it is not.
+    /// </summary>
+    [MenuItem(MenuWeek16, false, 40)]
+    public static void RunWeek16() => Run("Week_16", "a11y_week16_", "WEEK 16", "after");
+
+    private static void Run(string weekFolder, string prefix, string tag, string forcedLabel = null)
     {
         evidenceDir = Path.Combine(Directory.GetParent(Application.dataPath).FullName,
             "docs", "Charibelle Guzman", weekFolder, "Evidence");
@@ -111,7 +120,7 @@ public static class A11yAudit
             return;
         }
 
-        string label = File.Exists(BaselinePath) ? "after" : "baseline";
+        string label = forcedLabel ?? (File.Exists(BaselinePath) ? "after" : "baseline");
 
         WrittenHeader(label, canvas);
 

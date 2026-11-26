@@ -961,8 +961,9 @@ public static class Week16Profile
         builder.AppendLine($"  mean frame       : {(restartMs.Count == 0 ? "none recorded" : restartMean.ToString("0.000", CultureInfo.InvariantCulture) + " ms")}");
         builder.AppendLine($"  idle mean        : {idleMean:0.000} ms   hitch over idle: {(restartMs.Count == 0 ? "n/a" : (restartMean - idleMean).ToString("0.000", CultureInfo.InvariantCulture) + " ms")}");
         builder.AppendLine($"  frame samples    : {restartMs.Count} (the {RestartWatchFrames} frames after each RESTART call)");
-        builder.AppendLine("  RESTART destroys every piece, creates 24 new GameObjects and re-binds 64 squares, and it is");
-        builder.AppendLine("  one tap away from a lost match, which is why it gets its own budget.");
+        builder.AppendLine("  RESTART rebuilds the whole board - every piece and every square binding - and it is");
+        builder.AppendLine("  one tap away from a lost match, which is why it gets its own budget. What it costs per run");
+        builder.AppendLine("  is the number above, not a description of how the board is rebuilt.");
         builder.AppendLine("--------------------------------------------------------------------------------------------------");
         builder.AppendLine("RENDERING AND MEMORY");
         builder.AppendLine($"  draw calls   mean: {(drawCount == 0 || drawNonZero == 0 ? "NOT MEASURABLE (recorder valid but every sample read 0 while the scene was drawing)" : ((double)drawSum / drawCount).ToString("0.0", CultureInfo.InvariantCulture))}");

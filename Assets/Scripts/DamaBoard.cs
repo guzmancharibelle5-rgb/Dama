@@ -61,6 +61,29 @@ public class DamaBoard : MonoBehaviour
     private static bool moveBuffersReported;
     private readonly bool[,] isKing = new bool[Size, Size];
 
+    // ---- Week 16 optimization 2: a piece pool, so a restart stops rebuilding the board ----
+    // Measured before this change: one restart allocated 5,701 B and Destroyed 24 GameObjects to
+    // create 24 new ones. A piece that leaves the board - captured, or cleared by a restart - is
+    // parked under an inactive PiecePool root and rented again, so the same objects live for the
+    // whole session and a restart only moves and recolours them.
+    private readonly List<GameObject> piecePool = new List<GameObject>(32);
+    private static readonly string[,] pieceNames = BuildPieceNames();
+    private Transform piecesRootCached;
+    private Transform piecePoolRoot;
+    private static bool piecePoolReported;
+
+    /// <summary>Every piece name this board can use, built once so a rent never formats a string.</summary>
+    private static string[,] BuildPieceNames()
+    {
+        string[,] names = new string[2, Size * Size];
+        for (int p = 1; p <= 2; p++)
+            for (int i = 0; i < Size * Size; i++)
+                names[p - 1, i] = $"Piece_{p}_{i / Size}_{i % Size}";
+        return names;
+    }
+
+    private static string PieceName(int player, int x, int y) => pieceNames[player - 1, x * Size + y];
+
     private Camera mainCamera;
     private int currentPlayer = 1;
     private Vector2Int selected = new Vector2Int(-1, -1);
@@ -315,12 +338,8 @@ public class DamaBoard : MonoBehaviour
         currentMatchId = PlayerProfile.LastMatchId + 1;
         matchStartUnscaled = Time.unscaledTime;
 
-        Transform piecesRoot = transform.Find("Pieces");
-        if (piecesRoot != null)
-        {
-            for (int i = piecesRoot.childCount - 1; i >= 0; i--)
-                Destroy(piecesRoot.GetChild(i).gameObject);
-        }
+        Transform piecesRoot = PiecesRoot();
+        if (piecesRoot != null) ReleaseAllPieces(piecesRoot);
 
         for (int x = 0; x < Size; x++)
         {
@@ -334,6 +353,13 @@ public class DamaBoard : MonoBehaviour
 
         if (piecesRoot != null)
             SpawnStartingPieces(piecesRoot, circleSprite != null ? circleSprite : CreateCircleSprite());
+
+        if (!piecePoolReported)
+        {
+            piecePoolReported = true;
+            Debug.Log($"[Perf] restart reuses pooled piece GameObjects ({piecePool.Count} parked): " +
+                      "no Destroy and no new GameObject per piece");
+        }
 
         ShowState(GameState.Playing);
         RefreshUI();
@@ -509,14 +535,16 @@ public class DamaBoard : MonoBehaviour
     {
         for (int y = 0; y <= 2; y++)
             for (int x = 0; x < Size; x++)
-                if (IsDark(x, y)) RegisterPiece(CreatePiece(piecesRoot, circle, 1, x, y), 1, x, y);
+                if (IsDark(x, y)) RegisterPiece(RentPiece(piecesRoot, circle, 1, x, y), 1, x, y);
 
         for (int y = 5; y <= 7; y++)
             for (int x = 0; x < Size; x++)
-                if (IsDark(x, y)) RegisterPiece(CreatePiece(piecesRoot, circle, 2, x, y), 2, x, y);
+                if (IsDark(x, y)) RegisterPiece(RentPiece(piecesRoot, circle, 2, x, y), 2, x, y);
     }
 
-    /// <summary>Places a spawned piece into the board state arrays.</summary>
+    /// <summary>
+    /// Places a spawned piece into the board state arrays.
+    /// </summary>
     private void RegisterPiece(GameObject piece, int player, int x, int y)
     {
         grid[x, y] = player == 1 ? Cell.Player1 : Cell.Player2;
@@ -524,18 +552,86 @@ public class DamaBoard : MonoBehaviour
         isKing[x, y] = false;
     }
 
-    private GameObject CreatePiece(Transform parent, Sprite sprite, int player, int x, int y)
+    /// <summary>
+    /// Rents a piece for the board: a pooled one when the pool has any, a new GameObject only when
+    /// it is empty. The name, the colour and the crown are reset here, because a pooled piece may
+    /// have been captured under a different name or promoted in an earlier match.
+    /// </summary>
+    private GameObject RentPiece(Transform parent, Sprite sprite, int player, int x, int y)
     {
-        GameObject piece = new GameObject($"Piece_{player}_{x}_{y}");
-        piece.transform.SetParent(parent, false);
-        piece.transform.localPosition = CellToLocal(x, y);
-        piece.transform.localScale = Vector3.one * 0.82f;
+        GameObject piece;
+        if (piecePool.Count > 0)
+        {
+            int last = piecePool.Count - 1;
+            piece = piecePool[last];
+            piecePool.RemoveAt(last);
+            piece.transform.SetParent(parent, false);
+            piece.SetActive(true);
+        }
+        else
+        {
+            piece = new GameObject();
+            piece.AddComponent<SpriteRenderer>();
+            piece.transform.SetParent(parent, false);
+            piece.transform.localScale = Vector3.one * 0.82f;
+        }
 
-        SpriteRenderer renderer = piece.AddComponent<SpriteRenderer>();
+        piece.name = PieceName(player, x, y);
+        piece.transform.localPosition = CellToLocal(x, y);
+
+        SpriteRenderer renderer = piece.GetComponent<SpriteRenderer>();
         renderer.sprite = sprite;
         renderer.color = player == 1 ? player1Color : player2Color;
         renderer.sortingOrder = 1;
+
+        Transform crown = CrownChild(piece.transform);
+        if (crown != null) crown.gameObject.SetActive(false);
         return piece;
+    }
+
+    /// <summary>
+    /// The gold crown child of a piece, or null. Index-based on purpose: a rent happens 24 times per
+    /// restart and Transform.Find would allocate a name comparison on the very path being optimized.
+    /// </summary>
+    private static Transform CrownChild(Transform piece) =>
+        piece.childCount > 0 ? piece.GetChild(piece.childCount - 1) : null;
+
+    /// <summary>The board's Pieces child, found once and then remembered.</summary>
+    private Transform PiecesRoot()
+    {
+        if (piecesRootCached == null) piecesRootCached = transform.Find("Pieces");
+        return piecesRootCached;
+    }
+
+    /// <summary>Inactive parent for recycled pieces: an inactive object draws nothing.</summary>
+    private Transform PiecePoolRoot()
+    {
+        if (piecePoolRoot == null)
+        {
+            GameObject root = new GameObject("PiecePool");
+            root.transform.SetParent(transform, false);
+            root.SetActive(false);
+            piecePoolRoot = root.transform;
+        }
+
+        return piecePoolRoot;
+    }
+
+    /// <summary>Parks a piece for reuse instead of destroying it.</summary>
+    private void ReleasePiece(GameObject piece)
+    {
+        if (piece == null) return;
+
+        piece.SetActive(false);
+        piece.transform.SetParent(PiecePoolRoot(), false);
+        piecePool.Add(piece);
+    }
+
+    private void ReleaseAllPieces(Transform root)
+    {
+        // Backwards, because each release reparents the child out of this root.
+        for (int i = root.childCount - 1; i >= 0; i--)
+            ReleasePiece(root.GetChild(i).gameObject);
     }
     /// <summary>Turns a man into a flying Dama: sets the flag and stacks a gold crown.</summary>
     private void PromoteToDama(int x, int y)
@@ -548,7 +644,8 @@ public class DamaBoard : MonoBehaviour
         SpriteRenderer pieceRenderer = pieceRenderers[x, y];
         if (pieceRenderer == null) return;
 
-        if (pieceRenderer.transform.Find("Crown") == null)
+        Transform crowned = CrownChild(pieceRenderer.transform);
+        if (crowned == null)
         {
             GameObject crown = new GameObject("Crown");
             crown.transform.SetParent(pieceRenderer.transform, false);
@@ -559,6 +656,11 @@ public class DamaBoard : MonoBehaviour
             crownRenderer.sprite = pieceRenderer.sprite;
             crownRenderer.color = crownColor;
             crownRenderer.sortingOrder = pieceRenderer.sortingOrder + 1;
+        }
+        else
+        {
+            // A pooled piece keeps its crown object; promoting it again only shows the crown.
+            crowned.gameObject.SetActive(true);
         }
 
         if (promotionPulse != null) StopCoroutine(promotionPulse);
@@ -591,11 +693,15 @@ public class DamaBoard : MonoBehaviour
         Transform piecesRoot = transform.Find("Pieces");
         if (squaresRoot == null || piecesRoot == null || squaresRoot.childCount != Size * Size) return false;
 
+        // The 64 squares are created x-major, y-inner (BuildLayout), so the child index is known.
+        // Reading by index and confirming the position replaces 64 Transform.Find calls per bind;
+        // Find stays as the fallback for a hierarchy that was reordered by hand.
         for (int x = 0; x < Size; x++)
         {
             for (int y = 0; y < Size; y++)
             {
-                Transform square = squaresRoot.Find($"Square_{x}_{y}");
+                Transform square = squaresRoot.GetChild(x * Size + y);
+                if (!IsSquareAt(square, x, y)) square = squaresRoot.Find($"Square_{x}_{y}");
                 if (square == null) return false;
 
                 squareRenderers[x, y] = square.GetComponent<SpriteRenderer>();
@@ -617,10 +723,18 @@ public class DamaBoard : MonoBehaviour
 
             grid[x, y] = player == 1 ? Cell.Player1 : Cell.Player2;
             pieceRenderers[x, y] = piece.GetComponent<SpriteRenderer>();
-            isKing[x, y] = piece.Find("Crown") != null;
+            Transform crown = CrownChild(piece);
+            isKing[x, y] = crown != null && crown.gameObject.activeSelf;
         }
 
         return true;
+    }
+
+    /// <summary>True when this child sits on cell (x,y), which is how a bind confirms the index.</summary>
+    private static bool IsSquareAt(Transform square, int x, int y)
+    {
+        if (square == null) return false;
+        return (square.localPosition - CellToLocal(x, y)).sqrMagnitude < 0.0001f;
     }
 
     // ---- Interaction ----
@@ -683,14 +797,14 @@ public class DamaBoard : MonoBehaviour
         {
             Transform piece = pieceRenderers[to.x, to.y].transform;
             piece.position = transform.TransformPoint(CellToLocal(to.x, to.y));
-            piece.name = $"Piece_{player}_{to.x}_{to.y}";
+            piece.name = PieceName(player, to.x, to.y);
         }
 
         // Jump capture: remove the jumped piece from the board immediately.
         if (jumped.x >= 0)
         {
             if (pieceRenderers[jumped.x, jumped.y] != null)
-                Destroy(pieceRenderers[jumped.x, jumped.y].gameObject);
+                ReleasePiece(pieceRenderers[jumped.x, jumped.y].gameObject);
             pieceRenderers[jumped.x, jumped.y] = null;
             grid[jumped.x, jumped.y] = Cell.Empty;
             isKing[jumped.x, jumped.y] = false;
