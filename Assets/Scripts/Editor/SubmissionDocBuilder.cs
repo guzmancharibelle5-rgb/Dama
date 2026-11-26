@@ -19,7 +19,10 @@ using UnityEngine;
 /// that HTML.
 ///
 /// This replaces Week13DocBuilder.cs, which hardcoded Week_13 and its three document names. The
-/// converter itself is unchanged apart from blockquote support, so Week 13's output is identical.
+/// converter itself is unchanged apart from blockquote support, so rebuilding Week 13 produces the
+/// same three documents with byte-identical bodies. The one difference is that the shared
+/// stylesheet grows by the blockquote rule, which Week 13 does not use - confirmed by rebuilding
+/// it and diffing: 10 added lines, 0 removed, no change inside <body>.
 ///
 /// Supports the small markdown subset the documents actually use: ATX headings, paragraphs,
 /// tables, bullet and numbered lists, fenced code, blockquotes, inline code, bold, italic,
