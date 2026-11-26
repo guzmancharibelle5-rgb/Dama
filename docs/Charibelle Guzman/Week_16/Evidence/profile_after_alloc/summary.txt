@@ -1,0 +1,79 @@
+DAMA - WEEK 16 PROFILE RUN
+Run label      : after-optimization-1
+Student        : Charibelle Guzman (BSIT-4)   Theme: Philippine Games and Sports
+Written        : 2026-11-26 14:27:06 (local)
+Harness        : Assets/Scripts/Editor/Week16Profile.cs   menu Tools/Dama/Week 16/2. After Optimization 1
+--------------------------------------------------------------------------------------------------
+CONDITIONS (identical in every run, or the runs are not comparable)
+  Unity            : 6000.6.0f1   Editor: WindowsEditor
+  Scene            : Assets/Scenes/DamaGame.unity
+  Game view        : 1151x584
+  Quality level    : 5 (Ultra)
+  Frame pacing     : free-run for the run - vSync 1 -> 0, targetFrameRate 60 -> -1,
+                     restored afterwards. A 16.7 ms vsync lock would hide every hitch.
+  Render pipeline  : UniversalRP
+  Graphics device  : NVIDIA GeForce GTX 1070
+  Machine          : AMD Ryzen 5 5600G with Radeon Graphics , 16276 MB
+  Profiler enabled : False before the run; forced on for the run, restored after
+  Save file        : C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama\Dama\profile.json
+  Calls            : strongly typed delegates for ExecuteMove and GetSelectableMoves (no per-call boxing)
+  Domain reload    : disabled on play-mode entry - no script was edited during the run
+--------------------------------------------------------------------------------------------------
+COUNTER SOURCES
+  Editor-wide frame allocation : ProfilerRecorder GC Allocated In Frame (Editor-wide: includes the Editor's own per-frame work)
+  Draw calls       : ProfilerRecorder 'Draw Calls Count'
+  Batches          : ProfilerRecorder 'Batches Count'
+  Set pass calls   : NOT MEASURABLE
+  Triangles        : ProfilerRecorder 'Triangles Count'
+  Byte-level probe : GC.GetAllocatedBytesForCurrentThread read 0 B across a deliberate 64 KB allocation (a stub on this runtime); GC.GetTotalMemory(false) and Profiler.GetMonoUsedSizeLong() move in 4 KB blocks and read 0 B across a run of 200 B allocations; AppDomain.MonitoringIsEnabled throws NotImplementedException. Byte-level per-call allocation is therefore measured by amplitude scaling below.
+  A counter that is unavailable, or that reads 0 for every frame while the scene is drawing,
+  is reported as NOT MEASURABLE, never as 0 - a zero would read as a perfect score.
+--------------------------------------------------------------------------------------------------
+SCENARIO
+  Warm-up discarded : 3.0 s (1380 frames)
+  Fixture           : 30 sample frame(s)
+  Measured window   : 71.33 s (32516 frames; probe, warm-up and fixture frames excluded)
+  Turns played      : 32   Restarts: 3 (forced by a finished match: 0)
+  Replay            : 32 recorded turn(s) replayed
+  Move hash         : 0xE432E83D   (equal hashes across runs = the same game happened)
+  Failure note      : none - the scenario completed
+--------------------------------------------------------------------------------------------------
+FRAME TIME (measured window, free-run)
+  mean   : 2.191 ms
+  p95    : 3.251 ms
+  max    : 25.896 ms
+  idle mean (non-action frames) : 2.173 ms
+  frames over 33.3 ms : 0 of 32516
+--------------------------------------------------------------------------------------------------
+ALLOCATION - THE DECISION METRIC (target PT-2: 0 B per turn beyond the HUD strings)
+  Method: amplitude scaling. The same call is run n and 2n times in separate frames and the
+  per-frame GC.Alloc is fitted; the slope is bytes per call and the intercept absorbs the
+  Editor's own per-frame cost, which cancels out of the comparison between runs.
+  A. one GetSelectableMoves call            : below the resolution of this method (slope -6.8 B +- 4.2 B, R2 0.25) - consistent with 0 B
+  B. one legality scan over all 12 piece(s)    : below the resolution of this method (slope -0.1 B +- 0.1 B, R2 0.25) - consistent with 0 B
+     (B is the work CheckForWin does at the end of every turn, so B is the per-turn figure)
+  C. one RESTART, profile write included   : 5596.2 B per call, +- 109.4 B (R2 1.00)
+     its frame cost                       : 0.089 ms per restart, +- 0.292 ms (R2 0.01)
+  Editor-wide frame allocation, reference only: warm-up 25326738 B   probe 649275 B   fixture 1117168 B   action frames 48903.0 B per frame
+  Those Editor-wide numbers are ~200 KB per frame of the Editor's own work and are recorded for
+  context only; they are not attributable to the game and are never used as the decision metric.
+--------------------------------------------------------------------------------------------------
+RESTART (target PT-3: worst frame under 16.7 ms)
+  restarts measured: 3   forced by a finished match: 0
+  worst frame      : 8.099 ms
+  mean frame       : 4.572 ms
+  idle mean        : 2.173 ms   hitch over idle: 2.399 ms
+  frame samples    : 9 (the 3 frames after each RESTART call)
+  RESTART destroys every piece, creates 24 new GameObjects and re-binds 64 squares, and it is
+  one tap away from a lost match, which is why it gets its own budget.
+--------------------------------------------------------------------------------------------------
+RENDERING AND MEMORY
+  draw calls   mean: NOT MEASURABLE (recorder valid but every sample read 0 while the scene was drawing)
+  batches      mean: NOT MEASURABLE (recorder valid but every sample read 0 while the scene was drawing)
+  set pass     mean: NOT MEASURABLE
+  triangles    mean: 305.9
+  memory peak      : 1722.1 MB   end of run: 1721.6 MB
+--------------------------------------------------------------------------------------------------
+WHAT THIS RUN DOES NOT PROVE
+  Anything about a phone. This is the Editor in play mode at one resolution on one machine;
+  there is no APK and adb has no device. Battery, thermals and GPU time are not measured.

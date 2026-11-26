@@ -46,6 +46,19 @@ public class DamaBoard : MonoBehaviour
     private readonly SpriteRenderer[,] pieceRenderers = new SpriteRenderer[Size, Size];
     private readonly List<Vector2Int> highlightedCells = new List<Vector2Int>();
     private readonly List<Vector2Int> selectedMoves = new List<Vector2Int>();
+
+    // ---- Week 16 optimization 1: move generation without allocation ----
+    // One reusable buffer per generator. The list a generator returns stays valid until the next
+    // call of that same generator, which every caller already respects: each one consumes it on
+    // the spot with Count or AddRange and never keeps it. Before this, every piece scanned by
+    // PlayerHasCapture, HasAnyLegalMove and a tap cost two fresh lists (556.7 B, measured).
+    private readonly List<Vector2Int> captureBuffer = new List<Vector2Int>(32);
+    private readonly List<Vector2Int> simpleBuffer = new List<Vector2Int>(32);
+
+    /// <summary>Shared empty result, so the mandatory-capture refusal allocates nothing.</summary>
+    private static readonly List<Vector2Int> noMoves = new List<Vector2Int>();
+
+    private static bool moveBuffersReported;
     private readonly bool[,] isKing = new bool[Size, Size];
 
     private Camera mainCamera;
@@ -429,17 +442,34 @@ public class DamaBoard : MonoBehaviour
     {
         Cell me = player == 1 ? Cell.Player1 : Cell.Player2;
 
+        // The mandatory-capture rule is a property of the whole side, so it is asked once, and the
+        // per-piece questions below are answered with captures or with steps, never both.
+        bool mustCapture = PlayerHasCapture(me);
+
         for (int x = 0; x < Size; x++)
         {
             for (int y = 0; y < Size; y++)
             {
                 if (grid[x, y] != me) continue;
-                if (GetSelectableMoves(x, y).Count > 0) return true;
+                if (mustCapture)
+                {
+                    if (HasCaptureAt(x, y)) return true;
+                }
+                else if (HasSimpleMoveAt(x, y))
+                {
+                    return true;
+                }
             }
         }
 
         return false;
     }
+
+    /// <summary>True when this piece has a capture; answers without building a list for the caller.</summary>
+    private bool HasCaptureAt(int x, int y) => GetCaptureMoves(x, y).Count > 0;
+
+    /// <summary>True when this piece has a plain step; answers without building a list for the caller.</summary>
+    private bool HasSimpleMoveAt(int x, int y) => GetSimpleMoves(x, y).Count > 0;
 
 
 
@@ -752,7 +782,8 @@ public class DamaBoard : MonoBehaviour
     /// <summary>Non-capture destinations: one step forward for men, any distance for a Dama.</summary>
     private List<Vector2Int> GetSimpleMoves(int x, int y)
     {
-        List<Vector2Int> moves = new List<Vector2Int>();
+        List<Vector2Int> moves = simpleBuffer;
+        moves.Clear();
         Cell me = grid[x, y];
         if (me == Cell.Empty) return moves;
 
@@ -795,7 +826,8 @@ public class DamaBoard : MonoBehaviour
     /// </summary>
     private List<Vector2Int> GetCaptureMoves(int x, int y)
     {
-        List<Vector2Int> moves = new List<Vector2Int>();
+        List<Vector2Int> moves = captureBuffer;
+        moves.Clear();
         Cell me = grid[x, y];
         if (me == Cell.Empty) return moves;
 
@@ -853,11 +885,17 @@ public class DamaBoard : MonoBehaviour
     /// <summary>Legal destinations under the mandatory-capture rule.</summary>
     private List<Vector2Int> GetSelectableMoves(int x, int y)
     {
+        if (!moveBuffersReported)
+        {
+            moveBuffersReported = true;
+            Debug.Log("[Perf] move generation writes into reusable buffers (captureBuffer, simpleBuffer): no List is allocated per piece scanned");
+        }
+
         List<Vector2Int> captures = GetCaptureMoves(x, y);
         if (captures.Count > 0) return captures;
 
         // Another piece must capture: this piece may only move if none can.
-        if (PlayerHasCapture(grid[x, y])) return new List<Vector2Int>();
+        if (PlayerHasCapture(grid[x, y])) return noMoves;
 
         return GetSimpleMoves(x, y);
     }
@@ -870,7 +908,7 @@ public class DamaBoard : MonoBehaviour
             for (int y = 0; y < Size; y++)
             {
                 if (grid[x, y] != me) continue;
-                if (GetCaptureMoves(x, y).Count > 0) return true;
+                if (HasCaptureAt(x, y)) return true;
             }
         }
 
