@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Week 17 - Self-Assessment and Reflection</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>Week 17 - Self-Assessment and Reflection</h1>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Week:</strong> 17 - Release Preparation and Documentation</p>
+<p class="meta"><strong>Game:</strong> Dama, release candidate <code>1.0.0-rc1</code></p>
+<hr/>
+<h2>1. What I set out to do</h2>
+<p>Week 17 is the week the game stops being a class project and becomes something another person could pick up: it has to say which build it is, who made it, how to play it, and how to leave it. I planned four things - freeze the tree, set the release identity, build the missing screens, and re-run every gate from Weeks 13-16 against the frozen build - and I wrote the plan down before starting, because the last four weeks taught me that a step I did not write down is a step I skip when I am tired.</p>
+<p>I did all four. I also could not do one of them: the module's clean install on a device. That is recorded as <strong>BLOCKED</strong>, not as done, and section 5 explains why I think that was the right call.</p>
+<h2>2. What was harder than I expected</h2>
+<p><strong>The version number.</strong> I assumed this would be a two-minute settings change. Then I read why the version must not go into <code>productName</code>: on Android the save file lives under a path built from the company and product names, so putting <code>1.0.0-rc1</code> there would have moved the profile store and looked like a wipe to every player. The version had to go into <code>bundleVersion</code>, which is what <code>Application.version</code> reads, and the screens had to read <code>Application.version</code> rather than hold a copy of the string. That one decision changed the design of both new screens: <code>ReleaseInfo</code> derives every string, and the title caption is written at start-up, not baked into the scene.</p>
+<p><strong>The builder.</strong> My panel builder had a real bug and the regression suite found it, not me. I had taught the builder to delete the old version label and the old panels before rebuilding, but I forgot the three new buttons - so its second run left two HOW TO PLAY buttons, two CREDITS buttons and two EXIT buttons stacked on top of each other. The accessibility case reported each control overlapping <em>itself</em>, which sounds like a nonsense message until you realise it is exactly what two objects with the same name at the same position look like. The regression went from 27 passing to 26 with 1 failed. That failure is the single most useful thing that happened this week: it means the gate I built in Week 15 is still doing its job.</p>
+<p><strong>The screenshots.</strong> My first capture run produced six file names over four pictures. The editor window was not the front window, so the Game view stopped drawing after the credits panel and the last three captures were byte-for-byte copies of it. I only noticed because I hashed the files. The fix was to force a repaint while a capture is pending - and the lesson was that a screenshot is evidence only if something checks that it is not a duplicate.</p>
+<h2>3. What I learned about evidence</h2>
+<p>Three things I did not understand well enough before this week:</p>
+<ol>
+<li><strong>A check that passes for the wrong reason is worse than a check that fails.</strong> <code>TC-REL-04</code> reported <code>null</code> where a button's listener should have been. The wiring was fine; the check was reading the wrong field of the event object. Had I "fixed" it by loosening the check, I would have shipped a green result that proved nothing. It now prints the method name of each of the five handlers.</li>
+<li><strong>Idempotence is a property of the tool, not of my memory.</strong> A release tool that appends instead of replacing will keep working until the day someone runs it twice - and then it quietly corrupts the scene. <code>DestroyIfExists</code> now keeps going until nothing with that name is left, so a broken scene can be repaired by re-running the tool.</li>
+<li><strong>Numbers have to be produced, not remembered.</strong> Every figure in this package - 5/0/0 release checks, 27/0/1 regression, 148/0/0 with 4 not measurable in the audit, six distinct hashes - comes from a log I can point at. When the audit count changed from 163 to 148 because the duplicate controls disappeared, I wrote down the reason instead of replacing the old number and hoping nobody noticed.</li>
+</ol>
+<h2>4. The design decisions I would defend</h2>
+<ul>
+<li><strong>Two rows of controls instead of three.</strong> Five 100 px controls do not fit in the band the title leaves at the 1280x720 reference; the third row would have pushed EXIT under the bottom edge on the shortest phone the canvas scaler supports.</li>
+<li><strong>Text fitted by measuring, not guessing.</strong> The builder measures the paragraph and steps the size down until it fits, logging the result. The first attempt said <code>even 18px needs 358.3 px of 330.0 px</code> and refused to pretend; I enlarged the box rather than shrinking the rules a player needs.</li>
+<li><strong>EXIT is a real control with a real method.</strong> In the editor it stops play mode, on a device it quits the app, and <code>TC-REL-04</code> proves it is bound to <code>DamaBoard.QuitGame</code> rather than merely drawn.</li>
+<li><strong>The panels are state-driven.</strong> They are shown and hidden by the one <code>ShowState</code> function, which is why <code>TC-REL-05</code> can prove they do not leak into a running match. A panel toggled from two places would have been a bug waiting for the right sequence of taps.</li>
+</ul>
+<h2>5. What I could not do, and why I did not pretend otherwise</h2>
+<p>The module asks for the game to be installed on the target device from a clean state. I did not build an APK this week and no handset was attached, so there is nothing to install and no install happened. I recorded it as <strong>BLOCKED</strong> with the reason, in three places: the issue log, the clean-install note, and the front page.</p>
+<p>I could have made the documents look complete by describing the install as "verified in the editor". That would have been false: an Editor run says nothing about touch response, frame pacing, memory or battery on a phone. The compatibility case <code>TC-COMPAT-01</code> is blocked for the same reason and has been since Week 15. A reviewer who needs that evidence needs a device build, and no amount of writing changes that.</p>
+<p>The same applies to usability. Week 14 recorded that no participant was available; this week does not invent one. What I can show is that the interface is legible and reachable by measurement, and that the rules are written out in full on a screen a player can reach in one tap.</p>
+<h2>6. Self-assessment against the week's checklist</h2>
+<table>
+<thead><tr>
+<th>Item</th>
+<th>My judgement</th>
+<th>Why</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Release settings and identity</td>
+<td><strong>Met</strong></td>
+<td><code>1.0.0-rc1</code> / code 2, derived onto two surfaces, asserted by <code>TC-REL-01</code>/<code>02</code></td>
+</tr>
+<tr>
+<td>Credits surface</td>
+<td><strong>Met</strong></td>
+<td>CREDITS panel with author, course, engine, licence, AI statement, build line</td>
+</tr>
+<tr>
+<td>Exit or restart behaviour</td>
+<td><strong>Met</strong></td>
+<td>EXIT wired to <code>QuitGame</code>; RESTART on pause and end screens</td>
+</tr>
+<tr>
+<td>Clear instructions</td>
+<td><strong>Met</strong></td>
+<td>HOW TO PLAY, 1,122 characters, fitted at 19 px, BACK returns</td>
+</tr>
+<tr>
+<td>Version number and build identifier</td>
+<td><strong>Met</strong></td>
+<td>visible on the title and in credits, both read from the application</td>
+</tr>
+<tr>
+<td>Regression of Weeks 13-16</td>
+<td><strong>Met</strong></td>
+<td>27 passed, 0 failed, 1 blocked, 0 console errors</td>
+</tr>
+<tr>
+<td>Accessibility not regressed</td>
+<td><strong>Met</strong></td>
+<td>148 passed, 0 failed, 4 not measurable, all named</td>
+</tr>
+<tr>
+<td>Six submission images</td>
+<td><strong>Met</strong></td>
+<td>E1-E6, hashes distinct, transcript written</td>
+</tr>
+<tr>
+<td>Clean install on a device</td>
+<td><strong>Not met - BLOCKED</strong></td>
+<td>no APK, no handset; <code>ENV-17-01</code>, <code>TC-COMPAT-01</code></td>
+</tr>
+</tbody></table>
+<h2>7. What I would do next</h2>
+<ol>
+<li><strong>Build an APK and install it.</strong> Everything in this package is an Editor measurement; the first device build is the only way to close <code>TC-COMPAT-01</code> and to find out whether the touch targets are as comfortable on a phone as 96 canvas px suggests.</li>
+<li><strong>Have one person who has never played it open HOW TO PLAY and then play a match.</strong> That is the only way to know whether 1,122 characters at 19 px is instructions or wallpaper.</li>
+<li><strong>Keep the release identity boring.</strong> The pattern - derive from <code>Application.*</code>, assert it on screen, never type it - is cheap and it is the thing most likely to rot if someone edits a label by hand later.</li>
+<li><strong>Treat every builder as a tool that will be run twice.</strong> Any future scene builder gets its own <code>DestroyIfExists</code> discipline from the first line, and a gate that counts the children it expects.</li>
+</ol>
+
+</body>
+</html>

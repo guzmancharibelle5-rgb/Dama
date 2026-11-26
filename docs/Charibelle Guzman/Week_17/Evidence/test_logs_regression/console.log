@@ -1,0 +1,62 @@
+07:27:09 Log         [Week15] Entering play mode for the REGRESSION test run.
+07:27:10 Log         [Feedback] ready - sound ON, clips move=ok capture=ok crown=ok win=ok lose=ok, haptics=on on WindowsEditor
+07:27:10 Log         [Week17] Release labels filled from the binary: title='1.0.0-rc1 · Editor' credits='Build 1.0.0-rc1 · Editor · com.defaultcompany.dama'.
+07:27:10 Log         [Week15] TC-FLOW-01 PASS (REQ-01) Launched scene shows the title screen :: StartPanel=True HUDPanel=True PausePanel=True WinPanel=True
+07:27:10 Log         [Week15] TC-FLOW-02 PASS (REQ-01) Title screen states the rules :: chars=156
+07:27:11 Log         [Week15] TC-FLOW-03 PASS (REQ-02) START begins a match with 24 pieces, RED to move, counts shown :: pieces=24 turn='Turn: RED' counts='Red: 12   Blue: 12'
+07:27:11 Log         [Week15] TC-FLOW-04 PASS (REQ-10) PAUSE freezes the board; RESUME returns to the same side to move :: paused=True pausedTurn=1 resumed=True resumedTurn=1 soundLabel='SOUND: ON'
+07:27:11 Log         [Feedback] sound OFF - remembered in PlayerPrefs["audio.feedback"]
+07:27:11 Log         [Feedback] sound ON - remembered in PlayerPrefs["audio.feedback"]
+07:27:11 Log         [Week15] TC-FLOW-05 PASS (REQ-11) SOUND toggle silences feedback, spells its state and survives in PlayerPrefs :: enabled True->False->True label 'SOUND: OFF' then 'SOUND: ON' prefs 0/1
+07:27:11 Log         [Perf] restart reuses pooled piece GameObjects (0 parked): no Destroy and no new GameObject per piece
+07:27:11 Log         [Week15] ReturnToMenu: board reset, title screen shown, timeScale restored to 1.
+07:27:11 Log         [Week15] TC-FLOW-06 PASS (REQ-17) A match can be left for the title screen without closing the app :: StartPanel=True PausePanel=False HUDPanel=False timeScale=1.00
+07:27:11 Log         [Perf] move generation writes into reusable buffers (captureBuffer, simpleBuffer): no List is allocated per piece scanned
+07:27:11 Log         [Week15] TC-RULE-01 PASS (REQ-04) A mandatory capture removes the quiet move from the offered list :: offered=[(3,4)] expected only [(3,4)]
+07:27:11 Log         [Feedback] capture -> Dama_Capture
+07:27:11 Log         [Feedback] haptic skipped - Handheld.Vibrate is a no-op on this platform.
+07:27:11 Log         [Feedback] capture - RED jumped the piece at (2,3) -> Capture
+07:27:11 Log         [Week15] End screen: RED WINS 1-0, BLUE has no pieces left.
+07:27:11 Log         [Feedback] win -> Dama_Win
+07:27:11 Log         [Feedback] win - winner RED, your side RED -> Win
+07:27:11 Log         [DamaBoard] Banked match 1: winner=RED seconds=0.0
+07:27:11 Log         [Week15] TC-RULE-02 PASS (REQ-04) A jump lands beyond the enemy and removes it :: landing=RED jumpedCell=empty
+07:27:11 Log         [Feedback] capture -> Dama_Capture
+07:27:11 Log         [Feedback] haptic skipped - Handheld.Vibrate is a no-op on this platform.
+07:27:11 Log         [Feedback] capture - RED jumped the piece at (2,3) -> Capture
+07:27:11 Log         [Week15] TC-RULE-03 PASS (REQ-05) A capture that lands on another jump keeps the turn and the chain :: chain=(3,4) turn=RED:True continuationOffered=True
+07:27:11 Log         [Feedback] move -> Dama_Move
+07:27:11 Log         [Feedback] move - RED (3,6) to (2,7) -> Move
+07:27:11 Log         [Feedback] crown -> Dama_Crown
+07:27:11 Log         [Feedback] crown - a man reached the back row at (2,7) -> Crown
+07:27:11 Log         [Week15] TC-RULE-04 PASS (REQ-06) RED is crowned on its far row, y == 7 :: landing=(2,7) isKing=True
+07:27:11 Log         [Feedback] move -> Dama_Move
+07:27:11 Log         [Feedback] move - BLUE (3,1) to (4,0) -> Move
+07:27:11 Log         [Feedback] crown -> Dama_Crown
+07:27:11 Log         [Feedback] crown - a man reached the back row at (4,0) -> Crown
+07:27:11 Log         [Week15] TC-RULE-05 PASS (REQ-06) BLUE is crowned on its far row, y == 0 (not y == 7) :: landing=(4,0) isKing=True
+07:27:11 Log         [Week15] TC-RULE-06 PASS (REQ-06) A Dama flies any distance along a diagonal and stops before a piece :: offered=[(1,1), (2,2), (3,3), (4,4), (5,5), (6,6)] expected 6 squares ending at (6,6)
+07:27:11 Log         [Week15] End screen: RED WINS 1-0, BLUE has no pieces left.
+07:27:11 Log         [Feedback] win -> Dama_Win
+07:27:11 Log         [Feedback] win - winner RED, your side RED -> Win
+07:27:11 Log         [DamaBoard] Banked match 2: winner=RED seconds=0.0
+07:27:11 Log         [Week15] TC-RULE-07 PASS (REQ-07) A side with no pieces left loses, and the winner is declared :: WinPanel=True WinText='RED WIN!'
+07:27:11 Log         [Week15] TC-RULE-08 PASS (REQ-09) The end screen says the match was won by removing every piece :: SummaryText='RED WINS.  RED 1-0, BLUE has no pieces left.'
+07:27:11 Log         [Week15] End screen: RED WINS 1-1, BLUE has no legal move.
+07:27:11 Log         [Feedback] win -> Dama_Win
+07:27:11 Log         [Feedback] win - winner RED, your side RED -> Win
+07:27:11 Log         [DamaBoard] Banked match 3: winner=RED seconds=0.0
+07:27:11 Log         [Week15] TC-RULE-09 PASS (REQ-08) A side that still has pieces but no legal move loses :: WinPanel=True WinText='RED WIN!'
+07:27:11 Log         [Week15] TC-RULE-10 PASS (REQ-09) The end screen names both counts and says why the match ended :: SummaryText='RED WINS.  RED 1-1, BLUE has no legal move.' expected reason 'no legal move' and 'RED 1-1'
+07:27:11 Log         [Week15] TC-RULE-11 PASS (REQ-09) The end screen offers RESTART and a way back to the title screen :: RestartButtonWin=True MenuButtonWin=True
+07:27:11 Log         [Week15] TC-DATA-01 PASS (REQ-13) Name and side survive a reload from disk :: name='QA-CHARIBELLE' side=2 savePath=C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama\Dama\profile.json
+07:27:11 Log         [Week15] TC-DATA-02 PASS (REQ-14) A finished match is banked once and survives a reload :: afterFirst=1 afterRepeat=1 repeatRefused=True afterReload=1 error=''
+07:27:11 Log         [Week15] TC-DATA-03 PASS (REQ-15) Reset clears the record and leaves a usable profile :: reset=True name='PLAYER' wins=0 losses=0 best=0
+07:27:11 Log         [Week15] TC-DATA-04 PASS (REQ-16) A corrupt save is set aside, reported, and the game recovers :: error='JSON parse error: Invalid value.' quarantined=True emptyDefaults=True recovered=True reloaded=True
+07:27:12 Log         [Week15] TC-DATA-05 PASS (REQ-22) The player record is one local file inside the app sandbox :: path=C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama\Dama\profile.json insideSandbox=True exists=True rejectedCopyInsideSandbox=True
+07:27:12 Log         [Week15] TC-A11Y-01 PASS (REQ-19) Every button and input field is at least 96x96 canvas px :: 18 buttons, 1 fields, 0 below floor 
+07:27:12 Log         [Week15] TC-A11Y-02 PASS (REQ-19) No two controls on the same panel overlap :: 0 overlapping pairs
+07:27:12 Log         [Week15] TC-A11Y-03 PASS (REQ-20) Captions are at least 20 px and labels at least 18 px :: 0 caption(s), 0 label(s) below floor 
+07:27:12 Log         [Week15] TC-BOUND-01 PASS (REQ-21) 100 rapid taps do not crash, change the board or bank a match :: pieces 24->24 matchId 0->0 throws='' stillAnswers=True
+07:27:12 Log         [Week15] TC-BOUND-02 PASS (REQ-10) 50 pause/resume cycles leave the game running and unpaused :: timeScale=1.00 pausePanel=False throws=''
+07:27:12 Log         [Week15] TC-COMPAT-01 BLOCKED - no APK and no handset in this lab.

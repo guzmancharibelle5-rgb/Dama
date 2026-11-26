@@ -48,8 +48,65 @@ A match ends when a side has no pieces left, or has pieces but no legal move.
 | 14 | Game Usability, Accessibility and Playtesting | SA6, PT6, reflection, playtest kit, evidence | complete - see `Week_14/` |
 | 15 | Game Testing, Defect Correction and Milestones | AS3 milestone, reflection, test logs, defect log, evidence | complete - see `Week_15/` |
 | 16 | Mobile Game Profiling and Performance Optimization | SA6, AS3, reflection, three profile runs, regression logs, evidence | complete - see `Week_16/` |
-| 17 | Release Preparation and Documentation | - | not started |
+| 17 | Release Preparation and Documentation | PT7 (front page, technical documentation, user guide, evidence index, reflection), three screens, four new controls, release identity, six captures, evidence | complete - see `Week_17/` |
 | 18 | Final Project, Demonstration and Defense | - | not started |
+
+---
+
+## Week 17 at a glance
+
+The build was frozen first (`git tag -a week16-final` on `337b436`), then given an identity it cannot lie about:
+`bundleVersion` went `1.0` → **`1.0.0-rc1`** and the Android version code `1` → **`2`**, while `productName` and
+`companyName` were left alone on purpose - on Android the save file lives under a path built from them, so moving
+them would look exactly like a wipe. Both on-screen version strings are **derived** from `Application.version` by
+`ReleaseInfo`, never typed into a scene label, and `TC-REL-01` compares the title caption to `Application.version`
+to keep it that way.
+
+Three screens were missing and are now built and wired: **HOW TO PLAY** (1,122 characters fitted to 19 px, 399.3 px
+of a 440 px box), **CREDITS** (903 characters, plus a build line naming the build and the application id) and
+**EXIT**, which calls `DamaBoard.QuitGame()`. The title row is HOW TO PLAY / START / CREDITS with PROFILE and EXIT
+beneath, and both new panels are state-driven, so they cannot leak into a match.
+
+| Item | Where |
+|---|---|
+| Release identity | `Week_17/Evidence/build_record.txt` - `1.0.0-rc1` / code 2, `productName` `dama` and `companyName` `DefaultCompany` unchanged |
+| Release checks | `Week_17/Evidence/test_logs_release/` - **5 passed, 0 failed, 0 console errors** (`TC-REL-01…05`) |
+| Regression at `Week_17` | `Week_17/Evidence/test_logs_regression/` - **27 passed, 0 failed, 1 blocked** (`TC-COMPAT-01`), 0 console errors |
+| Accessibility audit | `Week_17/Evidence/a11y_week17_after.log` - **148 passed, 0 failed, 0 warnings, 4 not measurable** (Week 16 was 105) |
+| Captures | `Week_17/Evidence/E1…E6.png` - six images, six distinct SHA-256 values, transcript in `week17_shots.txt` |
+| Defects found by the gates | `Week_17/Evidence/issue_disposition.md` - **DEF-17-05** (a second builder run left a duplicate HOW TO PLAY / CREDITS / EXIT under `StartPanel`, which `TC-A11Y-02` reported as three controls overlapping themselves) and **DEF-17-06** (the release check read the wrong field of a uGUI listener and reported `null`). Both fixed, both disclosed |
+| Install on a device | **BLOCKED** - no APK was built and `adb devices` (Unity's bundled platform-tools) lists no serial. `Week_17/Evidence/clean_install.md` records the attempt, the exact command output, and what the Editor evidence does not prove |
+| Repository hygiene | `Week_17/Evidence/secret_scan.md` + `secret_scan_raw.txt` - no key, token, keystore or `.env` is tracked; the signing settings are empty (debug signing only) |
+| Documents | `Week_17/*.pdf` - PT7 (3 pp), technical documentation (6 pp), user guide (4 pp), evidence index (4 pp), reflection (3 pp) |
+| Re-running everything | `Week_17/others/Guzman_Charibelle_PT7_Evidence_Index.md` section 8 |
+
+### Folder map
+
+```
+  Week_17/
+    Guzman_Charibelle_PT7.pdf                          the front page of the release package
+    Guzman_Charibelle_PT7_Technical_Documentation.pdf  identity mechanism, state machine, builder, defects, gates
+    Guzman_Charibelle_PT7_User_Guide.pdf               the six screens, the rules, the profile, troubleshooting
+    Guzman_Charibelle_PT7_Evidence_Index.pdf           every claim mapped to the file and case that proves it
+    Guzman_Charibelle_Week17_Reflection.pdf            the week's self-assessment
+    others/
+      *.md                                             the five document bodies
+      *.html                                           built with Tools > Dama > Submission > Build Week 17 HTML
+    Evidence/
+      readiness_results.md                             the three gate counts and what they do not prove
+      feature_freeze_checklist.md                      what was frozen and the change sets accepted so far
+      issue_disposition.md                             DEF-17-01…06 and ENV-17-01/02 with outcomes
+      build_record.txt                                 identity, machine, scene, commit, the BLOCKED APK step
+      clean_install.md                                 the install step that could not run, and why
+      secret_scan.md, secret_scan_raw.txt              the hygiene scan and its unedited output
+      architecture.svg                                 scene, scripts, identity source and harnesses
+      a11y_week17_after.log                            the authoritative audit (148 / 0 / 0, 4 not measurable)
+      a11y_week17_audit_*.log                          timestamped copies: one pre-fix, one post-fix
+      test_logs_release/                               case_log.tsv, summary.txt, console.log - 5 / 0 / 0
+      test_logs_regression/                            case_log.tsv, summary.txt, console.log - 27 / 0 / 1
+      E1_title.png … E6_end_screen.png                 the six submission images
+      week17_shots.txt                                 capture transcript with sizes and SHA-256 of all six
+```
 
 ---
 
@@ -281,6 +338,10 @@ discover.
 | The optimizations **cannot be shown to improve frame time** | The frame was 2.062 ms mean with 0 of 34,550 frames over a 33.3 ms budget **before** any change, and the idle mean moved with the frame mean between runs, so frame differences come from the Editor session, not the code. What is proven is that the per-turn allocation fell from 6,975.9 B to 0.1 B +/- 0.1 and that a restart's allocation fell from 5,596 B to at most ~1.7 KB. The frame claim is not made because it cannot be supported |
 | A move generator now returns a **shared buffer** | `GetCaptureMoves`, `GetSimpleMoves` and `GetSelectableMoves` return a list that is valid only until that generator is next called. Every current caller consumes it immediately and stores nothing - audited call by call - but a future caller that keeps the list will break the board silently, with no error. The contract is written into the field comment in `DamaBoard.cs` because a comment is the only thing standing between the next reader and that bug |
 | The piece pool **keeps 24 objects alive** for the session | A piece that leaves the board is parked under an inactive `PiecePool` root instead of being destroyed, which is what removed the restart churn - and what makes the memory cost of a long session slightly higher than before. The pool's cost is bounded and named in `Week_16/Evidence/metrics.md`, but a 20-minute match was never profiled, so the session-long effect is reasoned about rather than measured |
+| **No APK and no handset again** - the release candidate was never installed | `TC-COMPAT-01` stays **BLOCKED**, not passed. `adb devices` was run from Unity's own platform-tools (`...\PlaybackEngines\AndroidPlayer\SDK\platform-tools\adb.exe`, since `adb` is not on `PATH`) and returned `List of devices attached` with nothing under it; no Android package was produced this week either. `Week_17/Evidence/clean_install.md` quotes the command, the output and the signing settings, and lists what the Editor evidence does and does not prove |
+| The version caption reads **`· Editor`** in every Week 17 capture | `ReleaseInfo.Platform` reads the platform it is running on, so an Android build would read `· Android`. Nobody has seen that string, because no build exists. The mechanism is proven (`TC-REL-01` compares the caption to `Application.version`); the Android value is inferred from `Application.platform`, not observed |
+| **EXIT is bound, not proven to quit on Android** | `TC-REL-04` proves `StartPanel/ExitButton` holds one listener to `DamaBoard.QuitGame`. `QuitGame` calls `EditorApplication.isPlaying = false` under the editor and `Application.Quit()` in a build - and `Application.Quit()` has never run, because no build has. The check proves the wire, not the behaviour on a phone |
+| A scene builder **run twice can corrupt the scene** | It did: the release-panel builder had no cleanup for the three new title buttons, so its second run left a duplicate set and `TC-A11Y-02` reported three controls overlapping themselves (`DEF-17-05`). `DestroyIfExists` now loops until nothing with that name is left, and the regression catches the symptom - but every future builder has the same failure mode until it is written with the same discipline |
 
 ---
 

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PT7 - User Guide</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>PT7 - User Guide</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman · BSIT-4</p>
+<p class="meta"><strong>Release:</strong> <code>1.0.0-rc1</code> (version code 2) · <code>com.defaultcompany.dama</code></p>
+<p class="meta"><strong>Platform:</strong> Android 8.0 (API 26) and above, ARM64</p>
+<p class="meta"><strong>Produced:</strong> 2026-11-26</p>
+<hr/>
+<h2>1. What Dama is</h2>
+<p>Dama is the Filipino game of dama - checkers on an 8x8 board - played by two people sharing one phone. RED starts, RED moves up the board, BLUE moves down it, and a piece that reaches the far row becomes a <strong>Dama</strong> (a king) that travels any distance along a diagonal. The board is the theme; there is no timer, no advertisement and no network connection.</p>
+<h2>2. Before you start</h2>
+<table>
+<thead><tr>
+<th>Requirement</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Android</td>
+<td>8.0 (API 26) or newer, ARM64 device</td>
+</tr>
+<tr>
+<td>Screen</td>
+<td>landscape; the interface is designed for 1280x720 and scales to the screen</td>
+</tr>
+<tr>
+<td>Internet</td>
+<td><strong>not required</strong> - the game has no network code</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>one small JSON file, described in section 7</td>
+</tr>
+</tbody></table>
+<h3>2.1 Installing this release candidate</h3>
+<p><strong>This release candidate has no APK.</strong> The build step for Week 17 was recorded as <strong>BLOCKED</strong>: no Android package was produced and no handset was attached to test one, so there is nothing here to install and no install has been claimed. <code>Evidence/clean_install.md</code> records the attempt and the reason.</p>
+<p>The build can still be reviewed from source, in the Editor:</p>
+<ol>
+<li>open the project in Unity <strong>6000.6.0f1</strong>;</li>
+<li>open <code>Assets/Scenes/DamaGame.unity</code>;</li>
+<li>press Play.</li>
+</ol>
+<p>That is exactly the scene the six screenshots in <code>Evidence/</code> were taken from.</p>
+<h2>3. The screens</h2>
+<h3>3.1 Title screen (E1)</h3>
+<pre><code>1.0.0-rc1 · Editor                     &lt;- the build you are running
+
+                      DAMA
+        Tap a piece to select, then tap a yellow square to move.
+        Captures are mandatory. Keep jumping while captures remain.
+        Reach the far row to promote to a Dama.
+
+   HOW TO PLAY        [ START ]        CREDITS
+   PROFILE            [ EXIT ]</code></pre>
+<table>
+<thead><tr>
+<th>Control</th>
+<th>What it does</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>START</strong></td>
+<td>begins a match. RED moves first, 12 pieces a side</td>
+</tr>
+<tr>
+<td><strong>HOW TO PLAY</strong></td>
+<td>opens the full instructions (section 3.2)</td>
+</tr>
+<tr>
+<td><strong>CREDITS</strong></td>
+<td>author, course, engine, licence and the build line (section 3.3)</td>
+</tr>
+<tr>
+<td><strong>PROFILE</strong></td>
+<td>your name, side, record and fastest wins</td>
+</tr>
+<tr>
+<td><strong>EXIT</strong></td>
+<td>closes the game</td>
+</tr>
+</tbody></table>
+<p>The caption in the top-left corner is the build the game was compiled as. It is read from the application at start-up, so it cannot say something the game is not.</p>
+<h3>3.2 HOW TO PLAY (E2)</h3>
+<p>One tap from the title, and <strong>BACK</strong> returns. It covers: the board and the two directions of play; how to select and move; the capture rule and the requirement to keep jumping while a capture remains; the Dama and its free travel along a diagonal; how a match ends; the pause menu; the sound toggle; and where the profile is stored. The body is 1,122 characters at 19 px in a 440 px box - it is the whole rule set, not a summary.</p>
+<h3>3.3 CREDITS (E3)</h3>
+<p>Author, course and section, engine and render-pipeline versions, the licence the project uses, a statement that AI assistance was used as a tool, and a build line:</p>
+<pre><code>Build 1.0.0-rc1 · Editor · com.defaultcompany.dama</code></pre>
+<p>If that line and the title caption ever disagree, the build is inconsistent - they are both generated from the same source. <strong>BACK</strong> returns to the title.</p>
+<h3>3.4 A match (E4) and the pause menu (E5)</h3>
+<p>The HUD shows whose turn it is and how many pieces each side has left, plus a <strong>PAUSE</strong> control in the top-right corner. Pausing freezes the board and offers:</p>
+<table>
+<thead><tr>
+<th>Control</th>
+<th>What it does</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>RESUME</strong></td>
+<td>returns to the same side to move, same position</td>
+</tr>
+<tr>
+<td><strong>RESTART</strong></td>
+<td>starts a fresh match</td>
+</tr>
+<tr>
+<td><strong>SOUND</strong></td>
+<td>toggles sound and spells its own state: <code>SOUND: ON</code> / <code>SOUND: OFF</code>; remembered between sessions</td>
+</tr>
+<tr>
+<td><strong>MENU</strong></td>
+<td>abandons the match and returns to the title screen</td>
+</tr>
+</tbody></table>
+<h3>3.5 End screen (E6)</h3>
+<p>The winner is announced, both counts are named, and the summary says <strong>why</strong> the match ended - for example <code>RED WINS.  RED 1-1, BLUE has no legal move.</code> <strong>RESTART</strong> plays again; <strong>MENU</strong> returns to the title.</p>
+<h2>4. How to play, in six steps</h2>
+<ol>
+<li>Tap one of your pieces. The squares it can reach light up yellow.</li>
+<li>Tap a lit square to move there. The turn passes to the other side.</li>
+<li>To capture, jump over an adjacent enemy piece onto the empty square beyond it. The jumped piece is removed.</li>
+<li>If a capture is available you <strong>must</strong> take it - a quiet move will be refused and the board will say so.</li>
+<li>If the piece that just captured can capture again, the turn stays with you until no jump remains.</li>
+<li>Reach the far row to become a Dama. A Dama may travel any distance along a diagonal and stops before the first piece in its path.</li>
+</ol>
+<p>A side loses when it has no pieces left, <strong>or</strong> when it still has pieces but no legal move.</p>
+<h2>5. Reading the board</h2>
+<table>
+<thead><tr>
+<th>Element</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>red piece</td>
+<td>RED, moving up the board</td>
+</tr>
+<tr>
+<td>blue piece</td>
+<td>BLUE, moving down the board</td>
+</tr>
+<tr>
+<td>gold crown</td>
+<td>that piece is a Dama</td>
+</tr>
+<tr>
+<td>yellow square</td>
+<td>a legal destination for the selected piece</td>
+</tr>
+<tr>
+<td>darkened board</td>
+<td>the match is over; the end panel is in front</td>
+</tr>
+</tbody></table>
+<h2>6. Accessibility of this interface</h2>
+<p>Measured in <code>Evidence/a11y_week17_after.log</code> against five thresholds (contrast 4.5:1 text / 3:1 large and non-text, 96x96 canvas px touch targets, caption text 20 px, other labels 18 px):</p>
+<ul>
+<li>every one of the <strong>18 buttons</strong> and the one input field clears the 96 px touch floor;</li>
+<li>no two controls on a panel overlap - a control you can see is a control you can tap;</li>
+<li>every measurable label clears its contrast threshold; the five controls this week added are 3.32:1 to 3.67:1 against the panel behind them, above the 3:1 non-text floor;</li>
+<li>four items are reported <strong>not measurable</strong>, not passed: the turn and count text drawn over the board, the pause button over the board, and the name input which has no fill of its own.</li>
+</ul>
+<p>The interface is fixed-size text: it does <strong>not</strong> follow the Android system font-size setting. That is a real limitation of a fixed-canvas uGUI screen, recorded in Week 15 and unchanged since.</p>
+<h2>7. Your profile and where it lives</h2>
+<p>The profile holds your name, chosen side, wins, losses and fastest wins.</p>
+<table>
+<thead><tr>
+<th>Question</th>
+<th>Answer</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Where is it?</td>
+<td>one local file inside the app sandbox: <code>.../DefaultCompany/dama/Dama/profile.json</code></td>
+</tr>
+<tr>
+<td>Is it shared?</td>
+<td>no. Nothing leaves the device; the game has no network code</td>
+</tr>
+<tr>
+<td>Is it protected?</td>
+<td>it is signed, so a hand-edited file is detected and set aside rather than trusted</td>
+</tr>
+<tr>
+<td>What if it is damaged?</td>
+<td>the game sets it aside, reports it, and starts from defaults - it does not lose the old file silently</td>
+</tr>
+<tr>
+<td>How do I clear it?</td>
+<td>PROFILE → <strong>RESET</strong>. That is the supported way</td>
+</tr>
+</tbody></table>
+<p>Deleting the app deletes the profile. There is no cloud copy to restore from.</p>
+<h2>8. Troubleshooting</h2>
+<table>
+<thead><tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>What to do</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>A quiet move is refused</td>
+<td>a capture was available</td>
+<td>take the capture - the rule is mandatory, and the board says so</td>
+</tr>
+<tr>
+<td>The turn does not pass after a capture</td>
+<td>the capturing piece can capture again</td>
+<td>finish the chain; the turn passes when no jump remains</td>
+</tr>
+<tr>
+<td>Sound is silent</td>
+<td>SOUND is off</td>
+<td>open the pause menu; the button shows <code>SOUND: OFF</code>; tap it</td>
+</tr>
+<tr>
+<td>The screen looks different from the screenshots</td>
+<td>the screenshots are 1151x584 from the Editor</td>
+<td>the canvas scales to the device; the layout, not the pixel count, is what to compare</td>
+</tr>
+<tr>
+<td>A profile message appears at start</td>
+<td>the save file could not be read</td>
+<td>start a fresh profile; the damaged file was set aside, not overwritten</td>
+</tr>
+<tr>
+<td>Nothing happens when EXIT is tapped in the Editor</td>
+<td>the Editor stops play mode instead of quitting</td>
+<td>that is the intended Editor behaviour</td>
+</tr>
+</tbody></table>
+<h2>9. Telling two builds apart</h2>
+<p>Open the title screen and read the caption: <code>1.0.0-rc1 · Editor</code> means an Editor run of release candidate 1. Open CREDITS for the same version plus the application id. Both strings come from the application, not from the scene, so two builds that differ will say so.</p>
+<p>A note on what this guide cannot tell you: because this release candidate was never installed on a handset, nothing here is verified on a phone - not the touch response, not the frame rate, not the battery cost. Those questions remain <strong>BLOCKED</strong> until a device build exists.</p>
+
+</body>
+</html>

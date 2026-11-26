@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="760" viewBox="0 0 1180 760" font-family="Segoe UI, Arial, sans-serif">
+  <title>Dama 1.0.0-rc1 - scene, scripts and data</title>
+  <desc>Week 17 release architecture: the GameCanvas panels, the DamaBoard state machine, the release identity source and the harnesses that produce evidence.</desc>
+
+  <rect x="0" y="0" width="1180" height="760" fill="#f7f6f2"/>
+  <text x="24" y="40" font-size="22" font-weight="bold" fill="#1d1d1f">Dama 1.0.0-rc1 - release architecture</text>
+  <text x="24" y="64" font-size="13" fill="#55555c">Unity 6000.6.0f1 - URP 17.6.0 (2D) - uGUI - scene Assets/Scenes/DamaGame.unity (build index 0)</text>
+
+  <!-- Scene column -->
+  <rect x="24" y="88" width="470" height="470" rx="10" fill="#ffffff" stroke="#c9c7bf"/>
+  <text x="40" y="114" font-size="15" font-weight="bold" fill="#1d1d1f">Scene: GameCanvas (1280x720 reference, match 0.50)</text>
+
+  <g font-size="12.5">
+    <rect x="40" y="128" width="200" height="54" rx="6" fill="#fdf1e3" stroke="#d9a05b"/>
+    <text x="52" y="149" fill="#1d1d1f" font-weight="bold">StartPanel  (Ready)</text>
+    <text x="52" y="168" fill="#55555c">title, rules, 5 controls, caption</text>
+
+    <rect x="254" y="128" width="220" height="54" rx="6" fill="#e9f2ff" stroke="#5d8fd0"/>
+    <text x="266" y="149" fill="#1d1d1f" font-weight="bold">HowToPanel  (HowTo)</text>
+    <text x="266" y="168" fill="#55555c">1122 chars @ 19 px, BACK</text>
+
+    <rect x="254" y="194" width="220" height="54" rx="6" fill="#e9f2ff" stroke="#5d8fd0"/>
+    <text x="266" y="215" fill="#1d1d1f" font-weight="bold">CreditsPanel  (Credits)</text>
+    <text x="266" y="234" fill="#55555c">credits + derived build line</text>
+
+    <rect x="40" y="194" width="200" height="54" rx="6" fill="#f1f1f4" stroke="#a9a9b2"/>
+    <text x="52" y="215" fill="#1d1d1f" font-weight="bold">ProfilePanel  (Profile)</text>
+    <text x="52" y="234" fill="#55555c">name, side, record, RESET</text>
+
+    <rect x="40" y="260" width="200" height="54" rx="6" fill="#f1f1f4" stroke="#a9a9b2"/>
+    <text x="52" y="281" fill="#1d1d1f" font-weight="bold">PausePanel  (Paused)</text>
+    <text x="52" y="300" fill="#55555c">RESUME / RESTART / SOUND / MENU</text>
+
+    <rect x="254" y="260" width="220" height="54" rx="6" fill="#f1f1f4" stroke="#a9a9b2"/>
+    <text x="266" y="281" fill="#1d1d1f" font-weight="bold">WinPanel  (GameOver)</text>
+    <text x="266" y="300" fill="#55555c">win text, summary, RESTART</text>
+
+    <rect x="40" y="326" width="200" height="54" rx="6" fill="#f1f1f4" stroke="#a9a9b2"/>
+    <text x="52" y="347" fill="#1d1d1f" font-weight="bold">HUDPanel  (Playing)</text>
+    <text x="52" y="366" fill="#55555c">turn, counts, PAUSE</text>
+  </g>
+
+  <text x="40" y="410" font-size="12.5" font-weight="bold" fill="#1d1d1f">Title row, canvas units (anchor 0.5, 0.3)</text>
+  <g font-size="11.5" fill="#55555c">
+    <rect x="40" y="420" width="128" height="34" rx="5" fill="#3d66a8"/>
+    <text x="52" y="442" fill="#ffffff">HOW TO PLAY -440</text>
+    <rect x="176" y="420" width="128" height="34" rx="5" fill="#d92626"/>
+    <text x="196" y="442" fill="#ffffff">START 0</text>
+    <rect x="312" y="420" width="128" height="34" rx="5" fill="#3d66a8"/>
+    <text x="322" y="442" fill="#ffffff">CREDITS +440</text>
+    <rect x="40" y="462" width="128" height="34" rx="5" fill="#335999"/>
+    <text x="52" y="484" fill="#ffffff">PROFILE -440</text>
+    <rect x="176" y="462" width="128" height="34" rx="5" fill="#9e4242"/>
+    <text x="196" y="484" fill="#ffffff">EXIT 0</text>
+    <text x="318" y="484">all 320x100 except PROFILE 320x96;</text>
+    <text x="318" y="500">second row at y = -115</text>
+  </g>
+
+  <!-- Scripts column -->
+  <rect x="520" y="88" width="300" height="470" rx="10" fill="#ffffff" stroke="#c9c7bf"/>
+  <text x="536" y="114" font-size="15" font-weight="bold" fill="#1d1d1f">Scripts (Assets/Scripts)</text>
+
+  <g font-size="12">
+    <rect x="536" y="128" width="268" height="86" rx="6" fill="#eef7ee" stroke="#5f9a5f"/>
+    <text x="548" y="149" fill="#1d1d1f" font-weight="bold">DamaBoard.cs</text>
+    <text x="548" y="168" fill="#55555c">GameState { Ready, Playing, Paused,</text>
+    <text x="548" y="185" fill="#55555c">  GameOver, Profile, HowTo, Credits }</text>
+    <text x="548" y="202" fill="#55555c">ShowState() is the only panel toggle</text>
+
+    <rect x="536" y="224" width="268" height="76" rx="6" fill="#eef7ee" stroke="#5f9a5f"/>
+    <text x="548" y="245" fill="#1d1d1f" font-weight="bold">CacheUI() + WireButton()</text>
+    <text x="548" y="264" fill="#55555c">13 controls wired by hierarchy path;</text>
+    <text x="548" y="281" fill="#55555c">5 of them are new this week</text>
+
+    <rect x="536" y="310" width="268" height="76" rx="6" fill="#fff8e5" stroke="#c9a13a"/>
+    <text x="548" y="331" fill="#1d1d1f" font-weight="bold">Core/ReleaseInfo.cs  (new)</text>
+    <text x="548" y="350" fill="#55555c">Version, BundleId, Engine, Platform,</text>
+    <text x="548" y="367" fill="#55555c">Caption(), BuildLine() - nothing stored</text>
+
+    <rect x="536" y="396" width="268" height="64" rx="6" fill="#f1f1f4" stroke="#a9a9b2"/>
+    <text x="548" y="417" fill="#1d1d1f" font-weight="bold">PlayerProfile.cs</text>
+    <text x="548" y="436" fill="#55555c">the only class that reads, signs,</text>
+    <text x="548" y="452" fill="#55555c">writes, clamps or deletes the save file</text>
+  </g>
+
+  <!-- Data column -->
+  <rect x="844" y="88" width="312" height="470" rx="10" fill="#ffffff" stroke="#c9c7bf"/>
+  <text x="860" y="114" font-size="15" font-weight="bold" fill="#1d1d1f">Where the identity comes from</text>
+
+  <g font-size="12">
+    <rect x="860" y="128" width="280" height="56" rx="6" fill="#f1f1f4" stroke="#a9a9b2"/>
+    <text x="872" y="149" fill="#1d1d1f" font-weight="bold">ProjectSettings.asset</text>
+    <text x="872" y="168" fill="#55555c">bundleVersion 1.0.0-rc1, code 2</text>
+
+    <rect x="860" y="196" width="280" height="56" rx="6" fill="#f1f1f4" stroke="#a9a9b2"/>
+    <text x="872" y="217" fill="#1d1d1f" font-weight="bold">Application.version / .identifier</text>
+    <text x="872" y="236" fill="#55555c">read at runtime, never typed in a label</text>
+
+    <rect x="860" y="264" width="280" height="56" rx="6" fill="#fff8e5" stroke="#c9a13a"/>
+    <text x="872" y="285" fill="#1d1d1f" font-weight="bold">StartPanel/VersionLabel</text>
+    <text x="872" y="304" fill="#55555c">"1.0.0-rc1 - Editor"  (E1)</text>
+
+    <rect x="860" y="332" width="280" height="56" rx="6" fill="#fff8e5" stroke="#c9a13a"/>
+    <text x="872" y="353" fill="#1d1d1f" font-weight="bold">CreditsPanel/BuildText</text>
+    <text x="872" y="372" fill="#55555c">"Build 1.0.0-rc1 - Editor - id"  (E3)</text>
+
+    <rect x="860" y="400" width="280" height="60" rx="6" fill="#fdecec" stroke="#c56a6a"/>
+    <text x="872" y="421" fill="#1d1d1f" font-weight="bold">productName / companyName</text>
+    <text x="872" y="440" fill="#55555c">UNCHANGED - the save path is built from</text>
+    <text x="872" y="456" fill="#55555c">them, so moving them wipes profiles</text>
+  </g>
+
+  <!-- Harnesses -->
+  <rect x="24" y="576" width="1132" height="156" rx="10" fill="#ffffff" stroke="#c9c7bf"/>
+  <text x="40" y="602" font-size="15" font-weight="bold" fill="#1d1d1f">Editor harnesses - every number in the package is produced here</text>
+
+  <g font-size="11.5">
+    <rect x="40" y="614" width="206" height="66" rx="6" fill="#e9f2ff" stroke="#5d8fd0"/>
+    <text x="52" y="634" fill="#1d1d1f" font-weight="bold">Week17Checks.cs</text>
+    <text x="52" y="652" fill="#55555c">TC-REL-01..05 -&gt; 5 / 0 / 0</text>
+    <text x="52" y="670" fill="#55555c">Evidence/test_logs_release/</text>
+
+    <rect x="258" y="614" width="206" height="66" rx="6" fill="#e9f2ff" stroke="#5d8fd0"/>
+    <text x="270" y="634" fill="#1d1d1f" font-weight="bold">Week15Checks.cs</text>
+    <text x="270" y="652" fill="#55555c">regression at Week_17</text>
+    <text x="270" y="670" fill="#55555c">27 / 0 / 1 -&gt; test_logs_regression/</text>
+
+    <rect x="476" y="614" width="206" height="66" rx="6" fill="#e9f2ff" stroke="#5d8fd0"/>
+    <text x="488" y="634" fill="#1d1d1f" font-weight="bold">A11yAudit.cs</text>
+    <text x="488" y="652" fill="#55555c">RunWeek17() -&gt; 148 / 0 / 0</text>
+    <text x="488" y="670" fill="#55555c">4 not measurable</text>
+
+    <rect x="694" y="614" width="206" height="66" rx="6" fill="#e9f2ff" stroke="#5d8fd0"/>
+    <text x="706" y="634" fill="#1d1d1f" font-weight="bold">Week17Captures.cs</text>
+    <text x="706" y="652" fill="#55555c">E1..E6 + SHA-256 gate</text>
+    <text x="706" y="670" fill="#55555c">week17_shots.txt</text>
+
+    <rect x="912" y="614" width="228" height="66" rx="6" fill="#fdecec" stroke="#c56a6a"/>
+    <text x="924" y="634" fill="#1d1d1f" font-weight="bold">Not run this week</text>
+    <text x="924" y="652" fill="#55555c">APK build + device install</text>
+    <text x="924" y="670" fill="#55555c">BLOCKED: no handset, no package</text>
+  </g>
+
+  <text x="40" y="706" font-size="11.5" fill="#55555c">Solid border = shipped this week. Blue = Week 17 panel or check. Yellow = release identity. Red = deliberately unchanged, or blocked.</text>
+  <text x="40" y="726" font-size="11.5" fill="#55555c">Panels are shown and hidden only by DamaBoard.ShowState(); a control is only "wired" if CacheUI() bound it, which TC-REL-04 reads back from the listener.</text>
+</svg>

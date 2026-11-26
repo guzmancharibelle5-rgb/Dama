@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PT7 - Technical Documentation</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>PT7 - Technical Documentation</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman · BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Week:</strong> 17 - Release Preparation and Documentation</p>
+<p class="meta"><strong>Release identity:</strong> <code>1.0.0-rc1</code>, version code <code>2</code>, <code>com.defaultcompany.dama</code></p>
+<p class="meta"><strong>Engine:</strong> Unity 6000.6.0f1 · URP 17.6.0 (2D Renderer) · Input System 1.20.0 · uGUI</p>
+<p class="meta"><strong>Scene:</strong> <code>Assets/Scenes/DamaGame.unity</code>, build index 0</p>
+<p class="meta"><strong>Tree:</strong> <code>week16-final</code> (<code>337b436</code>) plus the Week 17 change set</p>
+<p class="meta"><strong>Produced:</strong> 2026-11-26</p>
+<hr/>
+<h2>1. The problem this week actually has to solve</h2>
+<p>A build that cannot name itself is not releasable. Two copies of Dama - one from Week 16, one from this week - look identical on screen and write to the same profile, so a reviewer holding both cannot tell which is which, and a bug report cannot say which build produced it. The same applies to a build with no credits, no way out, and no instructions beyond three lines on the title.</p>
+<p>Week 17 therefore has four concrete jobs, and each one has a failure mode worth designing against:</p>
+<table>
+<thead><tr>
+<th>Job</th>
+<th>The failure mode it invites</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>State the version</td>
+<td>typing <code>1.0.0</code> into a <code>Text</code> component, so the label drifts away from the build it describes</td>
+</tr>
+<tr>
+<td>Add credits</td>
+<td>a screen that lists the engine version by hand, contradicting <code>Application.unityVersion</code> a month later</td>
+</tr>
+<tr>
+<td>Add an exit control</td>
+<td>a button built into the scene with no listener, which a screenshot cannot distinguish from a working one</td>
+</tr>
+<tr>
+<td>Add instructions</td>
+<td>a panel that a player can open but that also stays visible during a match</td>
+</tr>
+</tbody></table>
+<p>Every design decision below is a response to one of those four rows.</p>
+<h2>2. Version identity: derived, never typed</h2>
+<p><code>Assets/Scripts/Core/ReleaseInfo.cs</code> is a static class with no state and no scene reference:</p>
+<pre><code>public static string Version  =&gt; Application.version;      // "1.0.0-rc1"
+public static string BundleId =&gt; Application.identifier;   // "com.defaultcompany.dama"
+public static string Engine   =&gt; Application.unityVersion;
+public static string Platform { get; }                     // "Editor" / "Android" / ...
+public static string Caption()   =&gt; $"{Version} · {Platform}";
+public static string BuildLine() =&gt; $"Build {Version} · {Platform} · {BundleId}";</code></pre>
+<p><code>DamaBoard.RefreshReleaseLabels()</code> writes <code>ReleaseInfo.Caption()</code> into <code>StartPanel/VersionLabel</code> and <code>ReleaseInfo.BuildLine()</code> into <code>CreditsPanel/BuildText</code> at <code>Awake</code>. The builder writes the same strings once so the scene is not empty in edit mode, and the runtime overwrites them - which means no scene value can survive into a build that disagrees with <code>Application.version</code>.</p>
+<p><code>TC-REL-01</code> is the check that keeps this honest: it compares the on-screen caption to <code>Application.version</code>, not to a literal. A regression that re-introduced a typed version would fail it.</p>
+<p><strong>Why the version is not in <code>productName</code>.</strong> On Android the save store lives under <code>Application.persistentDataPath</code>, which is derived from <code>companyName</code> and <code>productName</code>:</p>
+<pre><code>C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama/Dama/profile.json</code></pre>
+<p>Putting <code>1.0.0-rc1</code> into <code>productName</code> would move that path, and every player would open the new build to an empty profile - a silent wipe caused by a naming decision. The identity therefore goes into <code>bundleVersion</code> only, and <code>productName</code> / <code>companyName</code> are asserted unchanged in the release record.</p>
+<h2>3. Screen structure</h2>
+<p>The game has one canvas and one state enum; panels are shown and hidden in exactly one place.</p>
+<pre><code>GameCanvas
+├── StartPanel            Ready      title, instructions, 5 controls, version caption
+├── HowToPanel            HowTo      1,122-character instruction body, BACK      [new]
+├── CreditsPanel          Credits    credits body, build line, BACK              [new]
+├── ProfilePanel          Profile    name, side, record, RESET/SAVE/BACK
+├── PausePanel            Paused     RESUME, RESTART, SOUND, MENU
+├── WinPanel              GameOver   win text, summary, RESTART, MENU
+└── HUDPanel              Playing    turn, counts, PAUSE</code></pre>
+<p><code>ShowState(GameState)</code> is still the only function that toggles panels; the two new lines are</p>
+<pre><code>howToPanel.SetActive(state == GameState.HowTo);
+creditsPanel.SetActive(state == GameState.Credits);</code></pre>
+<p>That is what <code>TC-REL-05</code> verifies from the other end: it opens the title, asserts both new panels are inactive, starts a match, and asserts they are still inactive. A panel that exists but is never turned off cannot pass it, and a panel whose <code>ShowState</code> line was forgotten would be found by it.</p>
+<h3>3.1 Title layout, in canvas units</h3>
+<p>The canvas uses <code>CanvasScaler</code> <code>Scale With Screen Size</code>, reference <strong>1280x720</strong>, match <strong>0.50</strong>; the game view during capture is 1151x584. All controls are anchored at <code>(0.5, 0.3)</code> for the button block:</p>
+<table>
+<thead><tr>
+<th>Control</th>
+<th>Anchored position</th>
+<th>Size</th>
+<th>Note</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>HowToButton</code></td>
+<td>(-440, 0)</td>
+<td>320x100</td>
+<td>new</td>
+</tr>
+<tr>
+<td><code>StartButton</code></td>
+<td>(0, 0)</td>
+<td>320x100</td>
+<td>unchanged</td>
+</tr>
+<tr>
+<td><code>CreditsButton</code></td>
+<td>(440, 0)</td>
+<td>320x100</td>
+<td>new</td>
+</tr>
+<tr>
+<td><code>ProfileButton</code></td>
+<td>(-440, -115)</td>
+<td>320x96</td>
+<td>moved from (0, -110); size untouched</td>
+</tr>
+<tr>
+<td><code>ExitButton</code></td>
+<td>(0, -115)</td>
+<td>320x100</td>
+<td>new</td>
+</tr>
+<tr>
+<td><code>VersionLabel</code></td>
+<td>(20, -14) against the top-left corner</td>
+<td>560x34, 22 px</td>
+<td>new</td>
+</tr>
+</tbody></table>
+<p>Two rows rather than three: five 100 px controls do not fit in the vertical band the title text leaves (the title occupies the top 26% of the canvas and the rule text another 22%), and a 320 px control at this reference resolution is already 96 px taller than the audit's touch floor.</p>
+<h3>3.2 The two new panels</h3>
+<table>
+<thead><tr>
+<th>Panel</th>
+<th>Title</th>
+<th>Body</th>
+<th>Body fit</th>
+<th>Back</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>HowToPanel</code></td>
+<td>760x56 at <code>(0.5, 0.905)</code>, 44 px bold</td>
+<td>1220x440 at <code>(0.5, 0.52)</code>, 1,122 characters</td>
+<td><strong>19 px</strong>, measured <strong>399.3 px of 440 px</strong></td>
+<td>320x100 at <code>(0.5, 0.085)</code></td>
+</tr>
+<tr>
+<td><code>CreditsPanel</code></td>
+<td>600x56 at <code>(0.5, 0.905)</code>, 44 px bold</td>
+<td>1120x380 at <code>(0.5, 0.55)</code>, 903 characters</td>
+<td><strong>19 px</strong>, measured <strong>357.1 px of 380 px</strong></td>
+<td>320x100 at <code>(0.5, 0.085)</code></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>BuildText</code> 1120x36 at <code>(0.5, 0.235)</code>, 22 px bold</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>The body size is not guessed. <code>FitText()</code> measures the paragraph with <code>TextGenerator.GetPreferredHeight</code> at the panel's real width and steps the size down from 26 (HOW TO PLAY) or 22 (CREDITS) until the measured height fits, logging the result either way:</p>
+<pre><code>[Week17ReleasePanels] FitText 'BodyText': 19px needs 399.3 px of 440.0 px (width 1220.0).
+[Week17ReleasePanels] FitText 'BodyText': 19px needs 357.1 px of 380.0 px (width 1120.0).</code></pre>
+<p>The first attempt at the credits panel logged the warning path instead - <code>even 18px needs 358.3 px of 330.0 px</code></p>
+<ul>
+<li>which is the fit check refusing to pretend. The rect was enlarged and the body shortened, and the run after</li>
+</ul>
+<p>that fitted at 19 px. 19 px is also the audit's floor for a non-caption label (18 px), so the paragraph is simultaneously as large as it can be and above the floor.</p>
+<h2>4. The builder, and why it has to be idempotent</h2>
+<p><code>Assets/Scripts/Editor/Week17ReleasePanels.cs</code> (menu <code>Tools/Dama/Week 17/1. Build Release Panels</code>) follows the <code>ProfileSceneBuilder</code> pattern: find <code>GameCanvas/StartPanel</code>, build children in code, log, save the scene. There are no prefabs, so a rebuild is the only way to change the layout.</p>
+<p>A builder that appends instead of replacing is a defect generator, and that is exactly what happened:</p>
+<blockquote><p><strong>DEF-17-05.</strong> <code>DestroyIfExists</code> was called for <code>VersionLabel</code>, <code>HowToPanel</code> and <code>CreditsPanel</code>, but not for <code>HowToButton</code>, <code>CreditsButton</code> or <code>ExitButton</code>. Running the builder a second time left <strong>11 children</strong> under <code>StartPanel</code> - the three controls existed twice, at indices 4-6 and 8-10, exactly coincident. <code>TC-A11Y-02</code> reported three controls overlapping <em>themselves</em>, and the Week 15 regression read <strong>26 passed, 1 failed, 1 blocked</strong> rather than 27/0/1.</p></blockquote>
+<p>The fix has two parts, and the first is the one that matters:</p>
+<pre><code>private static void DestroyIfExists(Transform parent, string childName)
+{
+    int removed = 0;
+    Transform existing = parent.Find(childName);
+
+    while (existing != null)                    // was: a single Find + Destroy
+    {
+        Object.DestroyImmediate(existing.gameObject);
+        removed++;
+        existing = parent.Find(childName);
+    }
+
+    if (removed &gt; 0)
+        Debug.Log($"[Week17ReleasePanels] Removed {removed} previous {childName} object(s) before rebuilding.");
+}</code></pre>
+<p>...plus the three missing calls before the buttons are created. The loop matters because a build that is already wrong must be repairable by re-running the tool, not require a manual scene edit. <code>StartPanel</code> now has <strong>8</strong> children, one of each control, and the builder logs what it removed so the next reader can see the cleanup happened.</p>
+<h2>5. Verification</h2>
+<h3>5.1 Week 17 release checks (<code>Week17Checks.cs</code>)</h3>
+<table>
+<thead><tr>
+<th>Case</th>
+<th>What it asserts</th>
+<th>Reading</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>TC-REL-01</code></td>
+<td>the title caption equals <code>Application.version</code></td>
+<td><code>caption='1.0.0-rc1 · Editor' expected='1.0.0-rc1 · Editor' fontSize=22</code></td>
+</tr>
+<tr>
+<td><code>TC-REL-02</code></td>
+<td>the credits build line agrees with the title and names the application id</td>
+<td><code>title='1.0.0-rc1 · Editor' credits='Build 1.0.0-rc1 · Editor · com.defaultcompany.dama' agree=True</code></td>
+</tr>
+<tr>
+<td><code>TC-REL-03</code></td>
+<td>HOW TO PLAY opens with a real body and closes back to the title</td>
+<td><code>bodyChars=1122 bodyFont=19 opened=True closed=True</code></td>
+</tr>
+<tr>
+<td><code>TC-REL-04</code></td>
+<td>all five new controls are bound to the method they claim</td>
+<td><code>HOWTO[DamaBoard.ShowHowTo] CREDITS[ShowCredits] EXIT[QuitGame] HOWTO-BACK[CloseHowTo] CREDITS-BACK[CloseCredits]</code></td>
+</tr>
+<tr>
+<td><code>TC-REL-05</code></td>
+<td>the new panels cannot leak into a match</td>
+<td><code>atTitle: HowToPanel=False CreditsPanel=False</code> → <code>after StartGame: HowTo=False Credits=False HUD=True</code></td>
+</tr>
+</tbody></table>
+<p><code>TC-REL-04</code> exists because a button without a listener is invisible in a screenshot. Its first implementation reported <code>1 call(s): null.?</code> for every control: it read <code>InvokableCall.Target</code> and <code>.Method</code>, which a serialized uGUI listener does not populate - the handler lives in the private <code>m_Delegate</code> field. Reading the delegate's <code>Target</code> and <code>Method.Name</code> gives the five names above. <strong>The wiring was correct; the check was wrong</strong>, and that is recorded as <code>DEF-17-06</code> rather than deleted.</p>
+<h3>5.2 Regression at the frozen tree (<code>Week15Checks.cs</code>, <code>runWeek = "Week_17"</code>)</h3>
+<p>All 27 cases from Weeks 15-16 pass on the frozen tree: ten rule cases, eleven flow cases, five data cases (including corrupt-save quarantine and recovery), two boundary cases (100 rapid taps, 50 pause cycles) and the accessibility cases. <code>TC-A11Y-01</code> now measures <strong>18 buttons</strong> and 1 input field with 0 below the 96 px floor; <code>TC-A11Y-02</code> reports <strong>0 overlapping pairs</strong>. <code>TC-COMPAT-01</code> remains <strong>BLOCKED</strong> on hardware.</p>
+<p>The regression is the reason the duplicate-control defect was found at all: it is the only gate that looks at the whole scene rather than at the week's new feature.</p>
+<h3>5.3 Accessibility audit (<code>A11yAudit.RunWeek17()</code>)</h3>
+<p><strong>148 passed, 0 failed, 0 warnings, 4 not measurable</strong> over 18 buttons and 1 input field. The count is lower than the 163 an earlier pre-fix audit printed, and the difference is explained exactly: the three duplicated controls contributed 15 checks of their own (touch, fill, label), so removing them removed those checks. 148 is still 43 more than Week 16's 105, which is what the two new panels add.</p>
+<p>Four rows stay <strong>not measurable</strong>, and they are named rather than rounded to a pass:</p>
+<table>
+<thead><tr>
+<th>Row</th>
+<th>Reason</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>HUDPanel/TurnText</code>, <code>HUDPanel/CountsText</code></td>
+<td>white text drawn over the 3D board, no opaque backdrop</td>
+</tr>
+<tr>
+<td><code>HUDPanel/PauseButton</code></td>
+<td>no opaque panel behind the control</td>
+</tr>
+<tr>
+<td><code>ProfilePanel/NameInput</code></td>
+<td>the input has no opaque fill of its own</td>
+</tr>
+</tbody></table>
+<h3>5.4 Captures (<code>Week17Captures.cs</code>)</h3>
+<p>Six images, each hashed on landing; the run fails if any two share a digest. That check earned its place on the first run: the editor window was not the foreground application, the Game view stopped drawing after <code>E3</code>, and <code>E4</code>, <code>E5</code> and <code>E6</code> came back <strong>byte-identical to <code>E3</code></strong>. The harness now calls <code>InternalEditorUtility.RepaintAllViews()</code> and <code>EditorApplication.QueuePlayerLoopUpdate()</code> on every tick while a shot is pending, and the transcript records the hash of each file:</p>
+<pre><code>E1_title.png           69c4a1306197b0930915333e9404c498
+E2_how_to_play.png     984fabeaccbf8100b0508d913430f789
+E3_credits.png         6342537d78e673f088c1f6e2b50fedce
+E4_mid_match.png       a86927876e60267ec657082d8de1975d
+E5_pause.png           b3e7837baf691f39e06485fa6905b8eb
+E6_end_screen.png      f40dcf8b79d0454e427663af9bf6b590</code></pre>
+<p>The in-match images are seeded by reflection, so the harness rebuilds the visible pieces from the grid through the board's own pooled <code>RentPiece</code>/<code>RegisterPiece</code>/<code>ReleasePiece</code> before capturing. Without that step the HUD would read <code>Red: 1 Blue: 2</code> over a picture of 24 pieces, which is worse evidence than no picture.</p>
+<h2>6. Environment and its limits</h2>
+<table>
+<thead><tr>
+<th>Item</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Machine</td>
+<td>AMD Ryzen 5 5600G, 16,276 MB, NVIDIA GeForce GTX 1070</td>
+</tr>
+<tr>
+<td>Editor</td>
+<td>Unity 6000.6.0f1, Windows Editor target</td>
+</tr>
+<tr>
+<td>Pipeline</td>
+<td>URP 17.6.0, 2D Renderer, quality level 5 (Ultra)</td>
+</tr>
+<tr>
+<td>Game view</td>
+<td>1151x584, canvas reference 1280x720, match 0.50</td>
+</tr>
+<tr>
+<td>Domain reload on play-mode entry</td>
+<td>disabled (statics survive, needed by the capture harness)</td>
+</tr>
+<tr>
+<td>Save file</td>
+<td><code>C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama/Dama/profile.json</code></td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>No APK, no handset.</strong> <code>adb devices</code> has no serial and no build was produced this week. The install step is <strong>BLOCKED</strong>; every number in this package is an Editor number.</li>
+<li><strong>Touch and contrast are canvas-pixel measurements</strong> against the reference resolution, not ruler readings on a phone. The derivation is written in the header of <code>a11y_week17_after.log</code>.</li>
+<li><strong>An audit is a floor</strong>: it cannot show a player understood the game, and it cannot show that six distinct PNGs prove six distinct screens - a human has to look, which is what section 3 of the front page is for.</li>
+</ul>
+<h2>7. Files touched</h2>
+<table>
+<thead><tr>
+<th>File</th>
+<th>Status</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Assets/Scripts/Core/ReleaseInfo.cs</code></td>
+<td>new</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/Week17ReleasePanels.cs</code></td>
+<td>new (and fixed: DEF-17-05)</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/Week17Checks.cs</code></td>
+<td>new (and fixed: DEF-17-06)</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/Week17Captures.cs</code></td>
+<td>new</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/DamaBoard.cs</code></td>
+<td>edited: state, panels, wiring, release labels, <code>QuitGame</code></td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/A11yAudit.cs</code></td>
+<td>edited: <code>RunWeek17()</code> seam</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/Week15Checks.cs</code></td>
+<td>edited: <code>ReleaseMenu</code> → <code>BeginRelease()</code> at <code>Week_17</code></td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/SubmissionDocBuilder.cs</code></td>
+<td>edited: <code>Week_17</code> entry + menu order 14</td>
+</tr>
+<tr>
+<td><code>ProjectSettings/ProjectSettings.asset</code></td>
+<td>edited: <code>bundleVersion</code> <code>1.0.0-rc1</code>, version code <code>2</code></td>
+</tr>
+<tr>
+<td><code>Assets/Scenes/DamaGame.unity</code></td>
+<td>edited: three controls, version caption, two panels</td>
+</tr>
+</tbody></table>
+
+</body>
+</html>

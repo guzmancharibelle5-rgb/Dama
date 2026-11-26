@@ -1,0 +1,122 @@
+DAMA - WEEK 17 BUILD RECORD
+================================================================================
+Student : Charibelle Guzman (BSIT-4)
+Course  : MOBILE DEV 002 Advanced Mobile Application Development, Module 5
+Week    : 17 - Release Preparation and Documentation
+Recorded: 2026-11-26
+
+1. RELEASE IDENTITY
+--------------------------------------------------------------------------------
+  Application.version (bundleVersion) : 1.0.0-rc1        (was 1.0)
+  Android version code                : 2                (was 1)
+  Application identifier              : com.defaultcompany.dama
+  productName                         : dama             UNCHANGED
+  companyName                         : DefaultCompany   UNCHANGED
+
+  The two UNCHANGED lines are the point. On Android the save store lives under
+  Application.persistentDataPath, which is built from companyName and productName:
+
+      C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama/Dama/profile.json
+
+  Putting the version into productName would move that path and present every
+  player with an empty profile. The identity therefore lives in bundleVersion,
+  which is what Application.version reads.
+
+2. BUILD SETTINGS AS CONFIGURED
+--------------------------------------------------------------------------------
+  Active build target      : Android
+  Scripting backend        : IL2CPP
+  Target architecture      : ARM64
+  Minimum API level        : AndroidApiLevel26 (Android 8.0)
+  Target API level         : 0 = automatic (highest installed)
+  Custom keystore          : False
+  AndroidKeystoreName      : (empty)
+  AndroidKeyaliasName      : (empty)
+  -> Any package this project produces is DEBUG-SIGNED. No keystore is held in
+     the repository, deliberately; see Evidence/secret_scan.md section 3.
+
+3. WHAT WAS BUILT THIS WEEK
+--------------------------------------------------------------------------------
+  APK / AAB                : NONE.  No Android package was produced for Week 17.
+  Editor play-mode run     : yes, Assets/Scenes/DamaGame.unity, build index 0
+  Unity                    : 6000.6.0f1
+  Render pipeline          : URP 17.6.0, 2D Renderer, quality level 5 (Ultra)
+  Game view at capture     : 1151 x 584
+  Canvas                   : Scale With Screen Size, reference 1280x720, match 0.50
+  Domain reload on play    : disabled
+
+  Machine: AMD Ryzen 5 5600G, 16,276 MB, NVIDIA GeForce GTX 1070, Windows.
+
+4. THE STEP THAT COULD NOT RUN - BLOCKED
+--------------------------------------------------------------------------------
+  Module step : "install and run on the target device from a clean state"
+  Status      : BLOCKED
+  Two independent reasons, either sufficient on its own:
+
+  a) There is no package to install. No APK or AAB exists for this release.
+  b) There is no device. `adb` is not on PATH in this shell, so the platform-tools
+     bundled with the editor were used directly:
+
+       "C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Data\
+        PlaybackEngines\AndroidPlayer\SDK\platform-tools\adb.exe" devices
+
+       output:
+         List of devices attached
+         (nothing listed - no serial)
+
+  Consequence: TC-COMPAT-01 stays BLOCKED in the regression suite, exactly as in
+  Weeks 15 and 16. Nothing in this package claims a device install, device frame
+  rate, battery, thermals or memory. See Evidence/clean_install.md.
+
+5. GATES RUN AGAINST THIS TREE
+--------------------------------------------------------------------------------
+  Week 17 release checks   : 5 passed, 0 failed, 0 console errors
+                             Evidence/test_logs_release/summary.txt
+                             Run at 2026-11-26 07:28:46 UTC
+
+  Week 15 regression       : 27 passed, 0 failed, 1 blocked, 0 console errors
+  at runWeek = "Week_17"     Evidence/test_logs_regression/summary.txt
+                             Run at 2026-11-26 07:27:12 UTC
+                             The blocked row is TC-COMPAT-01 (device/hardware).
+
+  Accessibility audit      : 148 passed, 0 failed, 0 warnings, 4 not measurable
+                             Evidence/a11y_week17_after.log
+                             Run at 2026-11-26 07:28:14 UTC, 18 buttons + 1 field
+
+  Captures                 : E1-E6, six distinct SHA-256 values
+                             Evidence/week17_shots.txt
+                             Run at 2026-11-26 07:38:55 UTC
+
+6. SOURCE CONTROL
+--------------------------------------------------------------------------------
+  Branch                       : main
+  Frozen baseline tag          : week16-final -> 337b436
+                                 "Week 16: record the documentation commit id in the README"
+  Week 17 code commit          : 10006a4
+                                 "Week 17: release identity 1.0.0-rc1, HOW TO PLAY /
+                                  CREDITS / EXIT panels, release checks and captures"
+  Week 17 documents commit     : recorded in the README after this file was committed
+  Staged by explicit path      : Assets/Scripts/Core/ReleaseInfo.cs,
+                                 Assets/Scripts/Editor/{Week17ReleasePanels,Week17Checks,
+                                 Week17Captures}.cs, Assets/Scripts/DamaBoard.cs,
+                                 Assets/Scripts/Editor/{A11yAudit,Week15Checks,
+                                 SubmissionDocBuilder}.cs, Assets/Scenes/DamaGame.unity,
+                                 ProjectSettings/ProjectSettings.asset
+  Deliberately NOT staged      : Assets/Plugins/NuGet/* (editor tooling binaries),
+                                 Packages/Aura/*, Packages/manifest.json,
+                                 Packages/packages-lock.json,
+                                 docs/Zedrich Abrera/, docs/MAD2-...docx
+
+  Nothing under docs/Charibelle Guzman/Week_14, Week_15 or Week_16 is modified in
+  the working tree: those are committed records and this week's harnesses do not
+  write into them. The `git status --short` output behind this claim is in
+  Evidence/secret_scan_raw.txt section 3.
+
+7. WHAT THIS RECORD DOES AND DOES NOT ESTABLISH
+--------------------------------------------------------------------------------
+  Establishes : the identity of the tree, the settings it carries, the exact gate
+                results produced from it, and the fact that no package was built.
+  Does not    : establish that any Android build of this tree installs, launches,
+                renders at any frame rate, or behaves the same on a phone. No such
+                build was made, so no such claim is made.
+================================================================================

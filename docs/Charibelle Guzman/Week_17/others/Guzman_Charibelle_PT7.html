@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PT7 - Release Preparation and Documentation</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>PT7 - Release Preparation and Documentation</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Theme:</strong> Philippine Games and Sports</p>
+<p class="meta"><strong>Week:</strong> 17 - Release Preparation and Documentation</p>
+<p class="meta"><strong>Release identity:</strong> <code>1.0.0-rc1</code>, version code <code>2</code>, application id <code>com.defaultcompany.dama</code></p>
+<p class="meta"><strong>Engine:</strong> Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), Input System 1.20.0</p>
+<p class="meta"><strong>Platform range:</strong> Android 8.0 (API 26) and above, ARM64, IL2CPP</p>
+<p class="meta"><strong>Repository:</strong> local Git repository, branch <code>main</code>, tree frozen at tag <code>week16-final</code> (<code>337b436</code>)</p>
+<p class="meta"><strong>Produced:</strong> 2026-11-26</p>
+<hr/>
+<h2>1. What this week was asked to produce, and what it did</h2>
+<p>The week asks for a game that can be handed to somebody else: a clear version identity, credits, a way out of the game, instructions a new player can follow, and proof that the things built in Weeks 13-16 still work on the frozen tree. The package below is that hand-over.</p>
+<table>
+<thead><tr>
+<th>Module step</th>
+<th>What it asks for</th>
+<th>What this build does</th>
+<th>Proof</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Settings</td>
+<td>release settings and an identifier</td>
+<td><code>bundleVersion</code> raised <code>1.0</code> → <code>1.0.0-rc1</code>, version code <code>1</code> → <code>2</code>; <code>productName</code> and <code>companyName</code> deliberately unchanged</td>
+<td><code>Evidence/build_record.txt</code></td>
+</tr>
+<tr>
+<td>Credits</td>
+<td>a credits surface</td>
+<td>a new CREDITS panel: author, course, engine, licence and AI-assistance statement, plus a build line naming this build</td>
+<td>E3, <code>TC-REL-02</code></td>
+</tr>
+<tr>
+<td>Exit or restart</td>
+<td>exit or restart behaviour</td>
+<td>EXIT on the title screen calls <code>DamaBoard.QuitGame()</code>; RESTART exists on both the pause and end screens</td>
+<td>E1, E5, E6, <code>TC-REL-04</code></td>
+</tr>
+<tr>
+<td>Clear instructions</td>
+<td>instructions or a tutorial</td>
+<td>a new HOW TO PLAY panel with 1,122 characters at 19 px, reachable in one tap from the title</td>
+<td>E2, <code>TC-REL-03</code></td>
+</tr>
+<tr>
+<td>Unique version</td>
+<td>a version number and build identifier</td>
+<td>the title caption and the credits build line are both <strong>derived from <code>Application.version</code></strong> and never typed in</td>
+<td>E1, E3, <code>TC-REL-01</code>, <code>TC-REL-02</code></td>
+</tr>
+<tr>
+<td>Install on a device</td>
+<td>a clean install on the target device</td>
+<td><strong>BLOCKED.</strong> No APK was built and no handset was attached; see section 6</td>
+<td><code>Evidence/clean_install.md</code></td>
+</tr>
+</tbody></table>
+<p>Three of those six rows are new work, one is a settings change, one was already true and is now provable, and one cannot be done in this environment at all. The last one is recorded as blocked rather than passed - a submission that claims a device install it never performed is worse than one that says it could not.</p>
+<h2>2. The three gates</h2>
+<p>Every number below was produced by a harness in <code>Assets/Scripts/Editor/</code> and written to a log in <code>Evidence/</code>. None of them was typed in by hand.</p>
+<table>
+<thead><tr>
+<th>Gate</th>
+<th>Result</th>
+<th>Target</th>
+<th>Where</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Week 17 release checks (<code>TC-REL-01…05</code>)</td>
+<td><strong>5 passed, 0 failed, 0 console errors</strong></td>
+<td>5 / 5</td>
+<td><code>Evidence/test_logs_release/summary.txt</code></td>
+</tr>
+<tr>
+<td>Week 15 regression re-run at <code>Week_17</code></td>
+<td><strong>27 passed, 0 failed, 1 blocked, 0 console errors</strong></td>
+<td>27 / 0 / 1</td>
+<td><code>Evidence/test_logs_regression/summary.txt</code></td>
+</tr>
+<tr>
+<td>Accessibility audit (post-fix)</td>
+<td><strong>148 passed, 0 failed, 0 warnings, 4 not measurable</strong></td>
+<td>0 failed, more passes than Week 16's 105</td>
+<td><code>Evidence/a11y_week17_after.log</code></td>
+</tr>
+</tbody></table>
+<p>The single blocked case is <code>TC-COMPAT-01</code>, device compatibility, blocked for the same reason the install is: no handset. It has been blocked since Week 15 and this week does not change that by asserting it.</p>
+<h2>3. What the release looks like</h2>
+<p>Six screens, captured from the running game by <code>Week17Captures.cs</code>; each image is hashed and the run fails if two of them are the same picture.</p>
+<table>
+<thead><tr>
+<th>Image</th>
+<th>Screen</th>
+<th>What a reviewer should be able to check</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>E1_title.png</code></td>
+<td>title</td>
+<td><code>1.0.0-rc1 · Editor</code> top-left; HOW TO PLAY, START, CREDITS on one row; PROFILE and EXIT on the next</td>
+</tr>
+<tr>
+<td><code>E2_how_to_play.png</code></td>
+<td>HOW TO PLAY</td>
+<td>the rules, the capture rule, the Dama, the win condition, the pause menu, the profile - and BACK</td>
+</tr>
+<tr>
+<td><code>E3_credits.png</code></td>
+<td>CREDITS</td>
+<td>author and course, engine and pipeline versions, licence, AI-assistance statement, build line</td>
+</tr>
+<tr>
+<td><code>E4_mid_match.png</code></td>
+<td>match in progress</td>
+<td>board after a real capture; HUD turn and both counts agree with the position</td>
+</tr>
+<tr>
+<td><code>E5_pause.png</code></td>
+<td>pause</td>
+<td>RESUME, RESTART, SOUND, MENU</td>
+</tr>
+<tr>
+<td><code>E6_end_screen.png</code></td>
+<td>end screen</td>
+<td>winner, both counts, the reason the match ended, RESTART and MENU</td>
+</tr>
+</tbody></table>
+<p><code>Evidence/week17_shots.txt</code> is the harness's own transcript of that run: which state each image was taken in, the size and SHA-256 of each file, and the lines proving the six are byte-distinct.</p>
+<h2>4. What changed in the game, in one page</h2>
+<table>
+<thead><tr>
+<th>File</th>
+<th>Change</th>
+<th>Why</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Assets/Scripts/Core/ReleaseInfo.cs</code></td>
+<td>new: <code>Version</code>, <code>BundleId</code>, <code>Engine</code>, <code>Platform</code>, <code>Caption()</code>, <code>BuildLine()</code></td>
+<td>one place that reads the build identity from <code>Application.*</code>, so no screen can describe a different build</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/DamaBoard.cs</code></td>
+<td><code>GameState</code> gains <code>HowTo</code> and <code>Credits</code>; three new <code>WireButton</code> calls; two <code>ShowState</code> lines; <code>ShowHowTo</code>/<code>CloseHowTo</code>/<code>ShowCredits</code>/<code>CloseCredits</code>/<code>QuitGame</code></td>
+<td>the two new panels are state-driven like every other panel, and EXIT is a real control</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/Week17ReleasePanels.cs</code></td>
+<td>new idempotent builder</td>
+<td>builds the title controls and both panels in code and saves the scene; re-runnable</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/Week17Checks.cs</code></td>
+<td>new: <code>TC-REL-01…05</code></td>
+<td>proves the caption, the build line, both panels, the five listeners, and that the panels cannot leak into a match</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/Week17Captures.cs</code></td>
+<td>new</td>
+<td>E1-E6 plus the hash check</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Editor/A11yAudit.cs</code></td>
+<td><code>RunWeek17()</code> seam</td>
+<td>the Week 16 log is never overwritten by a Week 17 run</td>
+</tr>
+<tr>
+<td><code>ProjectSettings/ProjectSettings.asset</code></td>
+<td><code>bundleVersion</code>, <code>AndroidBundleVersionCode</code></td>
+<td>the release identity</td>
+</tr>
+</tbody></table>
+<p>The version is <strong>not</strong> in <code>productName</code>. On Android, <code>productName</code> decides the save folder under <code>Application.persistentDataPath</code>; moving it would move the profile store and look exactly like a wipe to the player. That is why the identity lives in <code>bundleVersion</code>, which is what <code>Application.version</code> reads, and why <code>TC-REL-01</code> compares the on-screen caption to <code>Application.version</code> instead of to a string in the scene.</p>
+<h2>5. What the week found</h2>
+<p>Two defects surfaced while running the gates, and both are in <code>Evidence/issue_disposition.md</code> with their numbers:</p>
+<ol>
+<li><strong>DEF-17-05</strong> - the release-panel builder destroyed <code>VersionLabel</code> and the two panels before rebuilding them, but not the three new title buttons. Its second run therefore left a second HOW TO PLAY, CREDITS and EXIT on top of the first. <code>TC-A11Y-02</code> reported three controls overlapping themselves; the regression read <strong>26 passed, 1 failed, 1 blocked</strong> until the builder was made to clean up after itself. After the fix the panel has eight children, one of each control, and the row reads <strong>27 / 0 / 1</strong>.</li>
+<li><strong>DEF-17-06</strong> - the release check <code>TC-REL-04</code> read <code>null</code> where a listener should have been, because it looked at <code>InvokableCall.Target</code> instead of the delegate uGUI actually stores. The wiring was correct; the check was not. It now names all five handlers.</li>
+</ol>
+<p>Both are recorded because a log that only shows the final green run cannot tell a reader whether the work was clean or the failures were hidden.</p>
+<h2>6. What this release does not claim</h2>
+<ul>
+<li><strong>No APK and no handset.</strong> <code>adb</code> reports no attached device and no build was produced this week, so the module's "install and run from a clean state" is <strong>BLOCKED</strong>, and <code>TC-COMPAT-01</code> stays blocked with it.</li>
+<li><strong>No device performance, battery or thermal claim.</strong> Every measurement in this package came from the Editor.</li>
+<li><strong>No participant usability study.</strong> Week 14 recorded that no participant was available; Week 17 does not invent one.</li>
+<li><strong>The four not-measurable accessibility rows are unmeasured, not passed</strong>: <code>HUDPanel/TurnText</code> and <code>HUDPanel/CountsText</code> are drawn over the board with no opaque backdrop, <code>HUDPanel/PauseButton</code> has no panel behind it, and <code>ProfilePanel/NameInput</code> has no opaque fill of its own.</li>
+</ul>
+<h2>7. The rest of the package</h2>
+<table>
+<thead><tr>
+<th>Document</th>
+<th>What it covers</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Guzman_Charibelle_PT7_Technical_Documentation.md</code></td>
+<td>the identity mechanism, the state machine change, the builder, the defects, the gates and their limits</td>
+</tr>
+<tr>
+<td><code>Guzman_Charibelle_PT7_User_Guide.md</code></td>
+<td>how a player moves through the six screens, where the save file lives, what to do when it is damaged</td>
+</tr>
+<tr>
+<td><code>Guzman_Charibelle_PT7_Evidence_Index.md</code></td>
+<td>every claim in this document mapped to the file and case id that proves it</td>
+</tr>
+<tr>
+<td><code>Guzman_Charibelle_Week17_Reflection.md</code></td>
+<td>the week's self-assessment</td>
+</tr>
+</tbody></table>
+<h2>8. Authorship and AI use</h2>
+<p>The game, its harnesses and these documents were produced by Charibelle Guzman for MOBILE DEV 002, Module 5, with AI assistance used as a tool for drafting and code review. Every number in the package comes from a run recorded in <code>Evidence/</code>, every screenshot from a harness run, and every limitation is stated as one. Where the work could not be done - a device install, a participant study, a device performance profile - the package says so instead of filling the gap.</p>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+DAMA - WEEK 17 RELEASE CHECKS
+Game: Dama  |  Theme: Philippine Games and Sports  |  Student: Charibelle Guzman (BSIT-4)
+Harness: Assets/Scripts/Editor/Week17Checks.cs
+Scene: DamaGame.unity   Unity: 6000.6.0f1   Editor: WindowsEditor
+Run at: 2026-11-26 07:28:46 UTC   Game view: 1151x584
+Version under test: 1.0.0-rc1   Application id: com.defaultcompany.dama
+TOTAL: 5 passed, 0 failed, 0 console error(s)
+----------------------------------------------------------------------------------------------------
+TC-REL-01     PASS    release     The title caption names the version the binary was compiled with
+                caption='1.0.0-rc1 · Editor' expected='1.0.0-rc1 · Editor' Application.version='1.0.0-rc1' fontSize=22
+TC-REL-02     PASS    release     The credits build line agrees with the title and names the application id
+                title='1.0.0-rc1 · Editor' credits='Build 1.0.0-rc1 · Editor · com.defaultcompany.dama' version='1.0.0-rc1' id='com.defaultcompany.dama' bothNameVersion=True buildNamesId=True agree=True (title says '1.0.0-rc1', credits say '1.0.0-rc1')
+TC-REL-03     PASS    release     HOW TO PLAY opens with a real instruction body and closes back to the title
+                opened=True bodyChars=1122 bodyFont=19 closed=True howToStillOn=False titleOn=True
+TC-REL-04     PASS    release     CREDITS opens and closes, and all five new controls are bound to the method they claim
+                opened=True closed=True wired=True | HOWTO[1 call(s): DamaBoard.ShowHowTo] CREDITS[1 call(s): DamaBoard.ShowCredits] EXIT[1 call(s): DamaBoard.QuitGame] HOWTO-BACK[1 call(s): DamaBoard.CloseHowTo] CREDITS-BACK[1 call(s): DamaBoard.CloseCredits]
+TC-REL-05     PASS    release     The new panels hide completely and cannot leak into a running match
+                atTitle: StartPanel=True HowToPanel=False CreditsPanel=False ProfilePanel=False PausePanel=False WinPanel=False HUDPanel=False | after StartGame: HowTo=False Credits=False Start=False HUD=True

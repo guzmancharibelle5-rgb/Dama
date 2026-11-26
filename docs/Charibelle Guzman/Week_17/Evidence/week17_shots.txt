@@ -1,0 +1,80 @@
+DAMA - WEEK 17 - CAPTURE RUN TRANSCRIPT
+Student : Charibelle Guzman (BSIT-4)
+Scene   : Assets/Scenes/DamaGame.unity
+Harness : Tools > Dama > Week 17 > 4. Capture Evidence
+Run at  : 2026-11-26 07:38:55 UTC   Unity 6000.6.0f1
+Build   : 1.0.0-rc1 · Editor   Application.version=1.0.0-rc1
+Canvas  : 1280x720 reference, match 0.50   Game view at capture: 1151x584
+Platform: Editor. No APK was built and no handset was attached, so these images are Editor
+          captures of the same scene an Android build would ship - not evidence from a device.
+
+This file is the harness's own record of the run, in order. The "Requested" line is the
+screenshot call; the "Wrote" line for the same file is the moment the PNG existed on disk with
+a non-zero length. Those pairs are the gate doing its work: ScreenCapture completes a frame or
+two after the call, so a run that does not wait writes empty files.
+------------------------------------------------------------------------------------------------
+RUN LOG
+------------------------------------------------------------------------------------------------
+15:38:48  Entering play mode for the Week 17 captures.
+15:38:50  E1 state: StartPanel=True VersionLabel='1.0.0-rc1 · Editor' HowToButton=320x100 at (-440, 0) StartButton=320x100 at (0, 0) CreditsButton=320x100 at (440, 0) ProfileButton=320x96 at (-440, -115) ExitButton=320x100 at (0, -115).
+15:38:50  Requested E1_title.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_17\Evidence\E1_title.png
+15:38:50  Wrote E1_title.png (82365 bytes, sha256 69c4a1306197b093...).
+15:38:51  E2 state: HowToPanel=True StartPanel=False body chars=1122 body=19 px title=44 px back=320x100 at (0, 0).
+15:38:51  Requested E2_how_to_play.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_17\Evidence\E2_how_to_play.png
+15:38:51  Wrote E2_how_to_play.png (162047 bytes, sha256 984fabeaccbf8100...).
+15:38:52  E3 state: CreditsPanel=True StartPanel=False BuildText='Build 1.0.0-rc1 · Editor · com.defaultcompany.dama' body chars=903 body=19 px.
+15:38:52  Requested E3_credits.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_17\Evidence\E3_credits.png
+15:38:52  Wrote E3_credits.png (143703 bytes, sha256 6342537d78e673f0...).
+15:38:53  Rebuilt 3 visible piece(s) from the grid so the image matches the state.
+15:38:53  E4 state: turn='Turn: BLUE' counts='Red: 1   Blue: 2' HUDPanel=True.
+15:38:53  Requested E4_mid_match.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_17\Evidence\E4_mid_match.png
+15:38:53  Wrote E4_mid_match.png (24777 bytes, sha256 a86927876e60267e...).
+15:38:54  E5 state: PausePanel=True timeScale=0.00 ResumeButton=320x96 at (0, 0).
+15:38:54  Requested E5_pause.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_17\Evidence\E5_pause.png
+15:38:54  Wrote E5_pause.png (37646 bytes, sha256 b3e7837baf691f39...).
+15:38:54  Rebuilt 2 visible piece(s) from the grid so the image matches the state.
+15:38:55  E6 state: WinPanel=True WinText='RED WIN!' SummaryText='RED WINS.  RED 1-1, BLUE has no legal move.'.
+15:38:55  Requested E6_end_screen.png -> E:\Damath Charry\dama\docs\Charibelle Guzman\Week_17\Evidence\E6_end_screen.png
+15:38:55  Wrote E6_end_screen.png (42680 bytes, sha256 f40dcf8b79d0454e...).
+------------------------------------------------------------------------------------------------
+HASHES (sha256, first 32 hex characters)
+------------------------------------------------------------------------------------------------
+  E1_title.png           69c4a1306197b0930915333e9404c498
+  E2_how_to_play.png     984fabeaccbf8100b0508d913430f789
+  E3_credits.png         6342537d78e673f088c1f6e2b50fedce
+  E4_mid_match.png       a86927876e60267ec657082d8de1975d
+  E5_pause.png           b3e7837baf691f39e06485fa6905b8eb
+  E6_end_screen.png      f40dcf8b79d0454e427663af9bf6b590
+
+  All 6 images are byte-distinct: no name is a copy of another.
+------------------------------------------------------------------------------------------------
+WHAT EACH IMAGE IS
+  E1_title.png          the title screen: the version caption top-left, HOW TO PLAY, START and
+                        CREDITS on the first row, PROFILE and EXIT on the second. This is the
+                        screen a reviewer sees before touching anything, and the caption is the
+                        build the binary was compiled with - not a string typed into the scene.
+  E2_how_to_play.png    the HOW TO PLAY panel: 1122 characters of rules fitted to 19 px, with
+                        BACK returning to the title. It exists because the module asks for
+                        clear instructions, and the title's 156-character line was not one.
+  E3_credits.png        the CREDITS panel: author, course, engine, licence and AI-assistance
+                        statement, with the build line naming the same version the title shows.
+  E4_mid_match.png      the board after RED jumped a BLUE man at (3,4) and landed at (4,5),
+                        with the HUD showing whose turn it is and both counts.
+  E5_pause.png          the pause panel: RESUME, RESTART, SOUND and MENU.
+  E6_end_screen.png     the end screen after BLUE was left with a man and no legal move. The
+                        summary line names the winner, both counts and the reason.
+
+The states were produced through the game's own entry points (StartGame, ShowHowTo, CloseHowTo,
+ShowCredits, CloseCredits, PauseGame, ReturnToMenu, CheckForWin). Only the board seeding is done
+by reflection, the same way the Week 13-16 harnesses seed a position.
+
+Seeding the grid by reflection changes what the game believes is on the board, not what is
+drawn on it, so the harness rebuilds the visible pieces from the grid before each in-match
+capture and refreshes the HUD. The "Rebuilt N visible piece(s)" lines above are that step, and
+they are what makes the counts in the pictures checkable against the transcript.
+
+The first run of this harness wrote six names over four pictures: the editor window was not the
+foreground application, so the Game view stopped drawing after E3 and E4, E5 and E6 came back byte for
+byte identical to it. The run now asks for a repaint (RepaintAllViews + QueuePlayerLoopUpdate) on every
+tick while a shot is pending, hashes each landed PNG, and reports a collision instead of a success. The
+"All 6 images are byte-distinct" line above is that check passing, not a claim.
