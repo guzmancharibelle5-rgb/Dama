@@ -113,6 +113,17 @@ To check the commit from a terminal:
   git show --stat 207376b
   git log -1 --format="%H %s"
 
+Documentation commit : 3f4bb952937f9146a27936b51b2fec229bdf037b  (short 3f4bb95)
+                  "Week 15 AS3 milestone, reflection, test logs, defect log and
+                   printed PDFs"
+Files in commit      : 31 changed, 3416 insertions, 8 deletions
+
+It carries `.md` and print-ready `.html` for the milestone and the reflection,
+the two `.pdf` printed from that HTML, every file in this Evidence folder, the
+README update, and the `Week_15` entry in `SubmissionDocBuilder.cs` that builds
+the two HTML files. The builder is in this commit rather than the code commit
+because it is documentation tooling: the tested build is 207376b.
+
 ----------------------------------------------------------------------------
 6. WHAT THIS RECORD IS AND IS NOT
 ----------------------------------------------------------------------------

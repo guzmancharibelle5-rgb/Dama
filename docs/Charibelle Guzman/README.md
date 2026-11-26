@@ -68,7 +68,7 @@ by a passing neighbour.
 |---|---|
 | Features | `Week15Checks` (the 28 cases), `Week15Fixes` (the idempotent repair), `Week15Captures` (E1-E4), `A11yAudit` (extended to five check kinds) |
 | Code commit | `207376b` - "Week 15 AS3: test harness, defect fixes and play-mode captures" |
-| Documentation commit | see the repository state table below |
+| Documentation commit | `3f4bb95` - "Week 15 AS3 milestone, reflection, test logs, defect log and printed PDFs" |
 | Baseline | `Week_15/Evidence/test_logs_baseline/` - 22 passed, **5 failed**, 1 blocked, 0 console errors |
 | Final | `Week_15/Evidence/test_logs_final/` - **27 passed, 0 failed**, 1 blocked, 0 console errors |
 | Defects | `Week_15/Evidence/defect_log.md` - DEF-15-01 (S2), DEF-15-02/03/04 (S3), **all closed**, 0 open |
@@ -252,7 +252,7 @@ machine pre-test everywhere it is mentioned, and it is never referred to as a pl
 | Code commit (Week 14) | `1998b0c` |
 | Documentation commit (Week 14) | `58976b7` |
 | Code commit (Week 15) | `207376b` |
-| Documentation commit (Week 15) | see `Week_15/Evidence/build_and_commit.txt` |
+| Documentation commit (Week 15) | `3f4bb95` |
 | Build target | Android, ARM64 only, IL2CPP, minimum API 26, `com.defaultcompany.dama` |
 | Scenes in build | `DamaGame.unity` (index 0), `SampleScene.unity` (disabled) |
 
