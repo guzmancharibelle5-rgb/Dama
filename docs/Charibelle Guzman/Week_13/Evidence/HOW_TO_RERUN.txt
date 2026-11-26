@@ -1,0 +1,141 @@
+DAMA - WEEK 13 - HOW TO RE-RUN THE CHECKS AND THE CAPTURES
+Student : Charibelle Guzman (BSIT-4)
+Unity   : 6000.6.0f1
+Written : 2026-11-26
+
+Everything in this folder can be regenerated from the project. Nothing here
+was typed out by hand. Two menu items produce every artefact:
+
+  Tools > Dama > Week 13 > 1. Run PT5 Data Checks      -> pt5_checks.log
+  Tools > Dama > Week 13 > 2. Capture Profile Screenshots -> E1..E4 + week13_shots.log
+
+----------------------------------------------------------------------------
+BEFORE YOU START
+----------------------------------------------------------------------------
+1. Open the project at:  E:\Damath Charry\dama
+2. Open the scene:       Assets/Scenes/DamaGame.unity
+3. Make sure Unity is NOT in play mode. The capture run refuses to start
+   while play mode is on, and says so in the Console.
+4. Compile clean first. If the Console shows compile errors, the menu items
+   will not exist yet - Unity hides menu items from scripts that failed to
+   compile.
+
+----------------------------------------------------------------------------
+RUN 1 - THE FIFTEEN DATA AND SECURITY CHECKS
+----------------------------------------------------------------------------
+Menu: Tools > Dama > Week 13 > 1. Run PT5 Data Checks
+
+What happens:
+  - It works in a scratch folder in %TEMP%\Dama_week13_scratch, one clean
+    sub-folder per check, so running it never touches the real save.
+  - It runs fourteen assertions and prints L15 as a documented limit.
+  - It overwrites:
+      docs/Charibelle Guzman/Week_13/Evidence/pt5_checks.log
+
+What to look for in the Console:
+  [Week13Checks] 14 passed, 0 failed. Log written to ...
+
+Open the log and confirm the last line reads:
+
+  TOTAL: 14 passed, 0 failed, 1 documented known limit (L15)
+
+If a line says FAIL, the bracket at the end of that line shows the value it
+actually measured, so the failure can be read without a debugger.
+
+Note on the count: the module asks for fifteen checks. There are fourteen
+assertions plus L15. L15 is deliberately not an assertion - it records what
+the design does not protect against, and a test that "passes" a limitation
+would be a dishonest test. This is stated the same way in PT5 section 5.
+
+----------------------------------------------------------------------------
+RUN 2 - THE FOUR SCREENSHOTS
+----------------------------------------------------------------------------
+Menu: Tools > Dama > Week 13 > 2. Capture Profile Screenshots
+
+This one drives the running game, so it behaves differently:
+
+  1. It resets the real profile to a fresh install, then enters play mode.
+  2. It opens GameCanvas/ProfilePanel programmatically and takes four shots:
+       E1  fresh install          name PLAYER, 0 matches, board "- none yet -"
+       E2  after three matches    Charibelle G., 3 matches, 2 wins 1 loss,
+                                  best streak 2, board 47.3 s / 55.0 s
+       E3  after four more wins   7 matches, 6 wins, board of five,
+                                  38.9 / 42.5 / 47.3 / 50.0 / 55.0
+       E4  after the two-press reset   PLAYER, 0 matches, "Profile erased."
+  3. It also runs the bank-once test: two calls to bank the same finished
+     match in one frame. It must add exactly one win.
+  4. It stops play mode on its own.
+
+While it runs, DO NOT click in the Game view and do not press Play/Stop.
+The run takes about ten seconds and tells you when it is done:
+  [Week13Shots] Capture run finished. Play mode stopping.
+
+Where the files land:
+  docs/Charibelle Guzman/Week_13/Evidence/E1_profile_empty.png
+  docs/Charibelle Guzman/Week_13/Evidence/E2_profile_stats.png
+  docs/Charibelle Guzman/Week_13/Evidence/E3_leaderboard.png
+  docs/Charibelle Guzman/Week_13/Evidence/E4_after_reset.png
+  docs/Charibelle Guzman/Week_13/Evidence/week13_shots.log
+
+----------------------------------------------------------------------------
+WHY THE RUN WAITS BETWEEN STEPS
+----------------------------------------------------------------------------
+ScreenCapture.CaptureScreenshot does not finish inside the frame that calls
+it - the PNG appears on disk a frame or two later. In an earlier version the
+run changed the profile immediately after asking for a shot, and the deferred
+read then picked up the NEXT state: E2 was captured showing E3's numbers.
+
+The current version fixes this by trusting the disk and nothing else. Each
+state change waits until the previous PNG actually exists and is non-empty
+(CaptureLanded), and any stale file is deleted before the shot is requested
+(RequestCapture). So the rule the run follows is: never change the profile
+while a capture is still in flight.
+
+If you want to prove the ordering still holds after editing this script, open
+week13_shots.log. The lines are timestamped and must appear in this order:
+  Requested E1 ... -> Wrote E1 ... -> Seeded three matches
+  Requested E2 ... -> Wrote E2 ... -> Seeded four more victories
+  Requested E3 ... -> Wrote E3 ... -> Two-press reset executed
+  Requested E4 ... -> Wrote E4 ... -> Bank-once test
+A "Wrote" line never appears after the seeding line that follows it.
+
+----------------------------------------------------------------------------
+TWO THINGS ABOUT THIS PROJECT THAT WILL TRIP YOU UP
+----------------------------------------------------------------------------
+1. Domain reload on entering play mode is DISABLED in this project. Static
+   values set in the Editor survive into play mode. The data checks leave the
+   store pointed at the %TEMP% scratch folder, which is why the capture run
+   starts by calling PlayerProfile.UseDefaultDataDirectory() and
+   PlayerProfile.ResetProfile(). If you add a new run, do the same.
+2. The game pauses and ends by setting Time.timeScale = 0. Any new timing
+   code must use unscaled time, or it will freeze with the game.
+
+----------------------------------------------------------------------------
+WHERE THE REAL SAVE FILE GOES
+----------------------------------------------------------------------------
+  C:\Users\<you>\AppData\LocalLow\DefaultCompany\dama\Dama\profile.json
+
+A rejected file (hand-edited, or damaged) is moved next to it as
+profile.rejected.json instead of being silently deleted, so a failure can be
+inspected afterwards.
+
+To see the signature working by hand:
+  1. Play the game, open PROFILE, type a name, press SAVE.
+  2. Close the game, open profile.json in a text editor.
+  3. Change "wins":0 to "wins":99 and save.
+  4. Play again and open PROFILE. The win count is back to 0, the name is back
+     to PLAYER, and profile.rejected.json now holds your edited file.
+     The save is tamper-evident. It is not encrypted - see L15.
+
+----------------------------------------------------------------------------
+IF SOMETHING GOES WRONG
+----------------------------------------------------------------------------
+No menu item at all        -> compile errors. Fix them, wait for the recompile.
+"Screenshots will land in" but no PNGs
+                           -> the Evidence folder path was not writable, or play
+                              mode was stopped early. Check week13_shots.log.
+Shots show the wrong state -> the wait-for-file guard was bypassed. Check that
+                              CaptureLanded is in the stage condition.
+Moved the whole project    -> the menu writes to a path built from the project
+                              root, so it follows the project. Nothing is
+                              hardcoded to E:\Damath Charry.

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>SA5 - Theme, Player, and Advanced Game-Integration Analysis</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>SA5 - Theme, Player, and Advanced Game-Integration Analysis</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Theme:</strong> Philippine Games and Sports</p>
+<p class="meta"><strong>Week:</strong> 13 - Secure Player Data and Responsible Development</p>
+<p class="meta"><strong>Build:</strong> Dama MVP (Android target: ARM64 / IL2CPP, <code>com.defaultcompany.dama</code>, minimum API 26)</p>
+<p class="meta"><strong>Repository:</strong> local Git repository, branch <code>main</code>, code commit <code>b6b477b</code></p>
+<p class="meta"><strong>Engine:</strong> Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer)</p>
+<hr/>
+<h2>1. Theme-to-Mechanics Justification</h2>
+<h3>Target player</h3>
+<p>A Filipino student who has played <em>dama</em> on a drawn board or on a checkerboard borrowed from a classmate, and who now has a phone and five spare minutes between classes. They already know how the pieces move. What they want is the specific tension of the game: the capture that is <em>forced</em> on you whether you like it or not, and the long diagonal run of a king that has just been crowned. They are not looking for a story, a progression grind or an opponent to chat with. They are looking for one clean, complete contest.</p>
+<h3>Intended experience</h3>
+<p><em>Dama</em> is not a gentle board game. Two rules carry its character:</p>
+<ol>
+<li><strong>The capture is compulsory.</strong> If a jump exists, you must take it. A player cannot decline a bad capture and wait for a better one, so the game constantly forces you into positions you would have avoided.</li>
+<li><strong>The king flies.</strong> A piece that reaches the far row becomes a <em>Dama</em> and moves any distance along any diagonal, in any direction. A single piece can cross the whole board in one move.</li>
+</ol>
+<p>Those two together are the experience: calculating a forced exchange several moves deep, and dreading the moment the opponent crowns a piece. Every design decision below is judged against one question: does this make the player feel the forced capture and the flying king the way they feel them on a real board?</p>
+<h3>Core gameplay loop</h3>
+<ol>
+<li><strong>Read the board.</strong> The player's legal moves are highlighted; if a capture exists, only captures are offered, because declining is not allowed.</li>
+<li><strong>Choose.</strong> Tap a piece, tap a destination. A tap is the whole input - there is no drag, no gesture, no timing.</li>
+<li><strong>Chain.</strong> A capture that lands on another capture continues: the same piece keeps jumping until the chain ends. The chain cannot be abandoned by tapping off the board.</li>
+<li><strong>Crown.</strong> Reaching the back row turns the piece into a flying <em>Dama</em> with a crown stacked on it.</li>
+<li><strong>Win or lose.</strong> The match ends when a side has no pieces left, or has pieces but no legal move (blocked). Either condition is a loss for that side.</li>
+<li><strong>Hand over the phone.</strong> Two people play on one device, taking turns. This is the rule that shapes the rest of this document.</li>
+</ol>
+<h3>How the mechanics communicate the theme</h3>
+<table>
+<thead><tr>
+<th>Element of <em>dama</em></th>
+<th>Mechanic in the game</th>
+<th>Why it is not decoration</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>A capture must be taken</td>
+<td>Forced-capture filter: when any jump exists, non-capture moves are not offered at all</td>
+<td>This single rule is what makes the game <em>dama</em> and not checkers-with-a-Filipino-skin. It is enforced in the move generator, not suggested by a hint</td>
+</tr>
+<tr>
+<td>Multi-jump chains</td>
+<td><code>DamaBoard</code> keeps the chain alive after landing and re-highlights only the continued jumps</td>
+<td>The chain is the game's most dramatic moment; letting the player stop halfway would remove the risk of a long chain</td>
+</tr>
+<tr>
+<td>The crowned <em>Dama</em> flies</td>
+<td><code>PromoteToDama</code> sets a king flag, stacks a gold crown, and enables any-distance movement on all four diagonals</td>
+<td>The crown is visible because the change in power is the point. A king that only moved one square would be a different game</td>
+</tr>
+<tr>
+<td>Two people, one board, face to face</td>
+<td>Two local players on one device, alternating turns; no network code at all</td>
+<td>Hot-seat play is how the game is actually played. It is also why the profile needs a <strong>side</strong> setting, explained below</td>
+</tr>
+<tr>
+<td>Playing on a board you can read at a glance</td>
+<td>8x8 grid, one screen, no camera movement, no scrolling</td>
+<td>The whole board is the interface. Nothing is hidden, which is what makes it a fair contest between two people sitting together</td>
+</tr>
+</tbody></table>
+<h3>The one mechanic this week adds</h3>
+<p><code>PlayerProfile</code> gives the game a name, a win/loss record, a win streak and a local board of the five fastest victories. In a hot-seat game a win/loss record is meaningless unless the game knows <strong>which side the profile's owner plays</strong>, so the profile stores a side (RED or BLUE) and the panel has a toggle for it. Without that one field, "you have 6 wins" would be a sentence about a phone rather than a sentence about a player. That is why the side setting is part of the feature and not a leftover.</p>
+<hr/>
+<h2>2. Player and stakeholder analysis</h2>
+<table>
+<thead><tr>
+<th>Stakeholder</th>
+<th>What they need from this build</th>
+<th>How the build answers it</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>The player</td>
+<td>Understand the goal without reading a manual; know instantly what just happened; play with one thumb</td>
+<td>Highlighted legal moves, forced captures filtered automatically, a crown on a promoted piece, a HUD naming whose turn it is, and a win screen that names the winner</td>
+</tr>
+<tr>
+<td>The player, as the owner of their own data</td>
+<td>Know that nothing about them leaves the phone, and be able to erase it</td>
+<td>The game has no networking code, forces no <code>INTERNET</code> permission and makes no web request. The profile is one JSON file in the app's own sandbox, the panel says <em>"Nothing leaves this device"</em> on screen, and RESET erases it in two presses</td>
+</tr>
+<tr>
+<td>The player, as someone who might lose a record</td>
+<td>Be protected from a single accidental tap</td>
+<td>RESET is two presses within 4 seconds; the first press renames the button to <code>PRESS AGAIN</code> and says what will be lost</td>
+</tr>
+<tr>
+<td>The instructor</td>
+<td>Verifiable evidence that the work is the student's own</td>
+<td>A Git commit, a check log with measured values, four play-mode captures, and a disclosure record in PT5 section 9</td>
+</tr>
+<tr>
+<td>Two people sharing one phone</td>
+<td>Not be confused about whose turn it is</td>
+<td>A turn indicator in the HUD, and a profile side setting so the record belongs to a person, not to the device</td>
+</tr>
+<tr>
+<td>Future playtesters (Week 14)</td>
+<td>A build that behaves the same way twice</td>
+<td>Deterministic rules, fixed camera, no random element in the rules at all - only the players' choices vary</td>
+</tr>
+</tbody></table>
+<hr/>
+<h2>3. Gameplay and integration requirements</h2>
+<table>
+<thead><tr>
+<th>ID</th>
+<th>Requirement</th>
+<th>Where it lives</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td>Start a match, restart it, pause and resume, return to the start screen</td>
+<td><code>DamaBoard</code> state machine (<code>Ready</code> / <code>Playing</code> / <code>Paused</code> / <code>GameOver</code>)</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>Only legal moves are offered</td>
+<td><code>DamaBoard</code> move generation</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>A capture that exists must be taken</td>
+<td>Forced-capture filter in the move generator</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>A capture chain continues until it ends on its own</td>
+<td><code>DamaBoard</code> chain handling</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>Reaching the back row crowns a flying <em>Dama</em></td>
+<td><code>DamaBoard.PromoteToDama</code></td>
+</tr>
+<tr>
+<td>R6</td>
+<td>The match ends on no pieces or no legal move</td>
+<td><code>DamaBoard.CheckForWin</code> -&gt; <code>DeclareWinner</code></td>
+</tr>
+<tr>
+<td>R7</td>
+<td>Two local players alternate turns on one device</td>
+<td><code>DamaBoard</code> turn state</td>
+</tr>
+<tr>
+<td>R8</td>
+<td>Remember who the player is and what they have achieved, across launches</td>
+<td><strong>Week 13: <code>PlayerProfile</code> (signed JSON save)</strong></td>
+</tr>
+<tr>
+<td>R9</td>
+<td>Record which side the profile's owner plays, so the record is about a person</td>
+<td><strong>Week 13: <code>PlayerProfile.PlayerSide</code> + <code>ProfilePanel.ToggleSide</code></strong></td>
+</tr>
+<tr>
+<td>R10</td>
+<td>Show the record and the fastest-victory board on a screen opened from the start screen</td>
+<td><strong>Week 13: <code>ProfilePanel</code>, <code>GameCanvas/ProfilePanel</code></strong></td>
+</tr>
+<tr>
+<td>R11</td>
+<td>Survive a corrupt or hand-edited save without crashing or trusting it</td>
+<td><strong>Week 13: HMAC signature + quarantine + clamps</strong></td>
+</tr>
+<tr>
+<td>R12</td>
+<td>Bank a finished match exactly once, never twice</td>
+<td><strong>Week 13: match id fixed at match start, plus the store's id gate</strong></td>
+</tr>
+</tbody></table>
+<hr/>
+<h2>4. Data inventory</h2>
+<p>Everything the build stores, in one table. "Sandbox" means the app's own private folder, which on Android is not readable by other apps.</p>
+<table>
+<thead><tr>
+<th>Data item</th>
+<th>Where it comes from</th>
+<th>Where it is stored</th>
+<th>Who can read it</th>
+<th>Lifetime and deletion</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Display name (up to 16 characters)</td>
+<td>Typed by the player on the profile panel</td>
+<td><code>profile.json</code> in <code>Application.persistentDataPath/Dama/</code></td>
+<td>The app; the device owner via a file manager</td>
+<td>Until RESET is pressed, or the app is uninstalled</td>
+</tr>
+<tr>
+<td>Preferred side (RED or BLUE)</td>
+<td>The SIDE toggle on the profile panel</td>
+<td><code>profile.json</code></td>
+<td>The app</td>
+<td>Same as above</td>
+</tr>
+<tr>
+<td>Aggregate record (wins, losses, draws, current streak, best streak)</td>
+<td>Derived while a finished match is banked</td>
+<td><code>profile.json</code></td>
+<td>The app</td>
+<td>Same as above</td>
+</tr>
+<tr>
+<td>Recent matches, up to 20 (match id, result, winning side, seconds, red pieces left, blue pieces left, UTC time)</td>
+<td>Banked once at the end of a match from <code>DamaBoard.BankMatch</code></td>
+<td><code>profile.json</code>, <code>recent</code> list, newest first</td>
+<td>The app</td>
+<td>Oldest entries dropped past 20; RESET erases all</td>
+</tr>
+<tr>
+<td>Last match id, last played UTC</td>
+<td>Written when a match is banked</td>
+<td><code>profile.json</code></td>
+<td>The app</td>
+<td>Same as above</td>
+</tr>
+<tr>
+<td>Signature salt (16 random bytes, base64)</td>
+<td>Generated by the app on its first save</td>
+<td><code>PlayerPrefs["profile.salt"]</code></td>
+<td>The app</td>
+<td>Survives RESET, so a reset profile is still signed the same way by this install</td>
+</tr>
+<tr>
+<td><strong>Not collected:</strong> account, e-mail address, phone number, contacts, location, advertising id, device identifiers, analytics, telemetry, crash reports</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<p>The bottom row is the important half of the table. The project has no login, no multiplayer, no analytics SDK and no web request. <code>Packages/manifest.json</code> contains no Firebase, PlayFab or Unity Services package, the Android Player Setting <code>ForceInternetPermission</code> is off, and the game requests no permission at all. There is nothing to transmit and nowhere to transmit it. The scan behind that sentence is <code>Evidence/secrets_and_gitignore.txt</code>.</p>
+<p>Note what is <strong>not</strong> in <code>PlayerPrefs</code>: match settings, difficulty or a cached board state. The only key this project uses is <code>profile.salt</code>, which exists because a signature needs a key and a key must not be in the source. Put differently, <code>PlayerPrefs</code> is not used as a save system here - it holds one install identity value and nothing a player would care about losing.</p>
+<hr/>
+<h2>5. Data-flow diagram</h2>
+<figure><img src="SA5_data_flow.svg" alt="Data flow through the Dama profile system"/><figcaption>Data flow through the Dama profile system</figcaption></figure>
+<p>Reading the diagram: the player's two inputs (a typed name, and the RESET command) enter through <code>ProfilePanel</code>; <code>PlayerProfile</code> is the only class that signs, writes, clamps or deletes anything; the only other writer is the end of a match, and it goes through the same <code>RecordMatch</code> gate that refuses a match id it has already banked. The dashed boundary at the top right is the device: nothing crosses it, in either direction.</p>
+<hr/>
+<h2>6. Identity model decision</h2>
+<p>The module allows no account at all, a local profile, anonymous authentication, or full e-mail authentication, and asks the choice to be proportionate to the game. The four options were considered as follows.</p>
+<p><strong>Decision: a local profile, with no account of any kind.</strong></p>
+<p>Why:</p>
+<ul>
+<li><strong>The game is offline and hot-seat.</strong> Two people sitting next to each other on one device is the whole product. An account would exist only to identify a player to a server that has no role in the match.</li>
+<li><strong>A login would cost a real feature.</strong> Sign-in on a game meant to be opened between classes adds failure states - no signal, forgotten password, a slow first launch - in exchange for nothing the two players in front of the board need.</li>
+<li><strong>It would create an obligation nothing here can service.</strong> Collecting an e-mail address from students means a deletion process, a retention policy and a breach process. This project has none of those, so the honest move is not to collect the address.</li>
+<li><strong>It matches the build, verifiably.</strong> No cloud package is installed and the network permission is not requested, so an account model would be a promise the build does not keep.</li>
+</ul>
+<p>What the player gets instead: their name, their side, their record and their fastest victories on a screen they open from the start screen, kept between launches, and erasable by them in two presses.</p>
+<p>The honest cost of this decision, stated rather than buried: a local record can be edited by whoever owns the phone. The signature makes that <strong>detectable</strong>, not impossible. See PT5 section 5 and check L15.</p>
+<hr/>
+<h2>7. Secure configuration and secret handling</h2>
+<table>
+<thead><tr>
+<th>Risk</th>
+<th>Position in this build</th>
+<th>Evidence</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Credentials in source code</td>
+<td>There are none. No API key, token, service account file or password exists, because no service is used</td>
+<td><code>Evidence/secrets_and_gitignore.txt</code> (scan output)</td>
+</tr>
+<tr>
+<td>A shipped secret</td>
+<td>The only secret-like value is the signature salt, and it is <strong>generated at runtime</strong> into <code>PlayerPrefs</code>, never committed</td>
+<td><code>PlayerProfile.GetSaltBytes</code></td>
+</tr>
+<tr>
+<td>Build artefacts in the repository</td>
+<td><code>.gitignore</code> excludes <code><em>.apk</code>, <code></em>.aab</code>, <code><em>.unitypackage</code>, <code></em>.keystore</code>, <code>*.jks</code>, <code>Library/</code>, <code>Temp/</code>, <code>Builds/</code></td>
+<td><code>.gitignore</code></td>
+</tr>
+<tr>
+<td>Player records readable by other apps</td>
+<td>The save lives inside <code>Application.persistentDataPath/Dama/</code>, which on Android is the app's private sandbox</td>
+<td><code>PlayerProfile.DataDirectory</code></td>
+</tr>
+<tr>
+<td>Trusting untrusted input</td>
+<td>The save file is treated as hostile: parsed defensively, signature-checked, clamped, and quarantined instead of overwritten</td>
+<td><code>PlayerProfile</code> load path, <code>Clamp</code>, quarantine move</td>
+</tr>
+<tr>
+<td>The repository leaking a signing key later</td>
+<td>The keystore rule is in <code>.gitignore</code> even though there is no keystore yet - a rule added after the fact does not remove a file already pushed</td>
+<td><code>.gitignore</code></td>
+</tr>
+</tbody></table>
+<p>What is <strong>not</strong> claimed: the save is not encrypted, and the salt sits on the same device as the file. This is stated on screen, in PT5 and in the README rather than glossed over.</p>
+<hr/>
+<h2>8. Failure and recovery design</h2>
+<p>An offline game has no network to fail, so the failures that matter are the disk and the file itself.</p>
+<table>
+<thead><tr>
+<th>Failure</th>
+<th>What the build does</th>
+<th>Check</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>No save file at all</td>
+<td>Starts on <code>PLAYER</code> with an empty record; nothing is written until the player saves something</td>
+<td>L1</td>
+</tr>
+<tr>
+<td>The save file is not JSON at all</td>
+<td>Parsing is wrapped; the file is moved to <code>profile.rejected.json</code> and a fresh profile starts. The bad file is kept as evidence</td>
+<td>L10</td>
+</tr>
+<tr>
+<td>The save was edited by hand</td>
+<td>HMAC mismatch; the same quarantine path. The edited values never reach the screen</td>
+<td>L11</td>
+</tr>
+<tr>
+<td>The save holds impossible numbers but a valid signature</td>
+<td>Clamped after the signature passes: negatives floored, <code>bestStreak</code> raised to at least <code>currentStreak</code>, name re-sanitised, recent list cleaned</td>
+<td>L12</td>
+</tr>
+<tr>
+<td>The save folder cannot be written</td>
+<td>The write is wrapped, <code>LastError</code> is set, and the panel prints the reason. In-memory state is rolled back so memory and disk never disagree</td>
+<td>L14</td>
+</tr>
+<tr>
+<td>The app is killed mid-write</td>
+<td>The file is written to <code>profile.json.tmp</code> and then moved over the old one, so a half file never replaces a whole one</td>
+<td>design, <code>PlayerProfile.Save</code></td>
+</tr>
+<tr>
+<td>The same match is reported twice</td>
+<td>The match id is fixed when the match starts, so <code>DamaBoard.BankMatch</code> refuses the repeat, and <code>RecordMatch</code> refuses any id at or below <code>lastMatchId</code>. Two independent guards</td>
+<td>L9</td>
+</tr>
+<tr>
+<td>The record is wiped by an accidental tap</td>
+<td>RESET needs two presses within 4 seconds; the first press says what will be lost</td>
+<td><code>ProfilePanel.ResetPressed</code></td>
+</tr>
+</tbody></table>
+<hr/>
+<h2>9. Integration plan, Weeks 13 to 18</h2>
+<table>
+<thead><tr>
+<th>Week</th>
+<th>What this profile work becomes the input for</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>13</td>
+<td>The profile, the signed save, the panel and the fifteen security checks - this submission</td>
+</tr>
+<tr>
+<td>14</td>
+<td>The profile panel is one of the screens a usability test covers: is a 16-character name field with a visible limit understandable on a phone; can a player find the SIDE toggle; is the fastest-victory board legible at arm's length; is the two-press RESET discoverable without instruction</td>
+</tr>
+<tr>
+<td>15</td>
+<td>The bank path is a test target: each of the two end conditions (no pieces, no legal move) must bank exactly one match, and RESET must never leave a half-erased state. This is the week a defect log and a traceability matrix begin</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Profiling: the save is a synchronous file write at the end of a match, so its cost on the end-screen frame is measured, and moved off that frame if it shows</td>
+</tr>
+<tr>
+<td>17</td>
+<td>The README, user guide and evidence index describe this component instead of being written from scratch</td>
+</tr>
+<tr>
+<td>18</td>
+<td>The profile is part of the demo script: enter a name, choose a side, win a match, show the record and the fastest-victory board, then show the two-press reset</td>
+</tr>
+</tbody></table>
+<hr/>
+<h2>10. Risk register</h2>
+<table>
+<thead><tr>
+<th>Risk</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Mitigation in this build</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>A hand-edited save is trusted</td>
+<td>Medium</td>
+<td>The player's record becomes meaningless</td>
+<td>HMAC check; rejected files quarantined, never merged (L11)</td>
+</tr>
+<tr>
+<td>A corrupt save crashes the game on launch</td>
+<td>Low</td>
+<td>The game will not open at all</td>
+<td>Every read and write is wrapped; a failure starts a fresh profile (L10)</td>
+</tr>
+<tr>
+<td>A long record is lost by an accidental tap</td>
+<td>Medium</td>
+<td>Trust in the game</td>
+<td>Two-press reset with a warning and a 4-second disarm (L13)</td>
+</tr>
+<tr>
+<td>A match is banked twice, inflating the record</td>
+<td>Medium</td>
+<td>The record lies, which is the one thing a record must not do</td>
+<td>Match id fixed at match start plus the store's id gate (L9)</td>
+</tr>
+<tr>
+<td>Personal data is collected without a process to delete it</td>
+<td>Very low</td>
+<td>Data-protection exposure</td>
+<td>No personal data is collected; the name is 16 characters, player-chosen and player-deleted</td>
+</tr>
+<tr>
+<td>The profile work breaks the match flow</td>
+<td>Medium</td>
+<td>The submission does not run</td>
+<td>The end of a match is the only coupling, guarded by match id and verified by playing a match to a win in play mode</td>
+</tr>
+<tr>
+<td>A secret ends up in the repository later</td>
+<td>Low</td>
+<td>Credential exposure</td>
+<td>No service to hold a key for; build and keystore rules in <code>.gitignore</code>; scan recorded in <code>Evidence/</code></td>
+</tr>
+</tbody></table>
+<hr/>
+<h2>11. Evidence index</h2>
+<table>
+<thead><tr>
+<th>File</th>
+<th>What it shows</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>Evidence/pt5_checks.log</code></td>
+<td>Fourteen assertions with their measured values, plus L15 as a documented limit</td>
+</tr>
+<tr>
+<td><code>Evidence/E1_profile_empty.png</code></td>
+<td>The panel on a fresh install: <code>PLAYER</code>, 0 matches, no best times</td>
+</tr>
+<tr>
+<td><code>Evidence/E2_profile_stats.png</code></td>
+<td>The record after three matches: <code>Charibelle G.</code>, 3 matches, 2W / 1L, best streak 2</td>
+</tr>
+<tr>
+<td><code>Evidence/E3_leaderboard.png</code></td>
+<td>The fastest-victory board with five entries, quickest first: 38.9, 42.5, 47.3, 50.0, 55.0</td>
+</tr>
+<tr>
+<td><code>Evidence/E4_after_reset.png</code></td>
+<td>The panel after the two-press reset: back to <code>PLAYER</code>, record empty, <em>"Profile erased."</em></td>
+</tr>
+<tr>
+<td><code>Evidence/week13_shots.log</code></td>
+<td>The timestamped record of the capture run, including the bank-once result</td>
+</tr>
+<tr>
+<td><code>Evidence/build_and_commit.txt</code></td>
+<td>The Android settings, the scene order, the commit id and what was not built</td>
+</tr>
+<tr>
+<td><code>Evidence/secrets_and_gitignore.txt</code></td>
+<td>The credential scan and the ignore rules, with the reasoning for each rule</td>
+</tr>
+<tr>
+<td><code>Evidence/HOW_TO_RERUN.txt</code></td>
+<td>How to reproduce every check and every screenshot</td>
+</tr>
+<tr>
+<td><code>others/SA5_data_flow.svg</code></td>
+<td>The data-flow diagram in section 5</td>
+</tr>
+</tbody></table>
+
+</body>
+</html>

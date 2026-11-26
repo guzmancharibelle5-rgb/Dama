@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Week 13 Reflection - Secure Player Data and Responsible Development</title>
+<style>
+
+@page { size: A4; margin: 17mm 15mm 18mm 15mm; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  color: #14181d;
+  margin: 0;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 19pt;
+  line-height: 1.2;
+  margin: 0 0 10pt 0;
+  padding-bottom: 6pt;
+  border-bottom: 2.5pt solid #14181d;
+  color: #0d1116;
+}
+
+h2 {
+  font-size: 13.5pt;
+  margin: 15pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.8pt solid #b9c2cc;
+  color: #0d1116;
+  page-break-after: avoid;
+}
+
+h3 { font-size: 11.5pt; margin: 14pt 0 5pt 0; color: #1c2833; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12pt 0 4pt 0; color: #1c2833; page-break-after: avoid; }
+
+p { margin: 0 0 6pt 0; orphans: 3; widows: 3; }
+
+p.meta {
+  margin: 0 0 2.5pt 0;
+  font-size: 9.5pt;
+  color: #2c3e50;
+}
+
+p.meta strong { color: #0d1116; }
+
+hr {
+  border: 0;
+  border-top: 0.8pt solid #ccd4dc;
+  margin: 11pt 0;
+}
+
+ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
+li { margin-bottom: 3pt; }
+
+code {
+  font-family: 'Consolas', 'Cascadia Mono', monospace;
+  font-size: 9pt;
+  background: #eef1f4;
+  padding: 0.5pt 3pt;
+  border-radius: 2pt;
+  color: #1a2a38;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 0.6pt solid #d3dae1;
+  border-left: 2.5pt solid #4a6b8a;
+  padding: 8pt 10pt;
+  margin: 0 0 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: 8.5pt; line-height: 1.42; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 11pt 0;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  background: #e7ecf1;
+  text-align: left;
+  font-weight: 600;
+  color: #0d1116;
+  border: 0.6pt solid #c3ccd5;
+  padding: 4.5pt 5pt;
+}
+
+td {
+  border: 0.6pt solid #d3dae1;
+  padding: 4.5pt 5pt;
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: #fafbfc; }
+tr { page-break-inside: avoid; }
+
+figure { margin: 10pt 0 12pt 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; height: auto; border: 0.6pt solid #d3dae1; }
+figcaption { font-size: 8.5pt; color: #5a6b7b; margin-top: 4pt; font-style: italic; }
+
+strong { color: #0d1116; }
+
+</style>
+</head>
+<body>
+<h1>Week 13 Reflection - Secure Player Data and Responsible Development</h1>
+<p class="meta"><strong>Game:</strong> Dama</p>
+<p class="meta"><strong>Student:</strong> Charibelle Guzman</p>
+<p class="meta"><strong>Section:</strong> BSIT-4</p>
+<p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
+<p class="meta"><strong>Week:</strong> 13</p>
+<p class="meta"><strong>Date:</strong> November 26, 2026</p>
+<p>The structure follows the module's Weekly Self-Assessment and Reflection Guide: the four Week 13 prompts in order, then the required authenticity declaration.</p>
+<hr/>
+<h2>1. What I built this week, and which decisions were actually mine</h2>
+<p>The deliverable was a player profile: a name, the side the player takes, a win/loss/draw record, a win streak and a local best-times board of the five fastest victories, reachable from a PROFILE button on the start screen and remembered between launches.</p>
+<p>The first decision was where the data should live. The easy move was <code>PlayerPrefs</code>, but its values cannot carry an integrity check - there is no place to put a signature over them. If the point of the week is that an edited record must be <em>detectable</em>, the store has to be something a signature can cover, so the profile is a JSON file at <code>Application.persistentDataPath/Dama/profile.json</code>, and <code>PlayerPrefs</code> keeps one key: the salt.</p>
+<p>The second was what "secure" should mean with no account, no server and no leaderboard. Encrypting the save would have been theatre - the key would ship inside the same build as the file. So <code>ComputeSignature</code> takes HMAC-SHA256 over the canonical payload, keyed with 16 bytes generated at runtime and kept in <code>PlayerPrefs["profile.salt"]</code>. Detection over a false promise of prevention, and I said so on the panel and in the log instead of implying the record is protected.</p>
+<p>The third I did not see coming. In a hot-seat game - two people on one phone - a win/loss record is meaningless: after five matches the phone has three wins, but which of the two people owns them? So the profile stores a <strong>side</strong>, and <code>RecordMatch</code> turns the winner into a result from the owner's side. Without that field the feature produces a number true about a device and false about a person. I found it by asking what the record would say after the second person played.</p>
+<p>The fourth is small but a player will notice: RESET takes two presses, the button renaming itself to <code>PRESS AGAIN</code>. One tap that wipes an evening's record is a defect waiting to happen on a touchscreen.</p>
+<hr/>
+<h2>2. How the build handles the data, and where I stopped claiming things</h2>
+<p>Everything the game stores is in the SA5 data-inventory table, and the important half is the "not collected" row: no account, no e-mail, no contacts, no location, no advertising id, no analytics. The project installs no cloud package, does not force the <code>INTERNET</code> permission and makes no web request. That is what the build does, not a policy I wrote in a document.</p>
+<p>Where I stopped claiming things is what mattered most. The save is tamper-evident, not tamper-proof: the salt sits on the same device as the file, a determined attacker can re-sign an edited save, and there is no server to check a record against. I recorded that as <code>L15 KNOWN LIMIT</code>.</p>
+<p>Keeping it honest took effort, because the temptation was concrete. The weekly task asks for fifteen checks; if L15 were "run" like the others the log would end <em>15 passed, 0 failed</em>. It ends <em>14 passed, 0 failed, 1 documented known limit</em> instead. A test that passes a limitation is decoration, and the bigger number would have been the worse result.</p>
+<hr/>
+<h2>3. A problem I hit, and how the checks found it</h2>
+<p>Two problems came from the same mistake: trusting something that reports later than I assumed.</p>
+<p>The first was the double-bank guard. The rule is "one finished match is banked exactly once", and the obvious implementation compares the match to <code>LastMatchId</code> - but <code>NextMatchId</code> is <em>derived</em> as <code>LastMatchId + 1</code>, so the guard was reading a value that moved as soon as the first bank succeeded. The test reported <code>delta=2</code>: the same match recorded twice, and a record that lies about how many games were played, which is the one thing a record must never do. The fix was to pin the id when the match <em>starts</em>, so both guards look at a fixed number. It now reports <code>wins before=0 after=1 delta=1 lastMatchId=1</code>.</p>
+<p>The second taught me about testing a <em>picture</em>. The capture pass seeds three matches, photographs the panel, seeds four more, photographs again. The first version produced an E2 showing E3's numbers - seven matches and a five-entry board in an image named <code>E2_profile_stats</code>. Nothing in the code was wrong: <code>ScreenCapture.CaptureScreenshot</code> does not finish in the frame that calls it, so the PNG was written after the profile had moved on. The fix was to stop trusting my own ordering and trust the disk: delete the old file, request the shot, and do not change the profile until that file exists and is non-empty.</p>
+<p>I would not have caught either by playing the game. Both produced output that looked right at a glance, and both were caught by a check whose only job was to compare a value with what it should have been.</p>
+<hr/>
+<h2>4. What I would do differently, and what carries forward</h2>
+<p><strong>Commit while building, not after.</strong> The work is committed (<code>b6b477b</code>) and the hash is in the documents, but it is one large commit made after all the iterations, so the history does not show the double-bank bug being found or the panel being rebuilt when it overflowed a 584-pixel canvas. Committing after each working step would make the record reviewable instead of merely present.</p>
+<p><strong>Deciding the failure cases before writing the feature.</strong> Quarantine, the atomic <code>.tmp</code> replace and the refusal of a blank name all came out of the check list rather than my first draft. SA5 section 8 is now a table of failures, and writing that table first would have saved a revision.</p>
+<p><strong>The shape of a good claim carries forward.</strong> The strongest line here is <code>L12 IMPOSSIBLE NUMBERS IN A CORRECTLY SIGNED SAVE ARE CLAMPED, NOT TRUSTED [wins=0 losses=0 bestStreak=9]</code></p>
+<ul>
+<li>specific, measurable and falsifiable; anyone can re-run it from <code>HOW_TO_RERUN.txt</code>. Week 14 is</li>
+</ul>
+<p>a usability week, and I intend to write its findings the same way: not "the panel is understandable" but "three of five testers found the two-press RESET without being told", or whatever the number turns out to be.</p>
+<hr/>
+<h2>Declaration</h2>
+<p>I confirm that this reflection describes my own development experience, and that the use of AI assistance in this week's work - for code, for structure and for phrasing - is disclosed in PT5 section 9 as the module requires.</p>
+
+</body>
+</html>

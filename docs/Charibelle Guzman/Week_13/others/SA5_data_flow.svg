@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600" role="img" aria-labelledby="title desc">
+  <title id="title">Dama Week 13 player data flow</title>
+  <desc id="desc">The player enters a name, a side and a reset through the profile panel. PlayerProfile is the only component that signs, clamps and writes. It stores one JSON file in the app sandbox and a signature salt in PlayerPrefs. A finished match reaches the same match-id gate. Nothing leaves the device.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333"/>
+    </marker>
+    <style>
+      .box       { fill:#ffffff; stroke:#333333; stroke-width:1.5; }
+      .panel     { fill:#f2f7fc; stroke:#2b5c8a; stroke-width:1.5; }
+      .store     { fill:#eef8ee; stroke:#2f6b3a; stroke-width:1.5; }
+      .file      { fill:#fdf6e3; stroke:#8a6d1f; stroke-width:1.5; }
+      .prefs     { fill:#f8effb; stroke:#6b3a8a; stroke-width:1.5; }
+      .head      { font-family:'Segoe UI',Arial,sans-serif; font-size:13px; font-weight:600; fill:#111111; }
+      .body      { font-family:'Segoe UI',Arial,sans-serif; font-size:11px; fill:#444444; }
+      .tiny      { font-family:'Segoe UI',Arial,sans-serif; font-size:9.5px; fill:#555555; }
+      .title     { font-family:'Segoe UI',Arial,sans-serif; font-size:17px; font-weight:600; fill:#111111; }
+      .subtitle  { font-family:'Segoe UI',Arial,sans-serif; font-size:11.5px; fill:#555555; }
+      .edge      { stroke:#333333; stroke-width:1.5; fill:none; marker-end:url(#arrow); }
+      .boundary  { fill:none; stroke:#b3121b; stroke-width:1.6; stroke-dasharray:7 5; }
+      .bpass     { font-family:'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; fill:#b3121b; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="600" fill="#ffffff"/>
+
+  <text class="title" x="24" y="34">Dama - where the player's data goes</text>
+  <text class="subtitle" x="24" y="54">Week 13 - secure player data. Dashed line = the edge of the device. Nothing crosses it, in either direction.</text>
+
+  <!-- device boundary -->
+  <rect class="boundary" x="170" y="78" width="815" height="462"/>
+  <text class="bpass" x="176" y="70">ON THE DEVICE - the app's private sandbox (Application.persistentDataPath)</text>
+
+  <!-- inputs -->
+  <rect class="box" x="190" y="250" width="120" height="130" rx="8"/>
+  <text class="head" x="250" y="274" text-anchor="middle">Player</text>
+  <text class="body" x="250" y="296" text-anchor="middle">types a name</text>
+  <text class="body" x="250" y="313" text-anchor="middle">picks a side</text>
+  <text class="body" x="250" y="330" text-anchor="middle">presses</text>
+  <text class="body" x="250" y="347" text-anchor="middle">SAVE or RESET</text>
+  <text class="tiny" x="250" y="368" text-anchor="middle">taps only</text>
+
+  <!-- profile panel -->
+  <rect class="panel" x="345" y="240" width="170" height="150" rx="8"/>
+  <text class="head" x="430" y="264" text-anchor="middle">ProfilePanel</text>
+  <text class="body" x="430" y="286" text-anchor="middle">GameCanvas/ProfilePanel</text>
+  <text class="body" x="430" y="306" text-anchor="middle">read the record,</text>
+  <text class="body" x="430" y="323" text-anchor="middle">show the best times</text>
+  <text class="tiny" x="430" y="346" text-anchor="middle">never parses JSON</text>
+  <text class="tiny" x="430" y="361" text-anchor="middle">never touches the disk</text>
+  <text class="tiny" x="430" y="378" text-anchor="middle">RESET = two presses in 4 s</text>
+
+  <!-- player profile -->
+  <rect class="store" x="580" y="170" width="230" height="220" rx="8"/>
+  <text class="head" x="695" y="194" text-anchor="middle">PlayerProfile (static)</text>
+  <text class="body" x="695" y="216" text-anchor="middle">the only class that signs,</text>
+  <text class="body" x="695" y="233" text-anchor="middle">clamps, writes or deletes</text>
+  <text class="tiny" x="700" y="256" text-anchor="start">1  sanitise the name - cap 16</text>
+  <text class="tiny" x="700" y="273" text-anchor="start">2  clamp numbers - floors at 0</text>
+  <text class="tiny" x="700" y="290" text-anchor="start">3  canonical JSON, fixed order</text>
+  <text class="tiny" x="700" y="307" text-anchor="start">4  HMAC-SHA256 over the payload</text>
+  <text class="tiny" x="700" y="324" text-anchor="start">5  write .tmp, then move in place</text>
+  <text class="tiny" x="700" y="341" text-anchor="start">6  refuse matchId below lastMatchId</text>
+  <text class="tiny" x="695" y="366" text-anchor="middle">a bad file is set aside, never merged</text>
+
+  <!-- files -->
+  <rect class="file" x="580" y="420" width="230" height="95" rx="8"/>
+  <text class="head" x="695" y="444" text-anchor="middle">The save file</text>
+  <text class="body" x="695" y="466" text-anchor="middle">Dama/profile.json (signed JSON)</text>
+  <text class="tiny" x="695" y="484" text-anchor="middle">profile.json.tmp - the atomic write</text>
+  <text class="tiny" x="695" y="500" text-anchor="middle">profile.rejected.json - kept as evidence</text>
+
+  <!-- prefs -->
+  <rect class="prefs" x="850" y="250" width="125" height="130" rx="8"/>
+  <text class="head" x="912" y="274" text-anchor="middle">PlayerPrefs</text>
+  <text class="body" x="912" y="296" text-anchor="middle">profile.salt</text>
+  <text class="tiny" x="912" y="316" text-anchor="middle">16 random bytes,</text>
+  <text class="tiny" x="912" y="331" text-anchor="middle">base64, made on</text>
+  <text class="tiny" x="912" y="346" text-anchor="middle">the first save</text>
+  <text class="tiny" x="912" y="366" text-anchor="middle">never in the source</text>
+
+  <!-- match source -->
+  <rect class="box" x="190" y="96" width="300" height="76" rx="8"/>
+  <text class="head" x="340" y="120" text-anchor="middle">DamaBoard - a match ends</text>
+  <text class="body" x="340" y="141" text-anchor="middle">DeclareWinner opens the win screen</text>
+  <text class="tiny" x="340" y="159" text-anchor="middle">the match id is fixed when the match starts</text>
+
+  <!-- edges -->
+  <path class="edge" d="M310 315 H345"/>
+  <path class="edge" d="M515 315 H580"/>
+  <path class="edge" d="M490 134 H695 V170"/>
+  <path class="edge" d="M695 390 V420"/>
+  <path class="edge" d="M810 305 H850"/>
+
+  <text class="tiny" x="500" y="127" text-anchor="start">RecordMatch(matchId, winner, seconds, redPieces, bluePieces)</text>
+  <text class="tiny" x="548" y="307" text-anchor="middle">name, side, reset</text>
+  <text class="tiny" x="830" y="297" text-anchor="middle">salt</text>
+  <text class="tiny" x="702" y="409" text-anchor="start">sign, then write</text>
+  <text class="tiny" x="470" y="307" text-anchor="middle">SAVE</text>
+
+  <!-- footer -->
+  <text class="bpass" x="190" y="566">No network code, no INTERNET permission, no analytics SDK, no account. The save never leaves the phone.</text>
+  <text class="tiny" x="190" y="584">The only limit: the salt sits on the same device as the signed file, so the save is tamper-evident, not tamper-proof (PT5 L15).</text>
+</svg>

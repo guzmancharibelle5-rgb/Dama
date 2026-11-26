@@ -1,0 +1,110 @@
+DAMA - WEEK 13 - BUILD SETTINGS AND COMMIT RECORD
+Student : Charibelle Guzman (BSIT-4)
+Theme   : Philippine Games and Sports
+Unity   : 6000.6.0f1 (revision f7f8ed4d1e24)
+Written : 2026-11-26
+
+----------------------------------------------------------------------------
+1. TARGET PLATFORM SETTINGS (read back from ProjectSettings/ProjectSettings.asset)
+----------------------------------------------------------------------------
+Build target            : Android
+Bundle identifier       : com.defaultcompany.dama
+Minimum API level       : Android 8.0 (API 26)
+Target API level        : Automatic - highest installed
+CPU architecture        : ARM64 only
+Scripting backend       : IL2CPP  (ProjectSettings.asset line 648-649: scriptingBackend / Android: 1)
+Internet permission     : NOT requested (ForceInternetPermission: 0)
+
+Why these values were chosen for this game:
+  - API 26 is the floor that current Unity 6 Android builds support, so no
+    device that can install the game is excluded by a needless restriction.
+  - ARM64 only, because 32-bit ARM is no longer accepted by Google Play for
+    new submissions; shipping one architecture keeps the download small.
+  - IL2CPP, because it produces a native build that is harder to decompile
+    than the Mono scripting backend. That backs up the same point as the
+    signed profile: the delivered game resists casual editing.
+  - No internet permission, because Dama is an offline two-player board game
+    and the profile is local. The app declares only what it actually uses.
+
+----------------------------------------------------------------------------
+2. HOW THESE SETTINGS WERE APPLIED
+----------------------------------------------------------------------------
+They were not clicked together by hand. They are applied by a script:
+
+  Assets/Scripts/Editor/AndroidBuildSetup.cs
+
+  Unity menu:  Tools > Android > Apply Mobile Build Settings
+
+The script sets the target architecture, the scripting backend, the minimum
+API level and puts the game scene first in the build list. Running it again is
+idempotent - it re-applies the same values. This means the settings can be
+reproduced from the repository instead of being a screenshot of a window.
+
+----------------------------------------------------------------------------
+3. BUILD LIST (ProjectSettings/EditorBuildSettings.asset)
+----------------------------------------------------------------------------
+  Index 0 : Assets/Scenes/DamaGame.unity     enabled
+  Index 1 : Assets/Scenes/SampleScene.unity  disabled
+
+DamaGame must be index 0, otherwise the installed game would open the empty
+sample scene.
+
+----------------------------------------------------------------------------
+4. WHAT WAS BUILT FOR THIS WEEK
+----------------------------------------------------------------------------
+No APK or AAB is attached to this submission.
+
+The runtime evidence for Week 13 is the Editor in play mode, driven by
+Tools > Dama > Week 13 > 2. Capture Profile Screenshots. Those captures
+(E1-E4 in this folder) are of the real game scene, the real ProfilePanel
+over the real GameCanvas, and the real save file being written to
+Application.persistentDataPath - not to a mock.
+
+The Android settings above are the settings that a build of the same scene
+would use. They are recorded here so the platform declaration is auditable
+even though the artefact itself is not shipped this week.
+
+Stated plainly, so there is no false impression: "the game runs in the Editor"
+and "the game was installed on a phone and launched" are two different claims.
+Only the first one is made here.
+
+----------------------------------------------------------------------------
+5. COMMIT
+----------------------------------------------------------------------------
+Branch          : main
+Commit          : b6b477b8b648a4e9d8da4aa0915035a825fec81e   (short: b6b477b)
+Committed at    : 2026-11-26 11:18:15 +0800
+Message         : Week 13 PT5: signed player profile, PT5 data checks and
+                  play-mode evidence
+Files in commit : 19 changed, 3570 insertions, 134 deletions
+Tracked files   : 190
+
+What the commit contains:
+  Assets/Scripts/Profile/PlayerProfile.cs      the signed store
+  Assets/Scripts/Profile/ProfilePanel.cs       the panel behaviour
+  Assets/Scripts/Editor/ProfileSceneBuilder.cs builds the panel UI
+  Assets/Scripts/Editor/Week13Checks.cs        the checks and the captures
+  Assets/Scripts/DamaBoard.cs                  banking a finished match
+  Assets/Scenes/DamaGame.unity                 the scene with the panel
+  ProjectSettings/ProjectSettings.asset        the Android settings above
+  .gitignore                                   build outputs and secrets
+  docs/Charibelle Guzman/Week_13/Evidence/*    the logs and E1-E4
+
+To check the commit from a terminal:
+
+  git show --stat b6b477b
+  git rev-parse HEAD
+
+Two things were deliberately left out of the commit, so they cannot be
+mistaken for part of the game:
+  - Assets/Plugins/NuGet/*.dll - editor tool dependencies, unrelated to Dama.
+  - Documentation is committed after this one, because a document cannot
+    contain the hash of the commit that contains it.
+
+----------------------------------------------------------------------------
+6. WHAT THIS RECORD IS AND IS NOT
+----------------------------------------------------------------------------
+IS     : proof of the platform configuration, of the scene order, and of an
+         exact source revision that the rest of this submission refers to.
+IS NOT : proof that the game was built and installed. That step was not part
+         of Week 13's evidence and no claim of it is made here.
