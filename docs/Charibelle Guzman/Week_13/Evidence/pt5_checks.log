@@ -1,0 +1,27 @@
+DAMA - WEEK 13 PT5 DATA AND SECURITY CHECKS
+Game: Dama  |  Theme: Philippine Games and Sports
+Student: Charibelle Guzman (BSIT-4)
+Harness: Assets/Scripts/Editor/Week13Checks.cs
+Unity: 6000.6.0f1   Run at: 2026-11-26 03:12:10 UTC
+Scratch folder: C:\Users\Zedrich\AppData\Local\Temp\Dama_week13_scratch  (the player's real save is never written to)
+----------------------------------------------------------------------------------------------------
+03:12:10.613 L1 No save file at all is not an error ........................................... PASS [loaded=True name=PLAYER matches=0 error='']
+03:12:10.620 L2 A valid name is trimmed and inner spaces collapsed ............................ PASS [saved=True name='Dama Player']
+03:12:10.630 L3 The profile survives a reload from disk and the file carries a signature ...... PASS [name='Charibelle G.' file=True sig=True]
+03:12:10.632 L4 A blank name is refused and the stored name is kept ........................... PASS [refused=True name='Charibelle G.']
+03:12:10.634 L5 A name longer than 16 characters is capped .................................... PASS [length=16 name='ABCDEFGHIJKLMNOP']
+03:12:10.636 L6 Control characters are stripped out of a name ................................. PASS [name='DamaPlayer']
+03:12:10.641 L7 A finished match is recorded and written to disk .............................. PASS [returned=True wins=1 recent=1 file=True]
+03:12:10.666 L8 The best-times board keeps the 5 fastest victories, quickest first ............ PASS [count=5 first=38.9 last=61.2 sorted=True]
+03:12:10.669 L9 The same match id cannot be banked twice ...................................... PASS [refused=True wins=1 (before=1)]
+03:12:10.677 L10 An unreadable save starts empty without a crash, and is set aside ............. PASS [name=PLAYER matches=0 rejected_kept=True]
+03:12:10.690 L11 A hand-edited save whose signature does not match is rejected ................. PASS [wins=0 name=PLAYER error='the signature does not match the contents (the file was edited by hand)']
+03:12:10.699 L12 Impossible numbers in a correctly signed save are clamped, not trusted ........ PASS [wins=0 losses=0 bestStreak=9 name='Charibelle G.']
+03:12:10.710 L13 Reset erases the record on disk and returns the default name .................. PASS [returned=True file=False name=PLAYER matches=0]
+03:12:10.714 L14 An unwritable save location reports an error instead of crashing .............. PASS [saved=False error='Cannot create 'C:\Users\Zedrich\AppData\Local\Temp\Dama_week13_scratch\l14\blocked' because a file or directory with the same name already exists.']
+03:12:10.714 L15 KNOWN LIMIT: the save is tamper-evident, not encrypted.
+03:12:10.714    The HMAC key is a per-install salt stored in PlayerPrefs on the same device as the file.
+03:12:10.714    A determined local attacker can extract it and re-sign an edited save. There is no server to check against.
+03:12:10.714    Recorded as a limitation in PT5 section 5 and in README.md, not claimed as protection.
+----------------------------------------------------------------------------------------------------
+TOTAL: 14 passed, 0 failed, 1 documented known limit (L15)

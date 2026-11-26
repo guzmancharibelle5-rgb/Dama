@@ -1,0 +1,18 @@
+WEEK 13 - PROFILE SCREENSHOT RUN
+Unity 6000.6.0f1  |  2026-11-26 03:16:56 UTC
+Captured in play mode from GameCanvas/ProfilePanel driving the real save file.
+------------------------------------------------------------------------------------------
+03:16:57 Opened the profile panel. name='PLAYER' matches=0
+03:16:57 Requested E1_profile_empty.png  (name='PLAYER' matches=0)
+03:16:58 Wrote E1_profile_empty.png (65505 bytes)
+03:16:58 Seeded three matches: matches=3 wins=2 losses=1 streak=0 best=2
+03:16:58 Requested E2_profile_stats.png  (name='Charibelle G.' matches=3)
+03:16:58 Wrote E2_profile_stats.png (71493 bytes)
+03:16:58 Seeded four more victories. Board count=5: 38.9s(m6) 42.5s(m5) 47.3s(m1) 50.0s(m7) 55.0s(m2)
+03:16:58 Requested E3_leaderboard.png  (name='Charibelle G.' matches=7)
+03:16:58 Wrote E3_leaderboard.png (80424 bytes)
+03:16:58 Two-press reset executed. name=PLAYER matches=0 file=False
+03:16:58 Requested E4_after_reset.png  (name='PLAYER' matches=0)
+03:16:58 Wrote E4_after_reset.png (61338 bytes)
+03:16:58 Bank-once test after reset: wins before=0 after=1 delta=1 lastMatchId=1
+03:16:58 Capture run finished. Play mode stopping.

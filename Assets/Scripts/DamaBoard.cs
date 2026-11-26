@@ -54,7 +54,7 @@ public class DamaBoard : MonoBehaviour
     private Vector2Int chainPiece = new Vector2Int(-1, -1);
     private Coroutine promotionPulse;
 
-    private enum GameState { Ready, Playing, Paused, GameOver }
+    private enum GameState { Ready, Playing, Paused, GameOver, Profile }
 
     private GameState gameState = GameState.Ready;
     private GameObject startPanel;
@@ -64,6 +64,10 @@ public class DamaBoard : MonoBehaviour
     private Text turnText;
     private Text countsText;
     private Text winText;
+    private GameObject profilePanel;
+
+    private float matchStartUnscaled;
+    private int currentMatchId = -1;
 
     /// <summary>Assigns the sprites used when the board is built.</summary>
     public void SetSprites(Sprite square, Sprite circle)
@@ -121,6 +125,7 @@ public class DamaBoard : MonoBehaviour
         hudPanel = canvas.transform.Find("HUDPanel")?.gameObject;
         pausePanel = canvas.transform.Find("PausePanel")?.gameObject;
         winPanel = canvas.transform.Find("WinPanel")?.gameObject;
+        profilePanel = canvas.transform.Find("ProfilePanel")?.gameObject;
 
         Transform hud = canvas.transform.Find("HUDPanel");
         if (hud != null)
@@ -137,6 +142,8 @@ public class DamaBoard : MonoBehaviour
         WireButton(canvas, "PausePanel/ResumeButton", ResumeGame);
         WireButton(canvas, "PausePanel/RestartButtonPause", RestartGame);
         WireButton(canvas, "WinPanel/RestartButtonWin", RestartGame);
+        WireButton(canvas, "StartPanel/ProfileButton", ShowProfile);
+        WireButton(canvas, "ProfilePanel/BackButton", CloseProfile);
     }
 
     private static void WireButton(GameObject canvas, string path, UnityAction action)
@@ -156,9 +163,11 @@ public class DamaBoard : MonoBehaviour
         gameState = state;
 
         if (startPanel != null) startPanel.SetActive(state == GameState.Ready);
-        if (hudPanel != null) hudPanel.SetActive(state != GameState.Ready);
+        if (hudPanel != null)
+            hudPanel.SetActive(state == GameState.Playing || state == GameState.Paused || state == GameState.GameOver);
         if (pausePanel != null) pausePanel.SetActive(state == GameState.Paused);
         if (winPanel != null) winPanel.SetActive(state == GameState.GameOver);
+        if (profilePanel != null) profilePanel.SetActive(state == GameState.Profile);
     }
 
     private void RefreshUI()
@@ -175,6 +184,8 @@ public class DamaBoard : MonoBehaviour
     public void StartGame()
     {
         Time.timeScale = 1f;
+        matchStartUnscaled = Time.unscaledTime;
+        currentMatchId = PlayerProfile.LastMatchId + 1;
         ShowState(GameState.Playing);
         RefreshUI();
     }
@@ -194,6 +205,21 @@ public class DamaBoard : MonoBehaviour
         ShowState(GameState.Playing);
     }
 
+    /// <summary>Opens the profile screen from the title screen.</summary>
+    public void ShowProfile()
+    {
+        if (gameState != GameState.Ready) return;
+        Time.timeScale = 1f;
+        ShowState(GameState.Profile);
+    }
+
+    /// <summary>Returns from the profile screen to the title screen.</summary>
+    public void CloseProfile()
+    {
+        if (gameState != GameState.Profile) return;
+        ShowState(GameState.Ready);
+    }
+
     /// <summary>
     /// Single restart entry point (Pause panel and Win panel): clears the board,
     /// respawns all 24 pieces, resets turn/chain/king state and UI, unpauses.
@@ -211,6 +237,8 @@ public class DamaBoard : MonoBehaviour
         chainPiece = new Vector2Int(-1, -1);
         ClearSelection();
         currentPlayer = 1;
+        currentMatchId = PlayerProfile.LastMatchId + 1;
+        matchStartUnscaled = Time.unscaledTime;
 
         Transform piecesRoot = transform.Find("Pieces");
         if (piecesRoot != null)
@@ -248,6 +276,40 @@ public class DamaBoard : MonoBehaviour
             DeclareWinner(currentPlayer == 1 ? 2 : 1);
     }
 
+    /// <summary>Test seam (Week 13 harness): banks a match through the path the end screen uses.</summary>
+    public void BankMatchForTests(int winner)
+    {
+        BankMatch(winner);
+    }
+
+    /// <summary>
+    /// Banks the finished match exactly once. The match id is fixed at match start, so
+    /// the store's id gate and the check below both refuse a repeated end-of-match call.
+    /// </summary>
+    private void BankMatch(int winner)
+    {
+        if (currentMatchId <= 0) currentMatchId = PlayerProfile.LastMatchId + 1;
+
+        // One bank per match: the id is fixed when the match starts, so a repeated
+        // end-of-match callback is refused here instead of inflating the record.
+        if (currentMatchId <= PlayerProfile.LastMatchId)
+        {
+            Debug.Log($"[DamaBoard] Match {currentMatchId} was already banked; ignoring the repeat.");
+            return;
+        }
+
+        float seconds = Mathf.Max(0f, Time.unscaledTime - matchStartUnscaled);
+
+        if (PlayerProfile.RecordMatch(currentMatchId, winner, seconds, CountPieces(1), CountPieces(2)))
+        {
+            Debug.Log($"[DamaBoard] Banked match {currentMatchId}: winner={(winner == 1 ? "RED" : "BLUE")} seconds={seconds:0.0}");
+        }
+        else
+        {
+            Debug.LogWarning($"[DamaBoard] Match {currentMatchId} was not banked: {PlayerProfile.LastError}");
+        }
+    }
+
     private void DeclareWinner(int winner)
     {
         if (winText != null)
@@ -257,6 +319,8 @@ public class DamaBoard : MonoBehaviour
                 ? new Color(1f, 0.25f, 0.25f)
                 : new Color(0.35f, 0.55f, 1f);
         }
+
+        BankMatch(winner);
 
         Time.timeScale = 0f;
         ShowState(GameState.GameOver);

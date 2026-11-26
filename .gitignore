@@ -28,3 +28,15 @@
 
 /.mcp.json
 /dama.zip
+
+# Aura assistant working state (not part of the game)
+.Aura/
+Assets/.Aura/
+
+# Mobile build outputs - never committed
+*.apk
+*.aab
+*.unitypackage
+*.keystore
+*.jks
+crashlytics-build.properties
