@@ -67,4 +67,22 @@ The declaration is produced complete except for the signature line. Printing a s
 
 ## 5. Final confirmation
 
-This table is re-read after the documents, PDFs, deck, tag and commits exist; the PENDING rows are then moved to PASS or left BLOCKED. The final status of every row is recorded at the end of `Week_18/Evidence/final_results.md`, and the repository state at submission is recorded in `repo_state.txt` under *Final state*.
+This table is re-read after the documents, PDFs, deck, tag and commits exist; the PENDING rows are then moved to PASS or left BLOCKED. The final status of every row is recorded at the end of `Week_18/Evidence/final_results.md`, in its section 5 — see below.
+
+## 6. Re-read at the end of the week
+
+The two status columns above are headed **"status at start of week"** and are left exactly as they were written,
+because that is the whole point of writing this file first: it is the record of what was expected, not a table
+edited until it matched what happened.
+
+The re-read happened on 2026-11-26, after the documents, the eight PDFs (page-counted: 5, 5, 3, 4, 3, 14, 2 and 2
+pages), the nine captures, the tag `v1.0.0-pa2` and the push. Every row's final status is in
+`Week_18/Evidence/final_results.md` section 5. Summary of that re-read:
+
+- **PASS** — procedure rows 1, 2, 3 (documents half), 5, 6 and 8; named items: PA2, technical report, user guide, evidence portfolio, presentation, reflection.
+- **BLOCKED** — procedure row 4, and the installable build: no package exists and no device answers `adb` (§3.1).
+- **NOT SAT** — procedure row 7: the defense. `e3_record.md` is blank by design (§3.2).
+- **UNSIGNED** — the originality declaration: produced complete except the signature line (§3.3).
+
+No row was moved to PASS because it "probably would have" — the blocked and unsigned rows stay exactly as they
+started, with their reasons.

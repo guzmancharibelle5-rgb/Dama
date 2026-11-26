@@ -92,3 +92,59 @@ Three faults, all in the harness rather than in the game, all disclosed rather t
   entry points; no human playtest session has been run, in this week or any other.
 - **The defense was not sat.** `e3_record.md` is blank by design and `defense_prep.md` holds pointers,
   not answers.
+
+## 5. Final status of the pre-submission checklist
+
+This is the re-read of `final_pre_submission_checklist.md` promised at the top of that file: its two status
+columns are headed "status at start of week" and are left untouched, and every row's final status is here.
+
+### 5.1 The module's eight Week 18 procedure rows
+
+| # | Requirement | Final status | What proves it |
+|---|---|---|---|
+| 1 | Final pre-submission checklist covering repository, build, documentation, evidence, credits, licences and disclosure | **PASS** | `final_pre_submission_checklist.md`, written before any other artefact; `secret_scan_week18.md` for the hygiene rows |
+| 2 | Final tagged repository version, with tag and commit recorded | **PASS** | tag `v1.0.0-pa2` on `308c8ed`; code `b8aca5c`, documentation `2c5b275`; `repo_state.txt` §3, §6, §7 |
+| 3 | Installable build, source/repository access, technical report, user guide, evidence portfolio, presentation, signed declaration | **PASS for the documents and repository access; BLOCKED for the installable build** | eight PDFs, page-counted at 5, 5, 3, 4, 3, 14, 2, 2; `repo_state.txt` §7 records `b79848f..308c8ed main -> main`; the build is BLOCKED per `release_record.md` §3 |
+| 4 | Install or launch the submitted build from the same package the instructor holds | **BLOCKED** | no package exists and `adb devices` returns no serial — `final_pre_submission_checklist.md` §3.1 |
+| 5 | Concise presentation of theme, player, mechanics, architecture, services, security, usability, testing, optimisation, limitations | **PASS** | `Guzman_Charibelle_PA2_Presentation.pdf` — 14 slides, every page 960x540 pt; outline in `…_Presentation_Speaker_Notes.pdf` |
+| 6 | Demonstrate onboarding, core loop, theme mechanics, settings, data, error handling, completion | **PASS** | `D1`–`D9`, nine distinct SHA-256 values, `demo_rehearsal.txt` |
+| 7 | Individual technical defense naming files, classes, commits, test records and profiling evidence | **NOT SAT** | `defense_prep.md` (49 questions, pointers, no answers); `e3_record.md` blank |
+| 8 | Brief reflection: strongest result, most important limitation, next improvement | **PASS** | `Guzman_Charibelle_Week18_Reflection.pdf` — 2 pages |
+
+### 5.2 The named submission items
+
+| Item | Final status | Note |
+|---|---|---|
+| Installable build | **BLOCKED** | three independent reasons, `release_record.md` §3; four steps that would close it, §5 |
+| `Guzman_Charibelle_PA2.pdf` | **PASS** | 5 pages |
+| `Guzman_Charibelle_PA2_Technical_Report.pdf` | **PASS** | 5 pages |
+| `Guzman_Charibelle_PA2_User_Guide.pdf` | **PASS** | 3 pages |
+| `Guzman_Charibelle_PA2_Evidence_Portfolio.pdf` | **PASS** | 4 pages |
+| Originality declaration | **UNSIGNED** | complete except the signature line, which is deliberately blank; an unsigned copy is not a signed declaration |
+| Presentation + speaker notes | **PASS** | 14 slides at 16:9 and 2 pages of outline; a PDF deck, not a `.pptx` |
+| `Guzman_Charibelle_Week18_Reflection.pdf` | **PASS** | 2 pages |
+
+### 5.3 How the page counts were taken
+
+The counts above are the `/Count` values inside each printed file, read with `findstr`, not estimates:
+
+```
+== Guzman_Charibelle_PA2.pdf                        /Count 5
+== Guzman_Charibelle_PA2_Evidence_Portfolio.pdf     /Count 4
+== Guzman_Charibelle_PA2_Originality_Declaration.pdf /Count 3
+== Guzman_Charibelle_PA2_Presentation.pdf           /Count 8, /Count 6, /Count 14   (page tree: two nodes of 8 and 6, root 14)
+== Guzman_Charibelle_PA2_Presentation_Speaker_Notes.pdf /Count 2
+== Guzman_Charibelle_PA2_Technical_Report.pdf       /Count 5
+== Guzman_Charibelle_PA2_User_Guide.pdf             /Count 3
+== Guzman_Charibelle_Week18_Reflection.pdf          /Count 2
+```
+
+The deck's geometry was checked in the same way rather than assumed from the CSS: all fourteen pages carry
+`/MediaBox [0 0 960 540]`, which is 16:9. Every other document carries `/MediaBox [0 0 594.96 841.92]`, A4 portrait,
+five pages of it for the PA2 document and so on.
+
+### 5.4 What is still open, and it is not a row that can be closed by writing
+
+Three rows stay as they were on the first day of the week: the installable build (BLOCKED on hardware and on
+signing), the originality declaration (UNSIGNED, a hand signature), and the defense (NOT SAT, a supervised viva).
+Nothing in this package moves them, and no later edit to this file will.

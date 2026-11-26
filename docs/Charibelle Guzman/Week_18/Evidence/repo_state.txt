@@ -100,8 +100,26 @@ b79848f Initial Unity project commit
 ====================================================================================================
 7. PUSH ATTEMPT
 ====================================================================================================
-  The attempt and its exact output are appended below, after the attempt was made. This section was
-  empty when the rest of this file was committed, and that is deliberate: the record of a network
-  operation cannot exist before the operation.
+  Command, run in E:\Damath Charry\dama with terminal prompts disabled so a credential prompt could not
+  hang the run:
 
-  (appended after the attempt - see the end of this file)
+      set GIT_TERMINAL_PROMPT=0 && git push origin main --tags
+
+  Exact output:
+
+      To https://github.com/guzmancharibelle5-rgb/Dama.git
+         b79848f..308c8ed  main -> main
+       * [new tag]         v1.0.0-pa2 -> v1.0.0-pa2
+       * [new tag]         week16-final -> week16-final
+
+  Read plainly: it succeeded. origin/main moved from b79848f - the single initial-import commit described in
+  section 5 - to 308c8ed, so every commit from Week 13 to Week 18 is now on the remote, and both tags
+  exist there. The module's "repository access" row is therefore satisfied by a repository that actually
+  holds the work, not by a local copy plus an intention.
+
+  One note on this record itself. The paragraph you are reading is committed one commit AFTER 308c8ed,
+  because the output of a push cannot sit inside the tree that push sends. Local main is therefore one
+  commit ahead of origin/main at the moment it is written, and that commit carries this section and the
+  checklist's final re-read (`final_results.md` section 5). It was pushed with a follow-up
+  `git push origin main` immediately afterwards, so `git log --oneline origin/main -1` names it. The tag
+  v1.0.0-pa2 stays on 308c8ed, which is the tree that was pushed and the tree the submission names.
