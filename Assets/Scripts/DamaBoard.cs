@@ -65,6 +65,8 @@ public class DamaBoard : MonoBehaviour
     private Text countsText;
     private Text winText;
     private GameObject profilePanel;
+    private Text soundButtonLabel;
+    private GameFeedback feedback;
 
     private float matchStartUnscaled;
     private int currentMatchId = -1;
@@ -144,6 +146,15 @@ public class DamaBoard : MonoBehaviour
         WireButton(canvas, "WinPanel/RestartButtonWin", RestartGame);
         WireButton(canvas, "StartPanel/ProfileButton", ShowProfile);
         WireButton(canvas, "ProfilePanel/BackButton", CloseProfile);
+        WireButton(canvas, "PausePanel/SoundButton", ToggleSound);
+
+        Transform sound = canvas.transform.Find("PausePanel/SoundButton");
+        if (sound != null) soundButtonLabel = sound.Find("Text")?.GetComponent<Text>();
+
+        feedback = GetComponent<GameFeedback>();
+        if (feedback == null) feedback = FindFirstObjectByType<GameFeedback>();
+        if (feedback == null)
+            Debug.LogWarning("[DamaBoard] No GameFeedback in the scene; the game will stay silent.");
     }
 
     private static void WireButton(GameObject canvas, string path, UnityAction action)
@@ -195,6 +206,7 @@ public class DamaBoard : MonoBehaviour
     {
         if (gameState != GameState.Playing) return;
         Time.timeScale = 0f;
+        RefreshSoundLabel();
         ShowState(GameState.Paused);
     }
 
@@ -218,6 +230,35 @@ public class DamaBoard : MonoBehaviour
     {
         if (gameState != GameState.Profile) return;
         ShowState(GameState.Ready);
+    }
+
+    /// <summary>Pause panel SOUND button: flips feedback and renames itself in words, not a tint.</summary>
+    public void ToggleSound()
+    {
+        if (feedback == null) feedback = GetComponent<GameFeedback>();
+        if (feedback == null)
+        {
+            Debug.LogWarning("[DamaBoard] SOUND was pressed but there is no GameFeedback in the scene.");
+            return;
+        }
+
+        feedback.ToggleSound();
+        RefreshSoundLabel();
+    }
+
+    private void RefreshSoundLabel()
+    {
+        if (soundButtonLabel == null)
+        {
+            GameObject canvas = GameObject.Find("GameCanvas");
+            Transform sound = canvas != null ? canvas.transform.Find("PausePanel/SoundButton") : null;
+            if (sound != null) soundButtonLabel = sound.Find("Text")?.GetComponent<Text>();
+        }
+
+        if (soundButtonLabel == null) return;
+
+        bool on = feedback == null || feedback.SoundEnabled;
+        soundButtonLabel.text = GameFeedback.SoundLabel(on);
     }
 
     /// <summary>
@@ -319,6 +360,11 @@ public class DamaBoard : MonoBehaviour
                 ? new Color(1f, 0.25f, 0.25f)
                 : new Color(0.35f, 0.55f, 1f);
         }
+
+        bool playerWon = (winner == PlayerProfile.PlayerSide);
+        if (feedback != null) feedback.PlayResult(playerWon);
+        Debug.Log($"[Feedback] {(playerWon ? "win" : "lose")} - winner {(winner == 1 ? "RED" : "BLUE")}, " +
+                  $"your side {(PlayerProfile.PlayerSide == 1 ? "RED" : "BLUE")} -> {(playerWon ? "Win" : "Lose")}");
 
         BankMatch(winner);
 
@@ -424,6 +470,9 @@ public class DamaBoard : MonoBehaviour
     private void PromoteToDama(int x, int y)
     {
         isKing[x, y] = true;
+
+        if (feedback != null) feedback.PlayCrown();
+        Debug.Log($"[Feedback] crown - a man reached the back row at ({x},{y}) -> Crown");
 
         SpriteRenderer pieceRenderer = pieceRenderers[x, y];
         if (pieceRenderer == null) return;
@@ -574,6 +623,14 @@ public class DamaBoard : MonoBehaviour
             pieceRenderers[jumped.x, jumped.y] = null;
             grid[jumped.x, jumped.y] = Cell.Empty;
             isKing[jumped.x, jumped.y] = false;
+
+            if (feedback != null) feedback.PlayCapture();
+            Debug.Log($"[Feedback] capture - {(player == 1 ? "RED" : "BLUE")} jumped the piece at ({jumped.x},{jumped.y}) -> Capture");
+        }
+        else
+        {
+            if (feedback != null) feedback.PlayMove();
+            Debug.Log($"[Feedback] move - {(player == 1 ? "RED" : "BLUE")} ({from.x},{from.y}) to ({to.x},{to.y}) -> Move");
         }
 
         // Promotion is checked after every landing, including mid-chain jumps.

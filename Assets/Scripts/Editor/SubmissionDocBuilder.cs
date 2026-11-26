@@ -7,77 +7,136 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Week 13 submission document builder.
+/// Submission document builder for every week folder under docs/Charibelle Guzman.
 ///
-/// Menu: Tools > Dama > Week 13 > 3. Build Submission HTML
+/// Menu: Tools > Dama > Submission > Build Week 13 HTML
+///       Tools > Dama > Submission > Build Week 14 HTML
+///       Tools > Dama > Submission > Build All HTML
 ///
-/// Converts the three markdown documents in docs/Charibelle Guzman/Week_13/others/
-/// into print-ready HTML beside them. The HTML is generated from the .md rather than
-/// written by hand, so the two can never disagree, and the print stylesheet lives in
-/// one place. The PDFs at the week's root are then printed from that HTML.
+/// Converts the markdown documents in a week's others/ folder into print-ready HTML beside them.
+/// The HTML is generated from the .md rather than written by hand, so the two can never disagree,
+/// and the print stylesheet lives in one place. The PDFs at each week's root are then printed from
+/// that HTML.
 ///
-/// Supports the small markdown subset the documents actually use: ATX headings,
-/// paragraphs, tables, bullet and numbered lists, fenced code, inline code, bold,
-/// italic, horizontal rules and a figure image.
+/// This replaces Week13DocBuilder.cs, which hardcoded Week_13 and its three document names. The
+/// converter itself is unchanged apart from blockquote support, so Week 13's output is identical.
+///
+/// Supports the small markdown subset the documents actually use: ATX headings, paragraphs,
+/// tables, bullet and numbered lists, fenced code, blockquotes, inline code, bold, italic,
+/// horizontal rules and a figure image.
 /// </summary>
-public static class Week13DocBuilder
+public static class SubmissionDocBuilder
 {
-    private const string Menu = "Tools/Dama/Week 13/3. Build Submission HTML";
-
-    private static readonly string[] Documents =
+    private sealed class WeekDocuments
     {
-        "Guzman_Charibelle_SA5",
-        "Guzman_Charibelle_PT5",
-        "Guzman_Charibelle_Week13_Reflection"
+        public string Folder;
+        public string[] Documents;
+    }
+
+    private static readonly WeekDocuments[] Weeks =
+    {
+        new WeekDocuments
+        {
+            Folder = "Week_13",
+            Documents = new[]
+            {
+                "Guzman_Charibelle_SA5",
+                "Guzman_Charibelle_PT5",
+                "Guzman_Charibelle_Week13_Reflection"
+            }
+        },
+        new WeekDocuments
+        {
+            Folder = "Week_14",
+            Documents = new[]
+            {
+                "Guzman_Charibelle_SA6",
+                "Guzman_Charibelle_PT6",
+                "Guzman_Charibelle_Week14_Reflection"
+            }
+        }
     };
 
     private static string ProjectRoot => Directory.GetParent(Application.dataPath).FullName;
 
-    public static string OthersDir =>
-        Path.Combine(ProjectRoot, "docs", "Charibelle Guzman", "Week_13", "others");
+    private static string DocsRoot =>
+        Path.Combine(ProjectRoot, "docs", "Charibelle Guzman");
 
-    [MenuItem(Menu)]
+    public static string OthersDirFor(string weekFolder) =>
+        Path.Combine(DocsRoot, weekFolder, "others");
+
+    [MenuItem("Tools/Dama/Submission/Build Week 13 HTML", false, 10)]
+    public static void BuildWeek13() => Build("Week_13");
+
+    [MenuItem("Tools/Dama/Submission/Build Week 14 HTML", false, 11)]
+    public static void BuildWeek14() => Build("Week_14");
+
+    [MenuItem("Tools/Dama/Submission/Build All HTML", false, 20)]
     public static void BuildAll()
     {
-        if (!Directory.Exists(OthersDir))
+        int total = 0;
+
+        foreach (WeekDocuments week in Weeks) total += Build(week.Folder);
+
+        AssetDatabase.Refresh();
+        Debug.Log($"[SubmissionDocs] {total} document(s) built across {Weeks.Length} week(s).");
+    }
+
+    private static int Build(string weekFolder)
+    {
+        WeekDocuments week = Array.Find(Weeks, w => w.Folder == weekFolder);
+
+        if (week == null)
         {
-            Debug.LogError($"[Week13Docs] Folder not found: {OthersDir}");
-            return;
+            Debug.LogError($"[SubmissionDocs] No document list registered for '{weekFolder}'.");
+            return 0;
+        }
+
+        string othersDir = OthersDirFor(weekFolder);
+
+        if (!Directory.Exists(othersDir))
+        {
+            Debug.LogError($"[SubmissionDocs] Folder not found: {othersDir}");
+            return 0;
         }
 
         int written = 0;
 
-        foreach (string name in Documents)
+        foreach (string name in week.Documents)
         {
-            string source = Path.Combine(OthersDir, name + ".md");
+            string source = Path.Combine(othersDir, name + ".md");
+
             if (!File.Exists(source))
             {
-                Debug.LogWarning($"[Week13Docs] Missing source, skipped: {source}");
+                Debug.LogWarning($"[SubmissionDocs] Missing source, skipped: {source}");
                 continue;
             }
 
-            string html = Convert(File.ReadAllText(source, Encoding.UTF8));
-            string target = Path.Combine(OthersDir, name + ".html");
+            string html = Convert(File.ReadAllText(source, Encoding.UTF8), "Dama - " + weekFolder);
+            string target = Path.Combine(othersDir, name + ".html");
+
             File.WriteAllText(target, html, new UTF8Encoding(false));
-            Debug.Log($"[Week13Docs] Wrote {target}");
+            Debug.Log($"[SubmissionDocs] Wrote {target}");
             written++;
         }
 
         AssetDatabase.Refresh();
-        Debug.Log($"[Week13Docs] {written} document(s) built in {OthersDir}");
+        Debug.Log($"[SubmissionDocs] {written} document(s) built in {othersDir}");
+
+        return written;
     }
 
     // =====================================================================
     // Markdown -> HTML
     // =====================================================================
 
-    private static string Convert(string markdown)
+    private static string Convert(string markdown, string fallbackTitle)
     {
         string[] lines = markdown.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
 
         StringBuilder body = new StringBuilder();
         List<string> paragraph = new List<string>();
-        string title = "Dama - Week 13";
+        string title = fallbackTitle;
         bool inHeaderBlock = true;   // the **Key:** value block before the first rule
         int index = 0;
 
@@ -123,6 +182,27 @@ public static class Week13DocBuilder
                 continue;
             }
 
+            // Blockquote - consecutive '>' lines become one quoted paragraph
+            if (trimmed.StartsWith(">"))
+            {
+                FlushParagraph();
+                StringBuilder quoted = new StringBuilder();
+                while (index < lines.Length && lines[index].Trim().StartsWith(">"))
+                {
+                    string text = lines[index].Trim();
+                    text = text.StartsWith(">") ? text.Substring(1).Trim() : text;
+                    if (text.Length > 0)
+                    {
+                        if (quoted.Length > 0) quoted.Append(' ');
+                        quoted.Append(text);
+                    }
+                    index++;
+                }
+                if (quoted.Length > 0)
+                    body.AppendLine("<blockquote><p>" + Inline(quoted.ToString()) + "</p></blockquote>");
+                continue;
+            }
+
             // Horizontal rule
             if (trimmed == "---" || trimmed == "***")
             {
@@ -140,7 +220,7 @@ public static class Week13DocBuilder
                 int level = 0;
                 while (level < trimmed.Length && trimmed[level] == '#') level++;
                 string text = trimmed.Substring(level).Trim();
-                if (level == 1 && title == "Dama - Week 13") title = text;
+                if (level == 1 && title == fallbackTitle) title = text;
                 int clamped = Mathf.Clamp(level, 1, 4);
                 body.AppendLine($"<h{clamped}>{Inline(text)}</h{clamped}>");
                 index++;
@@ -358,6 +438,16 @@ hr {
 
 ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
 li { margin-bottom: 3pt; }
+
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
 
 code {
   font-family: 'Consolas', 'Cascadia Mono', monospace;

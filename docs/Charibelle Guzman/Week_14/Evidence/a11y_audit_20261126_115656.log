@@ -1,0 +1,87 @@
+DAMA - WEEK 14 ACCESSIBILITY AUDIT (WCAG 2.2 subset)
+Game: Dama  |  Theme: Philippine Games and Sports
+Student: Charibelle Guzman (BSIT-4)
+Harness: Assets/Scripts/Editor/A11yAudit.cs
+Scene: DamaGame.unity   Unity: 6000.6.0f1   Run at: 2026-11-26 03:56:56 UTC
+Run label: BASELINE   (the first run writes a11y_baseline.log, later runs write a11y_after.log)
+Canvas: GameCanvas   CanvasScaler: Scale With Screen Size, reference 1280x720, match 0.50
+------------------------------------------------------------------------------------------------------------
+CHECKS AND THRESHOLDS
+  C  contrast      4.5:1 for normal text, 3.0:1 for large text (>=28 px, or >=24 px bold).
+                   Measured against the nearest ancestor Image with alpha >= 0.50, composited over black,
+                   which is the darkest plausible backdrop. For light text that is the most favourable case.
+  L  label fit     rect.height >= fontSize x 1.12. Split into 'clipped' (overflow truncates: the label can vanish)
+                   and 'spills' (overflow allowed: it draws outside its box). Clipped fails, spills warns.
+  T  touch target  96 x 96 canvas px, for every Button and InputField.
+     Derivation, stated rather than assumed: on a 1080p landscape phone (1920x1080) the scaler above gives a uniform
+     scale of 1.50 (1920/1280 = 1080/720 = 1.5). Android's 48 dp minimum touch target at xxhdpi (3.0 density) is
+     144 physical px, and 144 / 1.5 = 96 canvas px. This is a canvas-px measurement against a reference resolution on
+     an assumed phone class - NOT a measurement taken with a ruler on a handset.
+  Not measurable   a label with no opaque backdrop (drawn over the 3D board) has no contrast ratio. It is reported as
+                   not measurable rather than given an invented number.
+------------------------------------------------------------------------------------------------------------
+LABELS (23)
+C  PASS  StartPanel/TitleText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=96
+L  PASS  StartPanel/TitleText  height=150.4 need=107.5 size=96
+C  PASS  StartPanel/InstructionsText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=30
+L  PASS  StartPanel/InstructionsText  height=150.4 need=33.6 size=30
+C  PASS  StartPanel/StartButton/Text  ratio=4.94:1 need=4.5 fg=#FFFFFF bg=#D92626 size=14
+L  PASS  StartPanel/StartButton/Text  height=100.0 need=15.7 size=14
+C  PASS  StartPanel/ProfileButton/Text  ratio=6.91:1 need=3.0 fg=#FFFFFF bg=#335999 size=30
+L  PASS  StartPanel/ProfileButton/Text  height=84.0 need=33.6 size=30
+C  NOT MEASURABLE  HUDPanel/TurnText  fg=#FFFFFF on the board (no opaque backdrop)
+L  PASS  HUDPanel/TurnText  height=54.0 need=38.1 size=34
+C  NOT MEASURABLE  HUDPanel/CountsText  fg=#FFFFFF on the board (no opaque backdrop)
+L  PASS  HUDPanel/CountsText  height=46.0 need=31.4 size=28
+C  PASS  HUDPanel/PauseButton/Text  ratio=12.44:1 need=4.5 fg=#FFFFFF bg=#333340 size=14
+L  PASS  HUDPanel/PauseButton/Text  height=64.0 need=15.7 size=14
+C  PASS  PausePanel/PauseTitleText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=80
+L  PASS  PausePanel/PauseTitleText  height=120.0 need=89.6 size=80
+C  FAIL  PausePanel/ResumeButton/Text  ratio=4.27:1 need=4.5 fg=#FFFFFF bg=#268C40 size=14
+L  PASS  PausePanel/ResumeButton/Text  height=96.0 need=15.7 size=14
+C  FAIL  PausePanel/RestartButtonPause/Text  ratio=2.72:1 need=4.5 fg=#FFFFFF bg=#D98C1A size=14
+L  PASS  PausePanel/RestartButtonPause/Text  height=96.0 need=15.7 size=14
+C  PASS  WinPanel/WinText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=110
+L  PASS  WinPanel/WinText  height=136.8 need=123.2 size=110
+C  FAIL  WinPanel/RestartButtonWin/Text  ratio=2.72:1 need=4.5 fg=#FFFFFF bg=#D98C1A size=14
+L  PASS  WinPanel/RestartButtonWin/Text  height=96.0 need=15.7 size=14
+C  PASS  ProfilePanel/TitleText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=44
+L  PASS  ProfilePanel/TitleText  height=56.0 need=49.3 size=44
+C  PASS  ProfilePanel/NameLabel  ratio=14.98:1 need=4.5 fg=#D9D9E6 bg=#000000 size=22
+L  PASS  ProfilePanel/NameLabel  height=26.0 need=24.6 size=22
+C  PASS  ProfilePanel/NameInput/Text  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=30
+L  PASS  ProfilePanel/NameInput/Text  height=48.0 need=33.6 size=30
+C  PASS  ProfilePanel/NameInput/Placeholder  ratio=3.01:1 need=3.0 fg=#FFFFFF bg=#000000 size=28
+L  PASS  ProfilePanel/NameInput/Placeholder  height=48.0 need=31.4 size=28
+C  PASS  ProfilePanel/SideButton/SideLabel  ratio=6.92:1 need=4.5 fg=#FFFFFF bg=#40598C size=22
+L  PASS  ProfilePanel/SideButton/SideLabel  height=52.0 need=24.6 size=22
+C  PASS  ProfilePanel/RecordText  ratio=18.80:1 need=4.5 fg=#F2F2F2 bg=#000000 size=22
+L  PASS  ProfilePanel/RecordText  height=64.0 need=24.6 size=22
+C  PASS  ProfilePanel/BestText  ratio=15.06:1 need=4.5 fg=#F2D98C bg=#000000 size=20
+L  PASS  ProfilePanel/BestText  height=110.0 need=22.4 size=20
+C  PASS  ProfilePanel/StatusText  ratio=12.86:1 need=4.5 fg=#BFCCD9 bg=#000000 size=17
+L  PASS  ProfilePanel/StatusText  height=40.0 need=19.0 size=17
+C  PASS  ProfilePanel/SaveButton/Text  ratio=5.88:1 need=3.0 fg=#FFFFFF bg=#267333 size=24
+L  PASS  ProfilePanel/SaveButton/Text  height=54.0 need=26.9 size=24
+C  PASS  ProfilePanel/ResetButton/ResetLabel  ratio=8.24:1 need=4.5 fg=#FFFFFF bg=#8C2E2E size=20
+L  PASS  ProfilePanel/ResetButton/ResetLabel  height=54.0 need=22.4 size=20
+C  PASS  ProfilePanel/BackButton/Text  ratio=9.24:1 need=4.5 fg=#FFFFFF bg=#404759 size=22
+L  PASS  ProfilePanel/BackButton/Text  height=46.0 need=24.6 size=22
+
+TOUCH TARGETS (10 buttons, 1 input fields, floor 96 x 96 canvas px)
+T  PASS  StartPanel/StartButton  320x100 px
+T  FAIL  StartPanel/ProfileButton  320x84 px  short by 12 px of height
+T  FAIL  HUDPanel/PauseButton  170x64 px  short by 32 px of height
+T  PASS  PausePanel/ResumeButton  320x96 px
+T  PASS  PausePanel/RestartButtonPause  320x96 px
+T  PASS  WinPanel/RestartButtonWin  320x96 px
+T  FAIL  ProfilePanel/SideButton  260x52 px  short by 44 px of height
+T  FAIL  ProfilePanel/SaveButton  200x54 px  short by 42 px of height
+T  FAIL  ProfilePanel/ResetButton  200x54 px  short by 42 px of height
+T  FAIL  ProfilePanel/BackButton  200x46 px  short by 50 px of height
+T  FAIL  ProfilePanel/NameInput  420x56 px  short by 40 px of height
+
+------------------------------------------------------------------------------------------------------------
+TOTAL: 45 passed, 10 failed, 0 warnings, 2 not measurable
+Failures above are measurable and fixable; warnings and not-measurable rows are not claimed as passes.
+an accessible game, and it cannot read a label that is the right size and still says nothing.

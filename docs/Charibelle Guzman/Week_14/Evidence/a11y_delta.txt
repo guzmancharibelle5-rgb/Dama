@@ -1,0 +1,54 @@
+DAMA - WEEK 14 ACCESSIBILITY DELTA
+Generated mechanically by pairing each FAIL line in a11y_baseline.log with the same check code
+and control path in a11y_after.log. Nothing in this file is typed by hand.
+Source files: a11y_baseline.log (87 lines), a11y_after.log (90 lines)
+----------------------------------------------------------------------------------------------------
+C  PausePanel/ResumeButton/Text
+   before: ratio=4.27:1 need=4.5 fg=#FFFFFF bg=#268C40 size=14
+   after : ratio=4.73:1 need=4.5 fg=#FFFFFF bg=#24843C size=14
+
+C  PausePanel/RestartButtonPause/Text
+   before: ratio=2.72:1 need=4.5 fg=#FFFFFF bg=#D98C1A size=14
+   after : ratio=4.71:1 need=4.5 fg=#FFFFFF bg=#A06713 size=14
+
+C  WinPanel/RestartButtonWin/Text
+   before: ratio=2.72:1 need=4.5 fg=#FFFFFF bg=#D98C1A size=14
+   after : ratio=4.71:1 need=4.5 fg=#FFFFFF bg=#A06713 size=14
+
+T  StartPanel/ProfileButton
+   before: 320x84 px  short by 12 px of height
+   after : 320x96 px
+
+T  HUDPanel/PauseButton
+   before: 170x64 px  short by 32 px of height
+   after : 170x96 px
+
+T  ProfilePanel/SideButton
+   before: 260x52 px  short by 44 px of height
+   after : 260x96 px
+
+T  ProfilePanel/SaveButton
+   before: 200x54 px  short by 42 px of height
+   after : 200x96 px
+
+T  ProfilePanel/ResetButton
+   before: 200x54 px  short by 42 px of height
+   after : 200x96 px
+
+T  ProfilePanel/BackButton
+   before: 200x46 px  short by 50 px of height
+   after : 200x96 px
+
+T  ProfilePanel/NameInput
+   before: 420x56 px  short by 40 px of height
+   after : 420x96 px
+
+----------------------------------------------------------------------------------------------------
+Baseline failures: 10   paired with a measured after value: 10   unmatched: 0
+before  TOTAL: 45 passed, 10 failed, 0 warnings, 2 not measurable
+after   TOTAL: 58 passed, 0 failed, 0 warnings, 2 not measurable
+
+Reading the pass count: 10 failures became 10 passes, and the new SOUND button adds 3 checks
+of its own (contrast, label fit, touch), so the passed total rises by 13 rather than 10.
+The 2 'not measurable' rows are the HUD labels drawn straight over the 3D board. They are the
+same 2 rows in both logs, and they are not counted as passes in either.

@@ -1,0 +1,23 @@
+DAMA - WEEK 14 FEEDBACK TRANSCRIPT
+Captured in play mode by Tools > Dama > Week 14 > 3. Capture Week 14 Evidence.
+These lines are the [Feedback] messages the running game produced, in order, with no editing.
+Run at: 2026-11-26 04:10:11 UTC   Scene: DamaGame.unity
+------------------------------------------------------------------------------------------------
+[Feedback] ready - sound ON, clips move=ok capture=ok crown=ok win=ok lose=ok, haptics=on on WindowsEditor
+[Feedback] move -> Dama_Move
+[Feedback] move - RED (1,2) to (0,3) -> Move
+[Feedback] capture -> Dama_Capture
+[Feedback] haptic skipped - Handheld.Vibrate is a no-op on this platform.
+[Feedback] capture - RED jumped the piece at (2,2) -> Capture
+[Feedback] move -> Dama_Move
+[Feedback] move - RED (3,6) to (2,7) -> Move
+[Feedback] crown -> Dama_Crown
+[Feedback] crown - a man reached the back row at (2,7) -> Crown
+[Feedback] win -> Dama_Win
+[Feedback] win - winner RED, your side RED -> Win
+[Feedback] lose -> Dama_Lose
+[Feedback] lose - winner BLUE, your side RED -> Lose
+------------------------------------------------------------------------------------------------
+Kinds fired: move, capture, crown, win, lose (5 of 5)
+Haptics: Handheld.Vibrate is a no-op in the Editor, and this transcript was captured in the Editor.
+A buzz therefore cannot be claimed from this file, only from a build on a handset.
