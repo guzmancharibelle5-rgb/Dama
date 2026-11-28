@@ -43,8 +43,22 @@ documents cite those hashes.
   To https://github.com/guzmancharibelle5-rgb/Dama.git
    + 38e8bb0...cb2e3e7 main -> main (forced update)
 
+A second forced update was needed the same day, to take the tooling back out of the branch:
+
+  git push --force-with-lease origin main
+
+  To https://github.com/guzmancharibelle5-rgb/Dama.git
+   + 662d7bc...3f7689b main -> main (forced update)
+
+It happened because restoring this working environment's stashed tooling with
+`git checkout stash@{0} -- Assets/Plugins/NuGet` writes to the index as well as to the working tree,
+so the next commit was made with fifteen DLL and json files inside it; `git show --stat` showed them,
+the commit was taken apart (`git reset --soft HEAD~1`, `git restore --staged Assets/Plugins/NuGet`)
+and re-made with only this document, and the branch was force-pushed again. `662d7bc` therefore does
+not exist either. The tooling files are back to working-tree-only and are not in the branch.
+
 ====================================================================================================
-3. WHAT THE REMOTE NOW HOLDS
+3. WHAT THE REMOTE HELD AFTER THAT FORCE-PUSH
 ====================================================================================================
 
   git rev-parse HEAD
