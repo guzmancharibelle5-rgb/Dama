@@ -1,48 +1,81 @@
 DAMA - POST-SUBMISSION REPOSITORY STATE (2026-11-28)
-Student : Charibelle Guzman (BSIT-4)
+Student : Charibelle Guzman (BSIT-4) - GitHub account guzmancharibelle5-rgb
 Project : Dama - MOBILE DEV 002, Module 5
-Rule    : every line below is the unedited output of the command that precedes it.
+Rule    : every block below is the unedited output of the command above it.
 
-This file is the record of the push that carried the two post-submission commits (REQ-23…REQ-30:
-side choice and turned board, PLAYER vs AI, the draw rule, UNDO, HINT and the move animation). It
-sits beside `repo_state.txt`, which is the Week 18 submission record and is left exactly as it was.
+This file records the push that carried the post-submission work (REQ-23…REQ-30: side choice and
+turned board, PLAYER vs AI, the draw rule, UNDO, HINT and the move animation), the correction of the
+commit identity it was first made under, and what was left out of the push on purpose. It sits beside
+`repo_state.txt`, which is the Week 18 submission record and is left exactly as it was.
 
 ====================================================================================================
-1. PUSH
+1. WHY THE COMMITS WERE REWRITTEN
 ====================================================================================================
 
-  git push origin main
+The first four post-submission commits were authored by the machine's default git identity,
+`Charry <zedrichzaivan753@gmail.com>`, which is not the account this repository belongs to. The work
+was committed again under the correct identity. Only those four commits were rewritten; the
+twenty-four Week 13-18 commits keep their hashes and their original authorship, because the submitted
+documents cite those hashes.
+
+  git config --local user.name
+  guzmancharibelle5-rgb
+
+  git config --local user.email
+  guzmancharibelle5@gmail.com
+
+  git filter-branch -f --env-filter "GIT_AUTHOR_NAME='guzmancharibelle5-rgb'; GIT_AUTHOR_EMAIL='guzmancharibelle5@gmail.com'; GIT_COMMITTER_NAME='guzmancharibelle5-rgb'; GIT_COMMITTER_EMAIL='guzmancharibelle5@gmail.com'" 370ccf2..HEAD
+  ...
+  Ref 'refs/heads/main' was rewritten
+
+  git log -4 --format="%h | %an <%ae> | %cn <%ce> | %s"
+  779c1c4 | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | Post-submission revision: side choice, turned board, PLAYER vs AI, draw rule, UNDO, HINT and the move animation
+  d56e406 | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | Documentation: REQ-23 to REQ-30 added to the PA2 report and evidence portfolio, both user guides reworded, HTML and PDFs rebuilt
+  c108f7d | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | Post-submission revision: record the code and documentation commit ids in the README
+  cb2e3e7 | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | Post-submission revision: record the push output and what was deliberately left out of it
+
+====================================================================================================
+2. THE FORCE-PUSH
+====================================================================================================
+
+  git push --force-with-lease origin main
 
   To https://github.com/guzmancharibelle5-rgb/Dama.git
-     370ccf2..86cc143  main -> main
+   + 38e8bb0...cb2e3e7 main -> main (forced update)
 
 ====================================================================================================
-2. WHAT THE REMOTE NOW HOLDS
+3. WHAT THE REMOTE NOW HOLDS
 ====================================================================================================
-
-  git log --oneline -3
-
-  86cc143 Post-submission revision: record the code and documentation commit ids in the README
-  08ac115 Documentation: REQ-23 to REQ-30 added to the PA2 report and evidence portfolio, both user guides reworded, HTML and PDFs rebuilt
-  cc11d3b Post-submission revision: side choice, turned board, PLAYER vs AI, draw rule, UNDO, HINT and the move animation
 
   git rev-parse HEAD
-  86cc143a01e25a686200deb118592e0175221752
+  cb2e3e754ae9aff02ba8ec6fba3a8db91824feb2
 
   git rev-parse refs/remotes/origin/main
-  86cc143a01e25a686200deb118592e0175221752
+  cb2e3e754ae9aff02ba8ec6fba3a8db91824feb2
 
   git rev-list --count HEAD
   28
 
-The two hashes are identical, so `main` and `origin/main` are the same commit and nothing local is
-unpushed.
+The two hashes are identical, so at that moment `main` and `origin/main` were the same commit and nothing local was unpushed. Both commands were run immediately after the force-push. This record was then committed on top of `cb2e3e7` and fast-forwarded, so the tip is now one commit later than the hash quoted above, and `git rev-list --count HEAD` reads 29 rather than 28; the four rewritten commits, their messages and their authorship are unchanged. The four commits under the corrected identity are `779c1c4`, `d56e406`, `c108f7d` and
+`cb2e3e7`; this record of them lands as the commit after them, which is why it cannot name its own
+hash.
 
 ====================================================================================================
-3. WHAT WAS DELIBERATELY NOT PUSHED
+4. THE SUPERSEDED FIRST PUSH, KEPT IN THE RECORD
 ====================================================================================================
 
-  git status --short     -> 26 entries, and 24 of them are the assistant's own tooling
+  git push origin main          (2026-11-28, before the identity was corrected)
+
+  To https://github.com/guzmancharibelle5-rgb/Dama.git
+     370ccf2..86cc143  main -> main
+
+Those four commits (`cc11d3b`, `08ac115`, `86cc143`, `38e8bb0`) no longer exist: the rewrite replaced
+them with the four hashes in section 1. Section 4 is kept rather than deleted because a record that
+drops the mistakes it corrected is not a record.
+
+====================================================================================================
+5. WHAT WAS DELIBERATELY NOT PUSHED
+====================================================================================================
 
   Assets/Plugins/NuGet/        15 modified: .nuget-installed.json and 14 MCP/.NET DLLs
   Assets/Plugins/NuGet/Rql.*   6 new files: Rql.Contracts, Rql.Execution, Rql.Parser (.dll + .meta)
@@ -50,18 +83,14 @@ unpushed.
   Packages/manifest.json       the package set the assistant changed
   Packages/packages-lock.json  the lock that follows it
 
-  the other two entries are this file and the re-run transcript named in section 4
-
-None of these is game code, a document, an asset or a setting the build depends on. They are left
-out on purpose: this repository is a submission, not the working environment it was written in, and
-"only the important things" was the instruction. `git status` therefore is not empty, and that is a
-decision rather than an oversight.
+None of these is game code, a document, an asset or a setting the build depends on. They are left out
+on purpose: this repository is a submission, not the working environment it was written in. `git
+status` therefore is not empty, and that is a decision rather than an oversight.
 
 ====================================================================================================
-4. ONE REWRITE BY THE VERIFICATION PASS, DISCLOSED
+6. ONE REWRITE BY THE VERIFICATION PASS, DISCLOSED
 ====================================================================================================
 
 The verification pass re-ran `Tools > Dama > Week 20 > 2. Run Feature Checks` at 2026-11-28 12:30,
 which rewrote `postweek18_features.log`: its "run at" line and per-case timings moved, and the four
-PASS lines and every measured value are unchanged. The rewritten transcript is what this commit
-carries. Nothing else in the tree was touched by that pass.
+PASS lines and every measured value are unchanged. Nothing else in the tree was touched by that pass.
