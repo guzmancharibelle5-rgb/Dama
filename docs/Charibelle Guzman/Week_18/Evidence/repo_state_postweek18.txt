@@ -119,10 +119,22 @@ holds; `v1.0.0-pa2` marks the Week 18 closing commit (`308c8ed` -> `6ae3644`).
 5. THE FORCE-PUSH
 ====================================================================================================
 
-The push of `main` and both tags runs after this record is committed, because the branch has to carry
-the remapped documents before it is published. Its exact output, and the `git rev-parse`,
-`git ls-remote` and `git log` lines that follow it, are appended to this section by that push's own
-record commit. Until then this section is deliberately empty.
+The push of `main` and both tags ran on 2026-11-28, after the commit that carries the remapped
+documents. Its output, verbatim:
+
+  git push --force-with-lease origin main
+  To https://github.com/guzmancharibelle5-rgb/Dama.git
+   + 650108c...a29f735 main -> main (forced update)
+
+  git push --force origin refs/tags/v1.0.0-pa2 refs/tags/week16-final
+  To https://github.com/guzmancharibelle5-rgb/Dama.git
+   + 9c35331...2b71676 v1.0.0-pa2 -> v1.0.0-pa2 (forced update)
+   + 15d736b...490c919 week16-final -> week16-final (forced update)
+
+`a29f735` is the documentation commit: the re-authored thirty-two commits plus the package fix, the
+remapped documents and the reprinted HTML and PDFs. The commit that appends this section is the tip
+after that push - one commit later again, because a file cannot cite its own hash - and it is pushed
+on top of it.
 
 ====================================================================================================
 6. WHAT WAS DELIBERATELY NOT PUSHED
@@ -164,6 +176,13 @@ installed at once. The Console carried one compile error and eight GUID-conflict
 `com.adjoint.editor` was removed from `Packages/manifest.json`; nobody in `Assets/` referenced either
 namespace, and `com.ramenvr.aura-unity` depends on neither. `check_compile_errors` then reported
 `No compile errors`.
+
+The committed `Packages/manifest.json` and `Packages/packages-lock.json` also no longer list
+`com.ivanmurzak.unity.mcp`: the entry was already gone from the working copy when the manifest was
+re-resolved after the Adjoint removal, and the package is no longer in `Library/PackageCache`. The
+scoped registry that supplied it (`package.openupm.com`) is still configured, and nothing under
+`Assets/` referenced it either. The three plugins the project now installs are MCP for Unity,
+`com.ramenvr.aura-unity` and `com.ramenvr.autopilot`.
 
 ====================================================================================================
 8. ONE REWRITE BY THE VERIFICATION PASS, DISCLOSED
