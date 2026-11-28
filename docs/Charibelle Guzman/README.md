@@ -152,7 +152,7 @@ submission where marking costs nothing.
 
 ## Week 17 at a glance
 
-The build was frozen first (`git tag -a week16-final` on `337b436`), then given an identity it cannot lie about:
+The build was frozen first (`git tag -a week16-final` on `4cce8c0`), then given an identity it cannot lie about:
 `bundleVersion` went `1.0` → **`1.0.0-rc1`** and the Android version code `1` → **`2`**, while `productName` and
 `companyName` were left alone on purpose - on Android the save file lives under a path built from them, so moving
 them would look exactly like a wipe. Both on-screen version strings are **derived** from `Application.version` by
@@ -166,8 +166,8 @@ beneath, and both new panels are state-driven, so they cannot leak into a match.
 
 | Item | Where |
 |---|---|
-| Code commit | `10006a4` - "Week 17: release identity 1.0.0-rc1, HOW TO PLAY / CREDITS / EXIT panels, release checks and captures" |
-| Documentation commit | `183b603` - "Week 17: PT7 package, release evidence, six captures and printed PDFs" |
+| Code commit | `b8e69b9` - "Week 17: release identity 1.0.0-rc1, HOW TO PLAY / CREDITS / EXIT panels, release checks and captures" |
+| Documentation commit | `d2d3ad8` - "Week 17: PT7 package, release evidence, six captures and printed PDFs" |
 | Release identity | `Week_17/Evidence/build_record.txt` - `1.0.0-rc1` / code 2, `productName` `dama` and `companyName` `DefaultCompany` unchanged |
 | Release checks | `Week_17/Evidence/test_logs_release/` - **5 passed, 0 failed, 0 console errors** (`TC-REL-01…05`) |
 | Regression at `Week_17` | `Week_17/Evidence/test_logs_regression/` - **27 passed, 0 failed, 1 blocked** (`TC-COMPAT-01`), 0 console errors |
@@ -226,8 +226,8 @@ Week 15 suite still reports 27 passed / 0 failed / 1 blocked with the accessibil
 | Item | Value |
 |---|---|
 | Features | `Week16Profile` (one scenario, three runs), allocation-free move generation, piece pooling, `Week15Checks` regression seam, `A11yAudit.RunWeek16()` |
-| Code commits | `f9503e8` (harness + baseline), `d6c4ba7` (optimization 1), `3b396b9` (optimization 2 + harness seams) |
-| Documentation commit | `87aea89` - "Week 16 SA6 analysis, AS3 performance record, reflection and printed PDFs" |
+| Code commits | `aacfc7f` (harness + baseline), `356e99f` (optimization 1), `bb7e7f3` (optimization 2 + harness seams) |
+| Documentation commit | `e5b6c1a` - "Week 16 SA6 analysis, AS3 performance record, reflection and printed PDFs" |
 | Targets | `Week_16/Evidence/targets.md` - PT-1 frame 33.3 ms, PT-2 0 B per turn, PT-3 restart under 16.7 ms, PT-4 record draw calls. Written **before** the baseline |
 | Baseline | `Week_16/Evidence/profile_baseline/` - 2.062 ms mean, legality scan **6,975.9 B**, restart 5,701.2 B, worst restart frame 5.296 ms, hash `0xE432E83D` |
 | After optimization 1 | `Week_16/Evidence/profile_after_alloc/` - legality scan **below the resolution of the method** (-0.1 B +/- 0.1), restart still ~5.6 KB |
@@ -278,8 +278,8 @@ by a passing neighbour.
 | Item | Value |
 |---|---|
 | Features | `Week15Checks` (the 28 cases), `Week15Fixes` (the idempotent repair), `Week15Captures` (E1-E4), `A11yAudit` (extended to five check kinds) |
-| Code commit | `207376b` - "Week 15 AS3: test harness, defect fixes and play-mode captures" |
-| Documentation commit | `3f4bb95` - "Week 15 AS3 milestone, reflection, test logs, defect log and printed PDFs" |
+| Code commit | `fdb3cc1` - "Week 15 AS3: test harness, defect fixes and play-mode captures" |
+| Documentation commit | `3761802` - "Week 15 AS3 milestone, reflection, test logs, defect log and printed PDFs" |
 | Baseline | `Week_15/Evidence/test_logs_baseline/` - 22 passed, **5 failed**, 1 blocked, 0 console errors |
 | Final | `Week_15/Evidence/test_logs_final/` - **27 passed, 0 failed**, 1 blocked, 0 console errors |
 | Defects | `Week_15/Evidence/defect_log.md` - DEF-15-01 (S2), DEF-15-02/03/04 (S3), **all closed**, 0 open |
@@ -330,8 +330,8 @@ sound for the first time: five clips, a haptic on a capture, and a `SOUND: ON/OF
 | Item | Value |
 |---|---|
 | Features | `A11yAudit` (the measurement), `AccessibilityBuild` (the repair, idempotent), `GameFeedback` (five clips, one haptic, one toggle), `Week14Checks` (the captures) |
-| Code commit | `1998b0c` - "Week 14 PT6: accessibility audit, repair pass, audio feedback and play-mode evidence" |
-| Documentation commit | `58976b7` - "Week 14 SA6, PT6, reflection, playtest kit and the printed PDFs" |
+| Code commit | `1e27cc2` - "Week 14 PT6: accessibility audit, repair pass, audio feedback and play-mode evidence" |
+| Documentation commit | `8adbce3` - "Week 14 SA6, PT6, reflection, playtest kit and the printed PDFs" |
 | Audit before | `Week_14/Evidence/a11y_baseline.log` - 45 passed, **10 failed**, 2 not measurable |
 | Audit after | `Week_14/Evidence/a11y_after.log` - 58 passed, **0 failed**, 2 not measurable |
 | Delta | `Week_14/Evidence/a11y_delta.txt` - 10 of 10 failures paired, 0 unmatched |
@@ -380,8 +380,8 @@ signed JSON file inside the app's own sandbox and survives closing and reopening
 | Item | Value |
 |---|---|
 | Feature | `PlayerProfile` (signed save), `ProfilePanel` (the screen), `DamaBoard` (banks a finished match) |
-| Code commit | `b6b477b` - "Week 13 PT5: signed player profile, PT5 data checks and play-mode evidence" |
-| Documentation commit | `a215f34` - SA5, PT5, the reflection, their HTML and PDFs |
+| Code commit | `b9a612d` - "Week 13 PT5: signed player profile, PT5 data checks and play-mode evidence" |
+| Documentation commit | `0f01608` - SA5, PT5, the reflection, their HTML and PDFs |
 | Checks | `Week_13/Evidence/pt5_checks.log` - 14 assertions passed, 0 failed, 1 documented known limit |
 | Captures | `Week_13/Evidence/E1..E4` - empty profile, record, best-times board, after reset |
 | Re-running everything | `Week_13/Evidence/HOW_TO_RERUN.txt` |
@@ -431,7 +431,7 @@ discover.
 | **No APK was produced this week** either | Week 13, 14 and 15 all rest on the Editor in play mode, captured from the real scene and the real save file. The Android build settings are applied and recorded in each week's `build_and_commit.txt`, but "the game runs in the Editor" and "the game was installed on a phone" are different claims, and only the first is made here |
 | The profile panel has **never run on a physical phone** | All captures are at the Editor's 1151x584 game view. A phone's aspect ratio and touch precision are untested |
 | The UI's earlier scaler note was wrong | Week 13's README said the UI had **no** `CanvasScaler`. It has one: the Week 14 audit header reads `Scale With Screen Size, reference 1280x720, match 0.50`. That scaler is what makes the touch floor definable at all - 48 dp at xxhdpi is 144 physical px, and 144 / 1.50 = 96 canvas px - and it is why the audit measures canvas pixels against a stated reference instead of raw pixels. When it was added is not recorded; this row replaces the old claim rather than dating it |
-| Commits are still **per week, not per step** | Week 13 said splitting commits per working step would start in Week 14, and it did not: Weeks 14 and 15 both landed as one code commit and one documentation commit. In Week 15 the cost is visible - the harness that produced the baseline and the harness that produced the final log are the same file, but the fixes it measured landed in the same commit as the fixes' own tests, so the history cannot show the baseline run happening first. The test logs can, and they do. Admitted rather than quietly dropped, in the Week 15 reflection section 4. **Week 16 fixed this for itself**: the harness and its baseline, the first optimization and the second optimization each landed as its own code commit (`f9503e8`, `d6c4ba7`, `3b396b9`), so the history can show the baseline run happening before either change |
+| Commits are still **per week, not per step** | Week 13 said splitting commits per working step would start in Week 14, and it did not: Weeks 14 and 15 both landed as one code commit and one documentation commit. In Week 15 the cost is visible - the harness that produced the baseline and the harness that produced the final log are the same file, but the fixes it measured landed in the same commit as the fixes' own tests, so the history cannot show the baseline run happening first. The test logs can, and they do. Admitted rather than quietly dropped, in the Week 15 reflection section 4. **Week 16 fixed this for itself**: the harness and its baseline, the first optimization and the second optimization each landed as its own code commit (`aacfc7f`, `356e99f`, `bb7e7f3`), so the history can show the baseline run happening before either change |
 | The project has **domain reload on play-mode entry disabled** | Fast iteration, but Editor-time statics survive into play mode. Every harness run resets the store to the default data directory first |
 | Every Week 16 performance number is an **Editor number** | There is still no APK and no handset, so nothing is known about a phone's frame time, battery, thermals or GPU cost. The Editor also adds roughly 2 ms of its own work to every frame, and its draw-call counters read 0 for every sample while the scene was drawing - recorded as `NOT MEASURABLE`, never as 0. `Week_16/Evidence/method.md` names all of this as a limit of the evidence |
 | The optimizations **cannot be shown to improve frame time** | The frame was 2.062 ms mean with 0 of 34,550 frames over a 33.3 ms budget **before** any change, and the idle mean moved with the frame mean between runs, so frame differences come from the Editor session, not the code. What is proven is that the per-turn allocation fell from 6,975.9 B to 0.1 B +/- 0.1 and that a restart's allocation fell from 5,596 B to at most ~1.7 KB. The frame claim is not made because it cannot be supported |
@@ -479,23 +479,23 @@ machine pre-test everywhere it is mentioned, and it is never referred to as a pl
 | Item | Value |
 |---|---|
 | Branch | `main` |
-| Code commit (Week 13) | `b6b477b` |
-| Documentation commit (Week 13) | `a215f34` |
-| Code commit (Week 14) | `1998b0c` |
-| Documentation commit (Week 14) | `58976b7` |
-| Code commit (Week 15) | `207376b` |
-| Documentation commit (Week 15) | `3f4bb95` |
-| Code commits (Week 16) | `f9503e8` (profiling harness + baseline), `d6c4ba7` (optimization 1), `3b396b9` (optimization 2) |
-| Documentation commit (Week 16) | `87aea89` |
-| Code commit (Week 17) | `10006a4` |
-| Documentation commit (Week 17) | `183b603` |
-| Code commit (Week 18) | `b8aca5c` - demonstration harness, the Week 18 seams in `A11yAudit` / `Week15Checks` / `Week17Checks`, and the `Week_18` entry in `SubmissionDocBuilder` |
-| Documentation commit (Week 18) | `2c5b275` - the eight documents and their HTML, the eight PDFs, the nine captures, the evidence files and this README |
-| Code commit (post-submission revision) | `779c1c4` - side choice and turned board, PLAYER vs AI, the draw rule, UNDO, HINT, the move animation and `Dama_Draw.mp3` |
-| Documentation commit (post-submission revision) | `d56e406` - `REQ-23…REQ-30` in the PA2 report and evidence portfolio, both user guides reworded, HTML and four PDFs rebuilt, the four audit logs and the AI transcript |
-| Author of the post-submission commits | `guzmancharibelle5-rgb <guzmancharibelle5@gmail.com>`. The four commits were first made under this machine's default identity, `Charry <zedrichzaivan753@gmail.com>`, and were rewritten under the repository's own account before the final push; the Week 13-18 commits keep their hashes and their original authorship, because the submitted documents cite them |
-| Submission tag | `v1.0.0-pa2` - annotated, on the Week 18 closing commit; `Week_18/Evidence/repo_state.txt` records `git rev-list -n1 v1.0.0-pa2` and the push attempt's exact output |
-| Remote state | `origin/main` carries the whole project, both tags and the Week 18 closing records; the two push outputs and their exact wording are quoted in `Week_18/Evidence/repo_state.txt` §7. From 2026-11-28 it also carries the post-submission commits: the first push printed `370ccf2..86cc143  main -> main`, those four commits were then rewritten under the repository's own account, and `git push --force-with-lease origin main` printed `+ 38e8bb0...cb2e3e7 main -> main (forced update)`. `git rev-parse HEAD` and `git rev-parse refs/remotes/origin/main` both returned `cb2e3e754ae9aff02ba8ec6fba3a8db91824feb2` immediately after that force-push; the records of it were then committed on top, and one of them was itself force-pushed to take fifteen tooling files back out of the branch, so the tip is later than `cb2e3e7` - `Week_18/Evidence/repo_state_postweek18.txt` §2 quotes both forced-update outputs |
+| Code commit (Week 13) | `b9a612d` |
+| Documentation commit (Week 13) | `0f01608` |
+| Code commit (Week 14) | `1e27cc2` |
+| Documentation commit (Week 14) | `8adbce3` |
+| Code commit (Week 15) | `fdb3cc1` |
+| Documentation commit (Week 15) | `3761802` |
+| Code commits (Week 16) | `aacfc7f` (profiling harness + baseline), `356e99f` (optimization 1), `bb7e7f3` (optimization 2) |
+| Documentation commit (Week 16) | `e5b6c1a` |
+| Code commit (Week 17) | `b8e69b9` |
+| Documentation commit (Week 17) | `d2d3ad8` |
+| Code commit (Week 18) | `2577a33` - demonstration harness, the Week 18 seams in `A11yAudit` / `Week15Checks` / `Week17Checks`, and the `Week_18` entry in `SubmissionDocBuilder` |
+| Documentation commit (Week 18) | `9a28ab9` - the eight documents and their HTML, the eight PDFs, the nine captures, the evidence files and this README |
+| Code commit (post-submission revision) | `c4e3f18` - side choice and turned board, PLAYER vs AI, the draw rule, UNDO, HINT, the move animation and `Dama_Draw.mp3` |
+| Documentation commit (post-submission revision) | `08a2152` - `REQ-23…REQ-30` in the PA2 report and evidence portfolio, both user guides reworded, HTML and four PDFs rebuilt, the four audit logs and the AI transcript |
+| Author of every commit | `guzmancharibelle5-rgb <guzmancharibelle5@gmail.com>`. The machine's default identity was `Charry <zedrichzaivan753@gmail.com>`, which GitHub renders as another account; on 2026-11-28 the whole history was rewritten under the repository's own account - all thirty-two commits at once, with every tree, message and author and committer date preserved - and every hash these documents cite was remapped (table in `Week_18/Evidence/repo_state_postweek18.txt` §3) |
+| Submission tag | `v1.0.0-pa2` - annotated, on the Week 18 closing commit, deleted and recreated on the rewritten commit on 2026-11-28 with its original tagger date; `week16-final` likewise. `Week_18/Evidence/repo_state.txt` records the original capture, `repo_state_postweek18.txt` §4 the recreated tags |
+| Remote state | `origin/main` carries the whole project, both tags and the Week 18 closing records. The pushes of 2026-11-28 are recorded verbatim in `Week_18/Evidence/repo_state_postweek18.txt`: the first push of the post-submission work, the two forced updates that corrected its identity, and the final force-push that re-authored all thirty-two commits and moved both tags. `git rev-parse HEAD` and `git rev-parse refs/remotes/origin/main` agree; the values are in §5 of that file |
 | Build target | Android, ARM64 only, IL2CPP, minimum API 26, `com.defaultcompany.dama` |
 | Scenes in build | `DamaGame.unity` (index 0), `SampleScene.unity` (disabled) |
 

@@ -12,9 +12,9 @@ values it was computed from.
 
 | run | folder | written | code under test |
 |---|---|---|---|
-| baseline | `profile_baseline/` | 2026-11-26 14:20:15 | commit `f9503e8` |
-| after opt 1 | `profile_after_alloc/` | 2026-11-26 14:27:06 | commit `d6c4ba7` |
-| after opt 2 | `profile_after_pool/` | 2026-11-26 14:36:21 | working tree on top of `d6c4ba7` |
+| baseline | `profile_baseline/` | 2026-11-26 14:20:15 | commit `aacfc7f` |
+| after opt 1 | `profile_after_alloc/` | 2026-11-26 14:27:06 | commit `356e99f` |
+| after opt 2 | `profile_after_pool/` | 2026-11-26 14:36:21 | working tree on top of `356e99f` |
 
 One earlier `after-optimization-2` run (14:33:27) was **discarded**: its numbers were fine but the
 harness's RESTART paragraph still described the pre-optimization code, so the file contradicted

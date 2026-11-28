@@ -6,10 +6,10 @@
 **Course:** MOBILE DEV 002 Advanced Mobile Application Development, Module 5
 **Theme:** Philippine Games and Sports
 **Week:** 15 - Game Testing, Defect Correction and Quality Evidence
-**Build:** `dama-editor-w15-rc1` - scene `DamaGame.unity` at commit `207376b`, executed in the Unity Editor in play mode
+**Build:** `dama-editor-w15-rc1` - scene `DamaGame.unity` at commit `fdb3cc1`, executed in the Unity Editor in play mode
 **Platform range:** Android 8.0 (API 26) and above, ARM64, IL2CPP, `com.defaultcompany.dama`
 **Engine:** Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), C#
-**Repository:** local Git repository, branch `main`, code commit `207376b`
+**Repository:** local Git repository, branch `main`, code commit `fdb3cc1`
 **Components under test:** `Assets/Scripts/Editor/Week15Checks.cs`, `Assets/Scripts/Editor/A11yAudit.cs`,
 `Assets/Scripts/Editor/Week15Fixes.cs`, `Assets/Scripts/Editor/Week15Captures.cs`, `Assets/Scripts/DamaBoard.cs`,
 `Assets/Scripts/Core/PlayerProfile.cs`, `Assets/Scenes/DamaGame.unity`
@@ -24,7 +24,7 @@ commit and the way it was executed, because a test result that does not name its
 | | |
 |---|---|
 | Build identifier | `dama-editor-w15-rc1` |
-| Source revision | `207376b` ("Week 15 AS3: test harness, defect fixes and play-mode captures") |
+| Source revision | `fdb3cc1` ("Week 15 AS3: test harness, defect fixes and play-mode captures") |
 | Scene | `Assets/Scenes/DamaGame.unity`, build index 0 |
 | Execution mode | Unity Editor 6000.6.0f1, play mode, game view 1151 x 584 |
 | Save location | `C:/Users/Zedrich/AppData/LocalLow/DefaultCompany/dama/Dama/profile.json` |
@@ -313,7 +313,7 @@ harness run against it - the harness is Editor-only today, so the honest next st
   and every measurement was taken in the Editor at one resolution. Week 16 measures performance; it must not be
   read as the week compatibility or on-device behaviour was proven.
 
-The honest one-line verdict: **the Editor build of commit `207376b` passes its own written acceptance criteria, and
+The honest one-line verdict: **the Editor build of commit `fdb3cc1` passes its own written acceptance criteria, and
 nothing in this record claims it was tested on a phone.**
 
 ---
@@ -400,5 +400,5 @@ gaps. Those are the three places where the record could have been made to look b
 | Defect record with id, severity, reproduction, expected, actual, evidence, status, commit | `Evidence/defect_log.md` (DEF-15-01 to DEF-15-04) |
 | Correct high-priority defects, rerun the failed cases, regress the affected features | Sections 7 and 8: baseline to final on the same cases, plus the idempotence proof and the paired audit |
 | Acceptance summary: passed, failed, blocked, deferred, and whether the build is ready for optimization | Section 11 |
-| The tested build and commit identified | Section 1: `dama-editor-w15-rc1`, commit `207376b` |
+| The tested build and commit identified | Section 1: `dama-editor-w15-rc1`, commit `fdb3cc1` |
 | Completion checkpoint: no unresolved defect causing data loss, blocking the loop, exposing another player's data, or repeatedly crashing | Section 3, CC-1 to CC-4, all PASS, with the cases named |

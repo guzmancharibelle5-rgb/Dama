@@ -9,7 +9,7 @@
 **Release identity:** `1.0.0-rc1`, version code `2`, application id `com.defaultcompany.dama`
 **Engine:** Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), Input System 1.20.0
 **Platform range:** Android 8.0 (API 26) and above, ARM64, IL2CPP
-**Repository:** local Git repository, branch `main`, tree frozen at tag `week16-final` (`337b436`)
+**Repository:** local Git repository, branch `main`, tree frozen at tag `week16-final` (`4cce8c0`)
 **Produced:** 2026-11-26
 
 ---

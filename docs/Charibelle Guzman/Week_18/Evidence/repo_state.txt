@@ -5,6 +5,13 @@ Captured : 2026-11-26, on E:\Damath Charry\dama, at the code commit named in sec
 Rule     : every line below is the unedited output of the command that precedes it, or a restatement of it.
            Nothing here is reconstructed from memory.
 
+NOTE ADDED 2026-11-28 - not part of the capture. Everything below is the Week 18 record exactly as it
+was captured on 2026-11-26, and the commit hashes in it are the ones that existed then. On 2026-11-28
+the whole history was re-authored under the repository's own GitHub account, which changed every hash;
+the old-to-new mapping, the recreated tags and the current remote state are in
+`repo_state_postweek18.txt` sections 3 to 5. Nothing inside the captured sections was edited to hide
+that, which is why the hashes read below no longer resolve.
+
 ====================================================================================================
 1. COMMANDS USED
 ====================================================================================================

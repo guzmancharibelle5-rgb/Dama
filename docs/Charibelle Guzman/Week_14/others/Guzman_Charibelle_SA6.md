@@ -7,7 +7,7 @@
 **Theme:** Philippine Games and Sports
 **Week:** 14 - Game Usability, Accessibility and Playtesting
 **Build:** Dama MVP (Android target: ARM64 / IL2CPP, `com.defaultcompany.dama`, minimum API 26)
-**Repository:** local Git repository, branch `main`, code commit `1998b0c`
+**Repository:** local Git repository, branch `main`, code commit `1e27cc2`
 **Engine:** Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer)
 
 ---

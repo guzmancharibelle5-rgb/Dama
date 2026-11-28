@@ -58,6 +58,16 @@ hr {
 ul, ol { margin: 0 0 8pt 0; padding-left: 17pt; }
 li { margin-bottom: 3pt; }
 
+blockquote {
+  margin: 0 0 9pt 0;
+  padding: 6pt 10pt;
+  border-left: 2.5pt solid #4a6b8a;
+  background: #f5f7f9;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0; }
+
 code {
   font-family: 'Consolas', 'Cascadia Mono', monospace;
   font-size: 9pt;
@@ -144,7 +154,7 @@ strong { color: #0d1116; }
 <p>I would not have caught either by playing the game. Both produced output that looked right at a glance, and both were caught by a check whose only job was to compare a value with what it should have been.</p>
 <hr/>
 <h2>4. What I would do differently, and what carries forward</h2>
-<p><strong>Commit while building, not after.</strong> The work is committed (<code>b6b477b</code>) and the hash is in the documents, but it is one large commit made after all the iterations, so the history does not show the double-bank bug being found or the panel being rebuilt when it overflowed a 584-pixel canvas. Committing after each working step would make the record reviewable instead of merely present.</p>
+<p><strong>Commit while building, not after.</strong> The work is committed (<code>b9a612d</code>) and the hash is in the documents, but it is one large commit made after all the iterations, so the history does not show the double-bank bug being found or the panel being rebuilt when it overflowed a 584-pixel canvas. Committing after each working step would make the record reviewable instead of merely present.</p>
 <p><strong>Deciding the failure cases before writing the feature.</strong> Quarantine, the atomic <code>.tmp</code> replace and the refusal of a blank name all came out of the check list rather than my first draft. SA5 section 8 is now a table of failures, and writing that table first would have saved a revision.</p>
 <p><strong>The shape of a good claim carries forward.</strong> The strongest line here is <code>L12 IMPOSSIBLE NUMBERS IN A CORRECTLY SIGNED SAVE ARE CLAMPED, NOT TRUSTED [wins=0 losses=0 bestStreak=9]</code></p>
 <ul>

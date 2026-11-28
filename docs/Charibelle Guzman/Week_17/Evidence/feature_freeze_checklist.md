@@ -4,7 +4,7 @@
 **Student:** Charibelle Guzman · BSIT-4 · MOBILE DEV 002, Module 5, Week 17
 **Engine:** Unity 6000.6.0f1, URP 17.6.0 (2D Renderer), Input System 1.20.0
 **Scene:** `Assets/Scenes/DamaGame.unity` (build index 0)
-**Frozen:** commit **`337b436`**, annotated tag **`week16-final`**, frozen 2026-11-26
+**Frozen:** commit **`4cce8c0`**, annotated tag **`week16-final`**, frozen 2026-11-26
 **Written:** before any Week 17 change was made, so that every later change can be checked against
 this file rather than against memory.
 

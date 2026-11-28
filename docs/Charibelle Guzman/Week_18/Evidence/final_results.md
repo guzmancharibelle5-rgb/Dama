@@ -1,7 +1,7 @@
 # Week 18 — final results
 
 **Student:** Charibelle Guzman · BSIT-4 · MOBILE DEV 002, Module 5, Week 18 (PA2)
-**Tree under test:** `main` at `01d58df` plus the Week 18 tooling (`Week18Captures.cs`, the Week 18 seams in `A11yAudit` / `Week15Checks` / `Week17Checks`)
+**Tree under test:** `main` at `a3da06c` plus the Week 18 tooling (`Week18Captures.cs`, the Week 18 seams in `A11yAudit` / `Week15Checks` / `Week17Checks`)
 **Version under test:** `1.0.0-rc1`, version code `2`, application id `com.defaultcompany.dama`
 **Environment:** Unity 6000.6.0f1, URP 17.6.0 (2D), WindowsEditor, game view 1151x584 — **Editor only. No APK was built and no handset was attached** (`TC-COMPAT-01`: BLOCKED).
 
@@ -124,8 +124,8 @@ columns are headed "status at start of week" and are left untouched, and every r
 | # | Requirement | Final status | What proves it |
 |---|---|---|---|
 | 1 | Final pre-submission checklist covering repository, build, documentation, evidence, credits, licences and disclosure | **PASS** | `final_pre_submission_checklist.md`, written before any other artefact; `secret_scan_week18.md` for the hygiene rows |
-| 2 | Final tagged repository version, with tag and commit recorded | **PASS** | tag `v1.0.0-pa2` on `308c8ed`; code `b8aca5c`, documentation `2c5b275`; `repo_state.txt` §3, §6, §7 |
-| 3 | Installable build, source/repository access, technical report, user guide, evidence portfolio, presentation, signed declaration | **PASS for the documents and repository access; BLOCKED for the installable build** | eight PDFs, page-counted at 5, 5, 3, 4, 3, 14, 2, 2; `repo_state.txt` §7 records `b79848f..308c8ed main -> main`; the build is BLOCKED per `release_record.md` §3 |
+| 2 | Final tagged repository version, with tag and commit recorded | **PASS** | tag `v1.0.0-pa2` on `6ae3644`; code `2577a33`, documentation `9a28ab9`; `repo_state.txt` §3, §6, §7 |
+| 3 | Installable build, source/repository access, technical report, user guide, evidence portfolio, presentation, signed declaration | **PASS for the documents and repository access; BLOCKED for the installable build** | eight PDFs, page-counted at 5, 5, 3, 4, 3, 14, 2, 2; `repo_state.txt` §7 records `c059844..6ae3644 main -> main`; the build is BLOCKED per `release_record.md` §3 |
 | 4 | Install or launch the submitted build from the same package the instructor holds | **BLOCKED** | no package exists and `adb devices` returns no serial — `final_pre_submission_checklist.md` §3.1 |
 | 5 | Concise presentation of theme, player, mechanics, architecture, services, security, usability, testing, optimisation, limitations | **PASS** | `Guzman_Charibelle_PA2_Presentation.pdf` — 14 slides, every page 960x540 pt; outline in `…_Presentation_Speaker_Notes.pdf` |
 | 6 | Demonstrate onboarding, core loop, theme mechanics, settings, data, error handling, completion | **PASS** | `D1`–`D9`, nine distinct SHA-256 values, `demo_rehearsal.txt` |

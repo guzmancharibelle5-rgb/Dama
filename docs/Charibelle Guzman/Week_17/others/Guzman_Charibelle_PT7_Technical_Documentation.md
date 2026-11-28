@@ -7,7 +7,7 @@
 **Release identity:** `1.0.0-rc1`, version code `2`, `com.defaultcompany.dama`
 **Engine:** Unity 6000.6.0f1 · URP 17.6.0 (2D Renderer) · Input System 1.20.0 · uGUI
 **Scene:** `Assets/Scenes/DamaGame.unity`, build index 0
-**Tree:** `week16-final` (`337b436`) plus the Week 17 change set
+**Tree:** `week16-final` (`4cce8c0`) plus the Week 17 change set
 **Produced:** 2026-11-26
 
 ---

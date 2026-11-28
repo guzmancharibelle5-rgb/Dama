@@ -3,20 +3,23 @@ Student : Charibelle Guzman (BSIT-4) - GitHub account guzmancharibelle5-rgb
 Project : Dama - MOBILE DEV 002, Module 5
 Rule    : every block below is the unedited output of the command above it.
 
-This file records the push that carried the post-submission work (REQ-23…REQ-30: side choice and
-turned board, PLAYER vs AI, the draw rule, UNDO, HINT and the move animation), the correction of the
-commit identity it was first made under, and what was left out of the push on purpose. It sits beside
-`repo_state.txt`, which is the Week 18 submission record and is left exactly as it was.
+This file records three things the Week 18 record could not: the post-submission work
+(REQ-23…REQ-30), the rewrite that put all thirty-two commits under the repository's own GitHub
+account, and the package fix that followed from a compile error. It sits beside `repo_state.txt`,
+which is the Week 18 submission record and is left as it was written, with one dated annotation.
 
 ====================================================================================================
-1. WHY THE COMMITS WERE REWRITTEN
+1. WHY THE WHOLE HISTORY WAS REWRITTEN, NOT JUST THE NEW COMMITS
 ====================================================================================================
 
-The first four post-submission commits were authored by the machine's default git identity,
-`Charry <zedrichzaivan753@gmail.com>`, which is not the account this repository belongs to. The work
-was committed again under the correct identity. Only those four commits were rewritten; the
-twenty-four Week 13-18 commits keep their hashes and their original authorship, because the submitted
-documents cite those hashes.
+`git log` showed every commit authored by `Charry <zedrichzaivan753@gmail.com>`, which GitHub renders
+as the account `zedrichzaivan753-coder`. That is not the account this repository belongs to. GitHub
+attributes a commit by its author email, so the only way to change the displayed account is to change
+the commits themselves.
+
+An earlier round the same day rewrote only the four post-submission commits. That left the commit list
+still showing the other account, so the whole history was rewritten, author and committer dates
+preserved so that every dated claim in the documents stays true.
 
   git config --local user.name
   guzmancharibelle5-rgb
@@ -24,85 +27,146 @@ documents cite those hashes.
   git config --local user.email
   guzmancharibelle5@gmail.com
 
-  git filter-branch -f --env-filter "GIT_AUTHOR_NAME='guzmancharibelle5-rgb'; GIT_AUTHOR_EMAIL='guzmancharibelle5@gmail.com'; GIT_COMMITTER_NAME='guzmancharibelle5-rgb'; GIT_COMMITTER_EMAIL='guzmancharibelle5@gmail.com'" 370ccf2..HEAD
+====================================================================================================
+2. THE REWRITE
+====================================================================================================
+
+  git filter-branch -f --env-filter "GIT_AUTHOR_NAME='guzmancharibelle5-rgb'; GIT_AUTHOR_EMAIL='guzmancharibelle5@gmail.com'; GIT_COMMITTER_NAME='guzmancharibelle5-rgb'; GIT_COMMITTER_EMAIL='guzmancharibelle5@gmail.com'" main
+  Rewrite b79848f34b44ea1822e2d4543bb35a3c74b1e143 (1/32) ...
   ...
+  Rewrite 650108ca25a813e20b77fc4816ef30f48c5fbf29 (29/32) (6 seconds passed, remaining 0 predicted)
   Ref 'refs/heads/main' was rewritten
 
-  git log -4 --format="%h | %an <%ae> | %cn <%ce> | %s"
-  779c1c4 | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | Post-submission revision: side choice, turned board, PLAYER vs AI, draw rule, UNDO, HINT and the move animation
-  d56e406 | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | Documentation: REQ-23 to REQ-30 added to the PA2 report and evidence portfolio, both user guides reworded, HTML and PDFs rebuilt
-  c108f7d | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | Post-submission revision: record the code and documentation commit ids in the README
-  cb2e3e7 | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | Post-submission revision: record the push output and what was deliberately left out of it
-
-====================================================================================================
-2. THE FORCE-PUSH
-====================================================================================================
-
-  git push --force-with-lease origin main
-
-  To https://github.com/guzmancharibelle5-rgb/Dama.git
-   + 38e8bb0...cb2e3e7 main -> main (forced update)
-
-A second forced update was needed the same day, to take the tooling back out of the branch:
-
-  git push --force-with-lease origin main
-
-  To https://github.com/guzmancharibelle5-rgb/Dama.git
-   + 662d7bc...3f7689b main -> main (forced update)
-
-It happened because restoring this working environment's stashed tooling with
-`git checkout stash@{0} -- Assets/Plugins/NuGet` writes to the index as well as to the working tree,
-so the next commit was made with fifteen DLL and json files inside it; `git show --stat` showed them,
-the commit was taken apart (`git reset --soft HEAD~1`, `git restore --staged Assets/Plugins/NuGet`)
-and re-made with only this document, and the branch was force-pushed again. `662d7bc` therefore does
-not exist either. The tooling files are back to working-tree-only and are not in the branch.
-
-====================================================================================================
-3. WHAT THE REMOTE HELD AFTER THAT FORCE-PUSH
-====================================================================================================
-
-  git rev-parse HEAD
-  cb2e3e754ae9aff02ba8ec6fba3a8db91824feb2
-
-  git rev-parse refs/remotes/origin/main
-  cb2e3e754ae9aff02ba8ec6fba3a8db91824feb2
-
   git rev-list --count HEAD
-  28
+  32
 
-The two hashes are identical, so at that moment `main` and `origin/main` were the same commit and nothing local was unpushed. Both commands were run immediately after the force-push, when the branch held 29 commits; the `28` quoted above is the count as the first push left it, before the README commit that followed. This record then lands one commit later still, so the count for the current tip is to be taken from `git rev-list --count HEAD` rather than from this paragraph. The four commits under the corrected identity are `779c1c4`, `d56e406`, `c108f7d` and
-`cb2e3e7`; this record of them lands as the commit after them, which is why it cannot name its own
-hash.
+  git log -3 --format="%h | %an <%ae> | %at | %s"
+  f5d820d | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | 1795841297 | Documentation: record the second force-push that took the tooling back out of the branch
+  ac83d77 | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | 1795841282 | Documentation: state the commit count as the force-push left it rather than as a moving number
+  349f18e | guzmancharibelle5-rgb <guzmancharibelle5@gmail.com> | 1795841209 | Documentation: record the identity correction and the force-push under guzmancharibelle5-rgb
 
-====================================================================================================
-4. THE SUPERSEDED FIRST PUSH, KEPT IN THE RECORD
-====================================================================================================
-
-  git push origin main          (2026-11-28, before the identity was corrected)
-
-  To https://github.com/guzmancharibelle5-rgb/Dama.git
-     370ccf2..86cc143  main -> main
-
-Those four commits (`cc11d3b`, `08ac115`, `86cc143`, `38e8bb0`) no longer exist: the rewrite replaced
-them with the four hashes in section 1. Section 4 is kept rather than deleted because a record that
-drops the mistakes it corrected is not a record.
+Thirty-two commits went in and thirty-two came out, one for one, and the four identity variables were
+the only thing the rewrite touched: every tree, every message and every author and committer date is
+unchanged.
 
 ====================================================================================================
-5. WHAT WAS DELIBERATELY NOT PUSHED
+3. THE OLD TO NEW MAPPING
+====================================================================================================
+
+Every hash the documents cite was remapped from this table, in twenty markdown files, and the HTML and
+PDFs were regenerated from the changed markdown.
+
+  650108c -> f5d820d   Documentation: record the second force-push that took the tooling back out
+  3f7689b -> ac83d77   Documentation: state the commit count as the force-push left it
+  470dd5a -> 349f18e   Documentation: record the identity correction and the force-push
+  cb2e3e7 -> b56965c   Post-submission revision: record the push output
+  c108f7d -> fee72ec   Post-submission revision: record the code and documentation commit ids
+  d56e406 -> 08a2152   Documentation: REQ-23 to REQ-30 added to the PA2 report
+  779c1c4 -> c4e3f18   Post-submission revision: side choice, turned board, PLAYER vs AI, UNDO, HINT
+  370ccf2 -> 69df700   Week 18: correct the profile-store disclosure
+  ebc6892 -> b9af925   Week 18: finalise the repository-state record and the README's remote row
+  11fe074 -> 82603fb   Week 18: close the checklist re-read, record the tag and the push result
+  308c8ed -> 6ae3644   Week 18: record the code and documentation commit ids in the README
+  2c5b275 -> 9a28ab9   Week 18 PA2: final package, nine-screen demonstration, evidence, printed PDFs
+  b8aca5c -> 2577a33   Week 18 PA2: demonstration harness, Week 18 seams in the gates
+  01d58df -> a3da06c   Week 17: record the code and documentation commit ids in the README
+  183b603 -> d2d3ad8   Week 17: PT7 package, release evidence, six captures and printed PDFs
+  10006a4 -> b8e69b9   Week 17: release identity 1.0.0-rc1, HOW TO PLAY / CREDITS / EXIT panels
+  337b436 -> 4cce8c0   Week 16: record the documentation commit id in the README
+  87aea89 -> e5b6c1a   Week 16 SA6 analysis, AS3 performance record, reflection and printed PDFs
+  3b396b9 -> bb7e7f3   Week 16 optimization 2: pooled pieces, cached square binding, regression seam
+  d6c4ba7 -> 356e99f   Week 16 optimization 1: allocation-free move generation
+  f9503e8 -> aacfc7f   Week 16: profiling harness and measured baseline
+  32a62e1 -> 638fe66   Week 15: record the documentation commit id in the README
+  3f4bb95 -> 3761802   Week 15 AS3 milestone, reflection, test logs, defect log and printed PDFs
+  207376b -> fdb3cc1   Week 15 AS3: test harness, defect fixes and play-mode captures
+  4eb9d10 -> 854bd5e   Week 14: record the documentation commit id in the README
+  58976b7 -> 8adbce3   Week 14 SA6, PT6, reflection, playtest kit and the printed PDFs
+  129531f -> 54b250a   Week 14: correct the doc builder's note on rebuilding Week 13
+  1998b0c -> 1e27cc2   Week 14 PT6: accessibility audit, repair pass, audio feedback, evidence
+  b843b73 -> 9523600   Week 13: record the documentation commit id in PT5 and README
+  a215f34 -> 0f01608   Week 13: SA5, PT5 and reflection documents, with print-ready HTML and PDFs
+  b6b477b -> b9a612d   Week 13 PT5: signed player profile, PT5 data checks and play-mode evidence
+  b79848f -> c059844   Initial Unity project commit
+
+Hashes that appear nowhere in this table are hashes that no longer exist: `cc11d3b`, `08ac115`,
+`86cc143` and `38e8bb0` (the first post-submission push, superseded by the four-commit rewrite),
+`662d7bc` (the commit that accidentally carried fifteen tooling files and was taken apart), and the
+four hashes of that four-commit rewrite itself, which the whole-history rewrite replaced.
+
+====================================================================================================
+4. THE TAGS, RECREATED ON THE NEW COMMITS
+====================================================================================================
+
+Both tags are annotated and were deleted and made again on their rewritten equivalents, with their
+original tagger date and their original message; only the two hashes quoted inside the `v1.0.0-pa2`
+message were remapped.
+
+  git tag -l --format="%(refname:short)|%(taggername)|%(taggeremail)|%(taggerdate:raw)"
+  v1.0.0-pa2|guzmancharibelle5-rgb|<guzmancharibelle5@gmail.com>|1795684007 +0800
+  week16-final|guzmancharibelle5-rgb|<guzmancharibelle5@gmail.com>|1795676919 +0800
+
+  git rev-list -n1 v1.0.0-pa2
+  6ae364420d8a9b0af4dd3a280059563c559ca23c
+
+  git rev-list -n1 week16-final
+  4cce8c00e9bb08d9fc65119dbca0ebb113ddcab8
+
+`week16-final` marks the same tree it always marked (`337b436` -> `4cce8c0`), so the Week 17 freeze
+holds; `v1.0.0-pa2` marks the Week 18 closing commit (`308c8ed` -> `6ae3644`).
+
+====================================================================================================
+5. THE FORCE-PUSH
+====================================================================================================
+
+The push of `main` and both tags runs after this record is committed, because the branch has to carry
+the remapped documents before it is published. Its exact output, and the `git rev-parse`,
+`git ls-remote` and `git log` lines that follow it, are appended to this section by that push's own
+record commit. Until then this section is deliberately empty.
+
+====================================================================================================
+6. WHAT WAS DELIBERATELY NOT PUSHED
 ====================================================================================================
 
   Assets/Plugins/NuGet/        15 modified: .nuget-installed.json and 14 MCP/.NET DLLs
   Assets/Plugins/NuGet/Rql.*   6 new files: Rql.Contracts, Rql.Execution, Rql.Parser (.dll + .meta)
   Packages/Aura/               the embedded assistant package (new)
-  Packages/manifest.json       the package set the assistant changed
-  Packages/packages-lock.json  the lock that follows it
 
 None of these is game code, a document, an asset or a setting the build depends on. They are left out
 on purpose: this repository is a submission, not the working environment it was written in. `git
 status` therefore is not empty, and that is a decision rather than an oversight.
 
+`Packages/manifest.json` and `Packages/packages-lock.json` are the exception: they carry the package
+fix described in section 7 and are committed with it, because a clone that reinstalls the colliding
+package would not compile.
+
 ====================================================================================================
-6. ONE REWRITE BY THE VERIFICATION PASS, DISCLOSED
+7. THE PACKAGE FIX THAT WAS NEEDED BEFORE ANY OF THIS COULD COMPILE
+====================================================================================================
+
+The project listed four AI packages, two of which are the same plugin under two names:
+
+  com.adjoint.editor        1.8.2             https://github.com/adjointdev/adjoint-beta-dist.git
+  com.coplaydev.unity-mcp   10.3.1-beta.11    https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity
+  com.ramenvr.aura-unity    1.8.0             https://github.com/ramenvr/AuraForUnityPlugin.git
+  com.ivanmurzak.unity.mcp  0.93.0
+
+Adjoint and MCP for Unity register the same file GUIDs (`Editor`, `Editor/Windows`,
+`Editor/Windows/Components/Common.uss`, `package.json`, `README.md`, `Runtime`), so both could not be
+installed at once. The Console carried one compile error and eight GUID-conflict warnings:
+
+  Library\PackageCache\com.adjoint.editor@1c3975c682a0\Editor\Windows\Adjoint\AdjointToolbarButton.cs(156,35): error CS0433: The type 'AssetPathUtility' exists in both 'Adjoint.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null' and 'MCPForUnity.Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null'
+
+  GUID [31e7fac5858840340a75cc6df0ad3d9e] for asset 'Packages/com.adjoint.editor/Editor' conflicts with:
+    'Packages/com.coplaydev.unity-mcp/Editor' (current owner)
+  ...seven more, for Editor/Windows, Editor/Windows/Components, Common.uss, package.json, README.md and Runtime
+
+`com.adjoint.editor` was removed from `Packages/manifest.json`; nobody in `Assets/` referenced either
+namespace, and `com.ramenvr.aura-unity` depends on neither. `check_compile_errors` then reported
+`No compile errors`.
+
+====================================================================================================
+8. ONE REWRITE BY THE VERIFICATION PASS, DISCLOSED
 ====================================================================================================
 
 The verification pass re-ran `Tools > Dama > Week 20 > 2. Run Feature Checks` at 2026-11-28 12:30,

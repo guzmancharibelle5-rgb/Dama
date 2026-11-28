@@ -5,7 +5,7 @@
 **Section:** BSIT-4
 **Course:** MOBILE DEV 002 Advanced Mobile Application Development, Module 5
 **Week:** 15
-**Build:** `dama-editor-w15-rc1` - scene `DamaGame.unity` at commit `207376b`, branch `main`
+**Build:** `dama-editor-w15-rc1` - scene `DamaGame.unity` at commit `fdb3cc1`, branch `main`
 **Date:** November 26, 2026
 
 ---
@@ -91,7 +91,7 @@ TC-RULE-10  PASS  ...  SummaryText='RED WINS.  RED 1-1, BLUE has no legal move.'
 ```
 
 Two sentences from one method, and the second exists because the first did not. My verdict: the Editor build at
-commit `207376b` passes the acceptance criteria I wrote before running it, and no evidence this week claims it ran
+commit `fdb3cc1` passes the acceptance criteria I wrote before running it, and no evidence this week claims it ran
 anywhere but in the Editor.
 
 ---

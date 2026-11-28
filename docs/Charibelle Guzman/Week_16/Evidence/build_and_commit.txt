@@ -3,6 +3,11 @@ Student : Charibelle Guzman (BSIT-4)
 Build   : dama-editor-w16-opt2
 Written : 2026-11-26
 
+NOTE ADDED 2026-11-28 - not part of the record. The commit hashes below are the ones that existed on
+2026-11-26. On 2026-11-28 the whole history was re-authored under the repository's own GitHub
+account, which changed every hash, so those hashes no longer resolve; the old-to-new mapping is in
+Week_18/Evidence/repo_state_postweek18.txt section 3. Nothing inside this record was edited.
+
 Every number quoted in the Week 16 documents belongs to one of the three commits
 below. The order is the order the work was done: measure, prove the measuring
 instrument, optimize one thing, re-measure, optimize the second thing,

@@ -7,7 +7,7 @@
 **Theme:** Philippine Games and Sports
 **Week:** 13 - Secure Player Data and Responsible Development
 **Build:** Dama MVP (Android target: ARM64 / IL2CPP, `com.defaultcompany.dama`, minimum API 26)
-**Repository:** local Git repository, branch `main`, code commit `b6b477b`
+**Repository:** local Git repository, branch `main`, code commit `b9a612d`
 **Engine:** Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer)
 
 ---

@@ -89,7 +89,7 @@ have been.
 
 ## 4. What I would do differently, and what carries forward
 
-**Commit while building, not after.** The work is committed (`b6b477b`) and the hash is in the
+**Commit while building, not after.** The work is committed (`b9a612d`) and the hash is in the
 documents, but it is one large commit made after all the iterations, so the history does not show
 the double-bank bug being found or the panel being rebuilt when it overflowed a 584-pixel canvas.
 Committing after each working step would make the record reviewable instead of merely present.

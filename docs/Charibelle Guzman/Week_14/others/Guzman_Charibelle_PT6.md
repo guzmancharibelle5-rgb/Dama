@@ -8,7 +8,7 @@
 **Week:** 14 - Game Usability, Accessibility and Playtesting
 **Build:** Dama MVP (Android target: ARM64 / IL2CPP, `com.defaultcompany.dama`, minimum API 26)
 **Engine:** Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), C#
-**Repository:** local Git repository, branch `main`, code commit `1998b0c`
+**Repository:** local Git repository, branch `main`, code commit `1e27cc2`
 **Components under test:** `Assets/Scripts/Editor/A11yAudit.cs`, `Assets/Scripts/Core/GameFeedback.cs`,
 `Assets/Scripts/Editor/AccessibilityBuild.cs`, `Assets/Scripts/Editor/Week14Checks.cs`, `Assets/Scripts/DamaBoard.cs`
 
@@ -346,7 +346,7 @@ rather than left out.
 | Scenes in build | `DamaGame.unity` (enabled, index 0), `SampleScene.unity` (disabled) |
 | Signing | not applicable - no build produced |
 | Repository branch | `main` |
-| Code commit | `1998b0c` - "Week 14 PT6: accessibility audit, repair pass, audio feedback and play-mode evidence" |
+| Code commit | `1e27cc2` - "Week 14 PT6: accessibility audit, repair pass, audio feedback and play-mode evidence" |
 | Documentation commit | recorded in `README.md`, which is the file that can hold a hash of the commit that contains these documents |
 
 `Evidence/build_and_commit.txt` records the same settings and the same commit id.

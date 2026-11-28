@@ -133,7 +133,7 @@ strong { color: #0d1116; }
 <p class="meta"><strong>Course:</strong> MOBILE DEV 002 Advanced Mobile Application Development, Module 5</p>
 <p class="meta"><strong>Theme:</strong> Philippine Games and Sports</p>
 <p class="meta"><strong>Week:</strong> 16 - Mobile Game Profiling and Performance Optimization</p>
-<p class="meta"><strong>Build:</strong> <code>dama-editor-w16-opt2</code> - scene <code>DamaGame.unity</code> at commit <code>3b396b9</code>, executed in the Unity Editor in play mode</p>
+<p class="meta"><strong>Build:</strong> <code>dama-editor-w16-opt2</code> - scene <code>DamaGame.unity</code> at commit <code>bb7e7f3</code>, executed in the Unity Editor in play mode</p>
 <p class="meta"><strong>Platform range:</strong> Android 8.0 (API 26) and above, ARM64, IL2CPP, <code>com.defaultcompany.dama</code></p>
 <p class="meta"><strong>Engine:</strong> Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), C#</p>
 <p class="meta"><strong>Repository:</strong> local Git repository, branch <code>main</code></p>
@@ -155,15 +155,15 @@ strong { color: #0d1116; }
 </tr>
 <tr>
 <td>Source revision</td>
-<td><code>3b396b9</code> ("Week 16 optimization 2: pooled pieces, cached square binding, regression seam")</td>
+<td><code>bb7e7f3</code> ("Week 16 optimization 2: pooled pieces, cached square binding, regression seam")</td>
 </tr>
 <tr>
 <td>Baseline revision</td>
-<td><code>f9503e8</code> ("Week 16: profiling harness and measured baseline")</td>
+<td><code>aacfc7f</code> ("Week 16: profiling harness and measured baseline")</td>
 </tr>
 <tr>
 <td>Optimization 1 revision</td>
-<td><code>d6c4ba7</code> ("Week 16 optimization 1: allocation-free move generation")</td>
+<td><code>356e99f</code> ("Week 16 optimization 1: allocation-free move generation")</td>
 </tr>
 <tr>
 <td>Scene</td>
@@ -217,7 +217,7 @@ strong { color: #0d1116; }
 </tbody></table>
 <p>All three profile runs used the same scenario, the same scene and the same 32 turns replayed from <code>Evidence/moves.txt</code>, and all three ended on move hash <strong><code>0xE432E83D</code></strong> with no replay rejection. That is the condition that makes the comparison legitimate: the same game happened three times.</p>
 <h2>2. Change 1 - allocation-free move generation</h2>
-<p><strong>Revision:</strong> <code>d6c4ba7</code>. <strong>File:</strong> <code>Assets/Scripts/DamaBoard.cs</code>.</p>
+<p><strong>Revision:</strong> <code>356e99f</code>. <strong>File:</strong> <code>Assets/Scripts/DamaBoard.cs</code>.</p>
 <h3>What was wrong</h3>
 <p><code>GetCaptureMoves</code> and <code>GetSimpleMoves</code> each built a fresh <code>List&lt;Vector2Int&gt;</code> on every call, and <code>GetSelectableMoves</code> built another for the mandatory-capture refusal. Because <code>CheckForWin</code> calls <code>HasAnyLegalMove</code> at the end of <strong>every</strong> turn, and <code>HasAnyLegalMove</code> asks those generators about all 12 pieces, the game allocated a collection per piece per turn, forever.</p>
 <p>Baseline measurement: <strong>556.7 B</strong> for one <code>GetSelectableMoves</code>, <strong>6,975.9 B</strong> for one whole-board legality scan (R² 1.00 on both), against a project target of <strong>0 B</strong> per turn.</p>
@@ -279,7 +279,7 @@ strong { color: #0d1116; }
 </tbody></table>
 <p>The R² falling to 0.25 is the signature of success, not of failure: a fit through a real per-call cost has R² near 1; a fit through noise has R² near 0. The instrument still works - the intercept and the Editor-wide column still move - there is simply nothing left for it to find.</p>
 <h2>3. Change 2 - piece pooling, cached binding, and no strings on the hot path</h2>
-<p><strong>Revision:</strong> <code>3b396b9</code>. <strong>File:</strong> <code>Assets/Scripts/DamaBoard.cs</code> (plus harness seams, section 4).</p>
+<p><strong>Revision:</strong> <code>bb7e7f3</code>. <strong>File:</strong> <code>Assets/Scripts/DamaBoard.cs</code> (plus harness seams, section 4).</p>
 <h3>What was wrong</h3>
 <p><code>RestartGame</code> destroyed 24 piece GameObjects and created 24 new ones, each with an interpolated name and a freshly added <code>SpriteRenderer</code>. <code>ExecuteMove</code> renamed a piece with another interpolation on every move. <code>PromoteToDama</code> located a crown with <code>Transform.Find</code>, and <code>BindLayout</code> resolved 64 squares with a per-cell <code>Transform.Find</code> plus a <code>name.Split('_')</code> per piece.</p>
 <p>Baseline measurement: <strong>5,701.2 B</strong> per restart (R² 0.99); worst restart frame 5.296 ms.</p>

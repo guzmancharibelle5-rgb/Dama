@@ -176,12 +176,12 @@ every capture and fail on a collision, because the first Week 17 run wrote six n
 
 | Commit / tag | What it carries |
 |---|---|
-| `b6b477b`, `a215f34` | Week 13: signed player profile, PT5 package |
-| `1998b0c`, `58976b7` | Week 14: accessibility audit, feedback, PT6 package |
-| `207376b`, `3f4bb95` | Week 15: test harness, defect fixes, AS3 milestone |
-| `f9503e8`, `d6c4ba7`, `3b396b9`, `87aea89` | Week 16: profiling harness, two optimizations, SA6/AS3 |
-| `week16-final` → `337b436` | the frozen baseline Week 17 was built on |
-| `10006a4`, `183b603`, `01d58df` | Week 17: release identity, three screens, release package |
+| `b9a612d`, `0f01608` | Week 13: signed player profile, PT5 package |
+| `1e27cc2`, `8adbce3` | Week 14: accessibility audit, feedback, PT6 package |
+| `fdb3cc1`, `3761802` | Week 15: test harness, defect fixes, AS3 milestone |
+| `aacfc7f`, `356e99f`, `bb7e7f3`, `e5b6c1a` | Week 16: profiling harness, two optimizations, SA6/AS3 |
+| `week16-final` → `4cce8c0` | the frozen baseline Week 17 was built on |
+| `b8e69b9`, `d2d3ad8`, `a3da06c` | Week 17: release identity, three screens, release package |
 | `v1.0.0-pa2` | the Week 18 submission commit |
 | post-Week-18 revision | the side choice, the turned board, PLAYER vs AI, the draw rule, UNDO, HINT and the move animation - hashes in `../README.md`, repository-state table |
 

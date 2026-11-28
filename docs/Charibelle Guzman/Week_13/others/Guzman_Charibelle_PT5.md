@@ -8,7 +8,7 @@
 **Week:** 13 - Secure Player Data and Responsible Development
 **Build:** Dama MVP (Android target: ARM64 / IL2CPP, `com.defaultcompany.dama`, minimum API 26)
 **Engine:** Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), C#
-**Repository:** local Git repository, branch `main`, code commit `b6b477b`
+**Repository:** local Git repository, branch `main`, code commit `b9a612d`
 **Component under test:** `Assets/Scripts/Profile/PlayerProfile.cs`, `Assets/Scripts/Profile/ProfilePanel.cs`, `Assets/Scripts/DamaBoard.cs`
 
 ---
@@ -306,9 +306,9 @@ left out.
 | Scenes in build | `DamaGame.unity` (enabled, index 0), `SampleScene.unity` (disabled) |
 | Signing | not applicable - no build produced |
 | Repository branch | `main` |
-| Code commit | `b6b477b` "Week 13 PT5: signed player profile, PT5 data checks and play-mode evidence", 2026-11-26 |
+| Code commit | `b9a612d` "Week 13 PT5: signed player profile, PT5 data checks and play-mode evidence", 2026-11-26 |
 | Commit contents | 19 files changed, 3570 insertions, 134 deletions |
-| Documentation commit | `a215f34` - SA5, this document, the reflection, the HTML and the PDFs |
+| Documentation commit | `0f01608` - SA5, this document, the reflection, the HTML and the PDFs |
 
 `Evidence/build_and_commit.txt` records the settings, the scene order and the same commit id.
 

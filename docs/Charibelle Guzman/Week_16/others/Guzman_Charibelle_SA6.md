@@ -122,7 +122,7 @@ are fitted: **A** one `GetSelectableMoves`, **B** one legality scan over all 12 
 ## 5. The baseline
 
 `Tools > Dama > Week 16 > 1. Baseline Profile`, `Evidence/profile_baseline/`, written
-**2026-11-26 14:20:15** at commit `f9503e8`. Scenario: profile reset, 3 s warm-up discarded, 32 turns
+**2026-11-26 14:20:15** at commit `aacfc7f`. Scenario: profile reset, 3 s warm-up discarded, 32 turns
 through the game's own `GetSelectableMoves`/`ExecuteMove`, 3 scripted restarts, 3 s end dwell. The
 measured window is 71.31 s / 34,550 frames.
 

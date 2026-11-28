@@ -4,7 +4,7 @@
 **Student:** Charibelle Guzman · BSIT-4
 **Week:** 17 - Release Preparation and Documentation
 **Release under test:** `1.0.0-rc1`, version code `2`, `com.defaultcompany.dama`
-**Tree:** tag `week16-final` (`337b436`) plus the Week 17 change set
+**Tree:** tag `week16-final` (`4cce8c0`) plus the Week 17 change set
 **Produced:** 2026-11-26
 
 ---

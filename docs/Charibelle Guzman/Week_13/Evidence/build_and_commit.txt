@@ -4,6 +4,11 @@ Theme   : Philippine Games and Sports
 Unity   : 6000.6.0f1 (revision f7f8ed4d1e24)
 Written : 2026-11-26
 
+NOTE ADDED 2026-11-28 - not part of the capture. The commit hashes printed below are the ones that
+existed on 2026-11-26. On 2026-11-28 the whole history was re-authored under the repository's own
+GitHub account, which changed every hash, so those hashes no longer resolve; the old-to-new mapping
+is in Week_18/Evidence/repo_state_postweek18.txt section 3. Nothing inside this capture was edited.
+
 ----------------------------------------------------------------------------
 1. TARGET PLATFORM SETTINGS (read back from ProjectSettings/ProjectSettings.asset)
 ----------------------------------------------------------------------------

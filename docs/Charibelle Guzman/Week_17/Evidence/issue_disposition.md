@@ -1,7 +1,7 @@
 # Week 17 — issue disposition
 
 **Student:** Charibelle Guzman · BSIT-4 · MOBILE DEV 002, Module 5, Week 17
-**Tree under test:** `week16-final` (`337b436`) plus the Week 17 working tree
+**Tree under test:** `week16-final` (`4cce8c0`) plus the Week 17 working tree
 **Severity scale:** S1 blocker · S2 major · S3 minor · S4 cosmetic (unchanged from PT6/AS3)
 
 Every row below was found after the freeze. A row is closed only when the artefact named in

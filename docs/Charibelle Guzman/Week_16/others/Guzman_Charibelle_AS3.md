@@ -6,7 +6,7 @@
 **Course:** MOBILE DEV 002 Advanced Mobile Application Development, Module 5
 **Theme:** Philippine Games and Sports
 **Week:** 16 - Mobile Game Profiling and Performance Optimization
-**Build:** `dama-editor-w16-opt2` - scene `DamaGame.unity` at commit `3b396b9`, executed in the Unity Editor in play mode
+**Build:** `dama-editor-w16-opt2` - scene `DamaGame.unity` at commit `bb7e7f3`, executed in the Unity Editor in play mode
 **Platform range:** Android 8.0 (API 26) and above, ARM64, IL2CPP, `com.defaultcompany.dama`
 **Engine:** Unity 6000.6.0f1, Universal Render Pipeline 17.6.0 (2D Renderer), C#
 **Repository:** local Git repository, branch `main`
@@ -24,9 +24,9 @@ copied from a generated file, and the files are named so the claim can be checke
 | | |
 |---|---|
 | Build identifier | `dama-editor-w16-opt2` |
-| Source revision | `3b396b9` ("Week 16 optimization 2: pooled pieces, cached square binding, regression seam") |
-| Baseline revision | `f9503e8` ("Week 16: profiling harness and measured baseline") |
-| Optimization 1 revision | `d6c4ba7` ("Week 16 optimization 1: allocation-free move generation") |
+| Source revision | `bb7e7f3` ("Week 16 optimization 2: pooled pieces, cached square binding, regression seam") |
+| Baseline revision | `aacfc7f` ("Week 16: profiling harness and measured baseline") |
+| Optimization 1 revision | `356e99f` ("Week 16 optimization 1: allocation-free move generation") |
 | Scene | `Assets/Scenes/DamaGame.unity`, build index 0 |
 | Execution mode | Unity Editor 6000.6.0f1, play mode, game view 1151 x 584, quality 5 (Ultra) |
 | Frame pacing during a run | vSync forced to 0, `Application.targetFrameRate` to -1, both restored afterwards |
@@ -46,7 +46,7 @@ That is the condition that makes the comparison legitimate: the same game happen
 
 ## 2. Change 1 - allocation-free move generation
 
-**Revision:** `d6c4ba7`. **File:** `Assets/Scripts/DamaBoard.cs`.
+**Revision:** `356e99f`. **File:** `Assets/Scripts/DamaBoard.cs`.
 
 ### What was wrong
 
@@ -100,7 +100,7 @@ the Editor-wide column still move - there is simply nothing left for it to find.
 
 ## 3. Change 2 - piece pooling, cached binding, and no strings on the hot path
 
-**Revision:** `3b396b9`. **File:** `Assets/Scripts/DamaBoard.cs` (plus harness seams, section 4).
+**Revision:** `bb7e7f3`. **File:** `Assets/Scripts/DamaBoard.cs` (plus harness seams, section 4).
 
 ### What was wrong
 

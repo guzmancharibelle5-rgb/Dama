@@ -2,7 +2,7 @@
 
 **Student:** Charibelle Guzman · BSIT-4 · MOBILE DEV 002, Module 5, Week 17
 **Build under test:** `1.0.0-rc1`, version code `2`, application id `com.defaultcompany.dama`
-**Tree under test:** `week16-final` (`337b436`) plus the Week 17 working tree
+**Tree under test:** `week16-final` (`4cce8c0`) plus the Week 17 working tree
 **Environment:** Unity 6000.6.0f1, URP 17.6.0 (2D), WindowsEditor, game view 1151x584 — **Editor only. No APK was built and no handset was attached** (`ENV-17-01`, `TC-COMPAT-01`: BLOCKED).
 
 All three runs below were taken against the same final scene, `Assets/Scenes/DamaGame.unity`, after the
