@@ -56,7 +56,7 @@ documents cite those hashes.
   git rev-list --count HEAD
   28
 
-The two hashes are identical, so at that moment `main` and `origin/main` were the same commit and nothing local was unpushed. Both commands were run immediately after the force-push. This record was then committed on top of `cb2e3e7` and fast-forwarded, so the tip is now one commit later than the hash quoted above, and `git rev-list --count HEAD` reads 29 rather than 28; the four rewritten commits, their messages and their authorship are unchanged. The four commits under the corrected identity are `779c1c4`, `d56e406`, `c108f7d` and
+The two hashes are identical, so at that moment `main` and `origin/main` were the same commit and nothing local was unpushed. Both commands were run immediately after the force-push, when the branch held 29 commits; the `28` quoted above is the count as the first push left it, before the README commit that followed. This record then lands one commit later still, so the count for the current tip is to be taken from `git rev-list --count HEAD` rather than from this paragraph. The four commits under the corrected identity are `779c1c4`, `d56e406`, `c108f7d` and
 `cb2e3e7`; this record of them lands as the commit after them, which is why it cannot name its own
 hash.
 
