@@ -51,6 +51,35 @@ A match ends when a side has no pieces left, or has pieces but no legal move.
 | 17 | Release Preparation and Documentation | PT7 (front page, technical documentation, user guide, evidence index, reflection), three screens, four new controls, release identity, six captures, evidence | complete - see `Week_17/` |
 | 18 | Final Project, Demonstration and Defense | PA2 package, technical report, user guide, evidence portfolio, originality declaration, 14-slide deck + speaker notes, reflection, nine-screen demonstration, defense pointer sheet | complete - see `Week_18/` |
 
+No Week 19 or Week 20 folder exists: the work that came after PA2 was submitted is recorded in
+**Post-submission revisions** below, as revisions to the Week 17 and Week 18 documents rather than as a
+week that was never assessed.
+
+---
+
+## Post-submission revisions
+
+Five pieces of work were done after PA2 was submitted. They are **not graded**, no Week 19 or Week 20
+deliverable exists, and they are recorded here and in the two documents they touch - which is why
+`Week_17/` (PT7) and `Week_18/` (PA2) now describe the tree rather than the `v1.0.0-pa2` commit. The
+requirement rows are `REQ-23…REQ-30` in `Week_18/others/Guzman_Charibelle_PA2_Technical_Report.md` §12,
+mirrored in the evidence portfolio §4a.
+
+| Added | Where it lives | Evidence |
+|---|---|---|
+| One layout rhythm across the eight panels, and a CHOOSE MODE panel | `Assets/Scripts/Editor/MenuLayout.cs`, `Week19ModeUi.cs` - menu `Tools > Dama > Week 19 > 3. Rebalance Menus` | user guides §2.1 |
+| RED or BLUE chosen and kept in the signed profile; a BLUE player's board turned to face them | `DamaBoard.SelectSide`, `ApplyBoardView`, `PlayerProfile.SetSide` - no new payload field, `SchemaVersion` still 1 | guides §2.1 and §5 |
+| PLAYER vs AI at EASY, NORMAL and HARD | `DamaBoard.StartVsAi`, `DamaAI.Choose` | `Week_18/Evidence/ai_checks_postweek18.log` - rules parity 200 positions x 2 sides with 0 disagreements, identical mandatory capture at all three levels, HARD won 10/10 against EASY |
+| A draw on threefold repetition, and a draw on 50 plies with no capture or promotion | `Assets/Scripts/Core/DamaPlyHistory.cs`, `DamaBoard.DeclareDraw`, `GameFeedback.PlayDraw` with `Assets/Audio/Generated/Dama_Draw.mp3` | `Week_18/Evidence/postweek18_features.log` cases A and B - `draws 2->3` and `draws 3->4` |
+| UNDO in the pause panel, and HINT in the HUD | `PausePanel/UndoButton` + `DamaBoard.UndoPressed`, `HUDPanel/HintButton` + `DamaBoard.HintPressed` | same log, cases C and D; audit rows `UNDO` 272x96 at 6.24:1 and `HINT` 160x96 at 12.44:1 |
+| A 120 ms move lerp and a capture pop | `DamaBoard.AnimatePieceTo`, `CapturePop` | **not measured** - the edit-mode cases snap the piece on purpose |
+
+The audit over this tree reports **203 passed, 0 failed, 0 warnings, 6 not measurable**
+(`Week_18/Evidence/a11y_week18_after.log`), against 148 / 0 / 0 / 4 at the PA2 submission. The first
+re-audit of the revision found one failing row - `START` had drifted to a `#37D926` fill, 1.89:1 - and the
+committed `#D92626` was restored and re-measured; both runs are kept, and the event is disclosed in the
+evidence portfolio §7 rather than tidied away.
+
 ---
 
 ## Week 18 at a glance
@@ -85,7 +114,7 @@ submission where marking costs nothing.
 | Results, faults and their limits | `Week_18/Evidence/final_results.md` - the three counts, the three harness faults with what each one cost, and section 4 naming what none of it proves |
 | Repository hygiene | `Week_18/Evidence/secret_scan_week18.md` - no key, token, keystore or `.apk` tracked |
 | Defense | `Week_18/Evidence/defense_prep.md` - 49 questions with file, class, commit, case and log pointers and **no answers**; `e3_record.md` blank until the viva |
-| Documents | `Week_18/*.pdf` - PA2 (5 pp), technical report (5 pp), user guide (3 pp), evidence portfolio (4 pp), originality declaration (3 pp, signature line blank), deck (**14 slides at 16:9**, 960x540 pt), speaker notes (2 pp), reflection (2 pp) |
+| Documents | `Week_18/*.pdf` - PA2 (5 pp), technical report (7 pp), user guide (4 pp), evidence portfolio (5 pp), originality declaration (3 pp, signature line blank), deck (**14 slides at 16:9**, 960x540 pt), speaker notes (2 pp), reflection (2 pp). The report, user guide and portfolio each gained a page in the post-submission revision (5 / 3 / 4 pp at PA2) |
 | Submission tag | `v1.0.0-pa2` on the PA2 commit; `repo_state.txt` records the log, the tags and the push result |
 
 ### Folder map
@@ -147,7 +176,7 @@ beneath, and both new panels are state-driven, so they cannot leak into a match.
 | Defects found by the gates | `Week_17/Evidence/issue_disposition.md` - **DEF-17-05** (a second builder run left a duplicate HOW TO PLAY / CREDITS / EXIT under `StartPanel`, which `TC-A11Y-02` reported as three controls overlapping themselves) and **DEF-17-06** (the release check read the wrong field of a uGUI listener and reported `null`). Both fixed, both disclosed |
 | Install on a device | **BLOCKED** - no APK was built and `adb devices` (Unity's bundled platform-tools) lists no serial. `Week_17/Evidence/clean_install.md` records the attempt, the exact command output, and what the Editor evidence does not prove |
 | Repository hygiene | `Week_17/Evidence/secret_scan.md` + `secret_scan_raw.txt` - no key, token, keystore or `.env` is tracked; the signing settings are empty (debug signing only) |
-| Documents | `Week_17/*.pdf` - PT7 (3 pp), technical documentation (6 pp), user guide (4 pp), evidence index (4 pp), reflection (3 pp) |
+| Documents | `Week_17/*.pdf` - PT7 (3 pp), technical documentation (6 pp), user guide (5 pp, one more than the released 4 after the post-submission revision), evidence index (4 pp), reflection (3 pp) |
 | Re-running everything | `Week_17/others/Guzman_Charibelle_PT7_Evidence_Index.md` section 8 |
 
 ### Folder map
@@ -418,6 +447,7 @@ discover.
 | The **demonstration is a harness, not a person** | All nine images come from one scripted run of the game's own entry points at the Editor's 1151x584 game view, and `demo_rehearsal.txt` says so in its header. It proves the screens exist, are reachable and are legible at that resolution; it proves nothing about a thumb on a phone |
 | The Week 18 harness **added three rows to the real profile - and the gate then erased them** | The end screen is produced by the game's own win check, and that check banks the match. During the first three harness runs the real store was restored too early, so each run added one RED win: it read 5 matches before the first run and 8 after the third. The committed harness restores the directory only after D9, so it adds nothing. The three rows are gone anyway, because the regression gate runs its data cases against the default store - `TC-DATA-01` resets, `TC-DATA-02` and `03` bank and reset again, `TC-DATA-04` quarantines a deliberately corrupt file - so the store now holds a test record (257 B, 0 matches, name `QA-LOCAL`, plus `profile.rejected.json`). `final_results.md` section 3 item 4 is the correction, including why the first version of that sentence was checked against the transcript rather than the file |
 | The **deck is a PDF, not a `.pptx`** | 14 slides at 960x540 pt (16:9) printed from HTML by headless Edge, because no presentation toolchain is in this project. It presents and it prints; it cannot be edited by the instructor, and the document says so where the format is described |
+| The **move animation is not measured** | `DamaBoard.AnimatePieceTo` runs a 120 ms unscaled ease-out and `CapturePop` a 120 ms scale bump, but the edit-mode harnesses snap the piece on purpose and no log records the travel. It was watched in the Editor, which is not the same as measured, and REQ-30 says so |
 
 ---
 
@@ -461,8 +491,10 @@ machine pre-test everywhere it is mentioned, and it is never referred to as a pl
 | Documentation commit (Week 17) | `183b603` |
 | Code commit (Week 18) | `b8aca5c` - demonstration harness, the Week 18 seams in `A11yAudit` / `Week15Checks` / `Week17Checks`, and the `Week_18` entry in `SubmissionDocBuilder` |
 | Documentation commit (Week 18) | `2c5b275` - the eight documents and their HTML, the eight PDFs, the nine captures, the evidence files and this README |
+| Code commit (post-submission revision) | `cc11d3b` - side choice and turned board, PLAYER vs AI, the draw rule, UNDO, HINT, the move animation and `Dama_Draw.mp3` |
+| Documentation commit (post-submission revision) | `08ac115` - `REQ-23…REQ-30` in the PA2 report and evidence portfolio, both user guides reworded, HTML and four PDFs rebuilt, the four audit logs and the AI transcript |
 | Submission tag | `v1.0.0-pa2` - annotated, on the Week 18 closing commit; `Week_18/Evidence/repo_state.txt` records `git rev-list -n1 v1.0.0-pa2` and the push attempt's exact output |
-| Remote state | `origin/main` carries the whole project, both tags and the Week 18 closing records; the two push outputs and their exact wording are quoted in `Week_18/Evidence/repo_state.txt` §7 |
+| Remote state | `origin/main` carries the whole project, both tags and the Week 18 closing records; the two push outputs and their exact wording are quoted in `Week_18/Evidence/repo_state.txt` §7. From 2026-11-28 it also carries the two post-submission commits above and this record of them |
 | Build target | Android, ARM64 only, IL2CPP, minimum API 26, `com.defaultcompany.dama` |
 | Scenes in build | `DamaGame.unity` (index 0), `SampleScene.unity` (disabled) |
 
