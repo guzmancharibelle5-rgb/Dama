@@ -51,10 +51,27 @@ its file proves. Where a row cannot be proved in this environment it says **BLOC
 |---|---|---|
 | Release checks (`TC-REL-01…05`) | **5 passed, 0 failed, 0 console errors** | `Evidence/test_logs_release/summary.txt`, `case_log.tsv`, `console.log` |
 | Full regression (27 cases) | **27 passed, 0 failed, 1 blocked** | `Evidence/test_logs_regression/` |
-| Accessibility audit | **148 passed, 0 failed, 0 warnings, 4 not measurable** | `Evidence/a11y_week18_after.log` |
+| Accessibility audit | **203 passed, 0 failed, 0 warnings, 6 not measurable** | `Evidence/a11y_week18_after.log` (148 / 0 / 0 / 4 at the PA2 submission; the tree has since gained UNDO and HINT) |
 | Second device / profile (`TC-COMPAT-01`) | **BLOCKED** | `Evidence/test_logs_regression/case_log.tsv` |
 
 The blocked case is blocked on hardware and is not counted anywhere as a pass.
+
+## 4a. Requirements added after the Week 18 submission
+
+These eight rows are not graded work. They are here because the tree the repository now holds
+contains them, and each row names the file that proves it - or says plainly that no file does.
+The full statements are `Guzman_Charibelle_PA2_Technical_Report.pdf` §12.
+
+| Claim | Proof | Standing |
+|---|---|---|
+| RED or BLUE is chosen on CHOOSE MODE or PROFILE and kept in the signed record without a new field | `Guzman_Charibelle_PA2_User_Guide.pdf` §2.1, §5; `Evidence/test_logs_regression/` data cases still cover the store | implemented; no log of its own |
+| A BLUE player's board is turned, and a tap still lands on the tapped cell | `Guzman_Charibelle_PA2_User_Guide.pdf` §2.1 | implemented; confirmed by playing, no log |
+| The AI obeys the same rules, takes mandatory captures at all three levels and HARD beats EASY | `Evidence/ai_checks_postweek18.log` - parity 200 x 2 with 0 disagreements, **HARD 10/10** | PASS |
+| A third appearance of the same position ends the match level | `Evidence/postweek18_features.log` case A - `DRAW.  RED 1-1, the same position 3 times.` | PASS |
+| 50 plies with no capture or promotion end the match level | `Evidence/postweek18_features.log` case B - `DRAW.  RED 1-1, 50 plies without a capture.` | PASS |
+| UNDO returns the board, both counts, the side to move and the captured piece | `Evidence/postweek18_features.log` case C; audit row `UNDO` 272x96 at 6.24:1 | PASS |
+| HINT paints a legal move and moves nothing | `Evidence/postweek18_features.log` case D; audit row `HINT` 160x96 at 12.44:1 | PASS |
+| A move travels 120 ms and a capture pops | — | **NOT MEASURED**: the edit-mode cases snap on purpose; no log records the travel |
 
 ## 5. Claims carried from earlier weeks, and where each one lives
 
@@ -62,7 +79,7 @@ The blocked case is blocked on hardware and is not counted anywhere as a pass.
 |---|---|---|
 | The save is signed, clamped, atomically written, and recovers a corrupted file | `Week_13/Evidence/pt5_checks.log` (15 rows) | tamper-evident, **not encrypted** — recorded as a known limit |
 | The save survives a rejected signature without losing the file | `Week_13/Evidence/pt5_checks.log`; `Week_15/Evidence/test_logs_final/` data cases | PASS |
-| Every measurable control clears the touch, contrast and size floors | `Week_14/Evidence/a11y_after.log`, `Week_15/Evidence/a11y_week15_after.log`, `Week_17/Evidence/a11y_week17_after.log`, `Evidence/a11y_week18_after.log` | 4 rows are NOT MEASURABLE and stay so |
+| Every measurable control clears the touch, contrast and size floors | `Week_14/Evidence/a11y_after.log`, `Week_15/Evidence/a11y_week15_after.log`, `Week_17/Evidence/a11y_week17_after.log`, `Evidence/a11y_week18_after.log` | 6 rows are NOT MEASURABLE and stay so |
 | The rules hold across 27 cases | `Week_15/Evidence/test_logs_final/`, re-run in `Evidence/test_logs_regression/` | PASS |
 | Per-turn allocation fell from 6,975.9 B to below the method's resolution | `Week_16/Evidence/profile_after_alloc/summary.txt`, `metrics.md` | Editor measurement |
 | Restart allocation fell from 5,596 B to ~1.7 KB or less | `Week_16/Evidence/profile_after_pool/summary.txt` | Editor measurement |
@@ -86,6 +103,7 @@ The blocked case is blocked on hardware and is not counted anywhere as a pass.
 | Week 18 capture run 1 | `ShowProfile` refused mid-match, so D4/D5/D6 were one picture; fixed, re-run | `Evidence/final_results.md` §3 |
 | Week 18 capture run 2 | best times read `0.0 s` because three matches were banked in one tick; fixed, re-run | `Evidence/final_results.md` §3 |
 | Week 18 runs 1–3 | the end screen banked a match into the real profile store (the game's own behaviour); the harness now banks into a temporary store | `Evidence/final_results.md` §3 |
+| Post-submission audit, run 1 (2026-11-28 12:25) | the working tree had one failing row: `StartPanel/StartButton/Text` measured **1.89:1** because the button's fill had drifted to `#37D926` from the committed `#D92626`. The fill was restored to the committed red and the audit re-run: **203 / 0 / 0 / 6**. Both runs are kept | `Evidence/a11y_week18_audit_20261128_122518.log` (failing), `Evidence/a11y_week18_audit_20261128_122607.log` and `Evidence/a11y_week18_after.log` (passing) |
 
 Each of these is kept in the record rather than tidied away, because a portfolio that only shows the
 runs that worked is not evidence.
@@ -98,5 +116,7 @@ runs that worked is not evidence.
 | Release checks | `Tools > Dama > Week 17 > 2. Release Checks` (set `Week17Checks.RunDirOverride` to keep Week 17's logs intact) |
 | Regression | `Tools > Dama > Week 18 > 3. Regression Run` |
 | Accessibility audit | `Tools > Dama > Week 18 > 2. Accessibility Audit` |
+| The draw rule, UNDO and HINT | `Tools > Dama > Week 20 > 2. Run Feature Checks` (four cases, writes `Evidence/postweek18_features.log`) |
+| The AI | `Tools > Dama > Week 19 > 2. Run AI Checks` (prints to the Console; `Evidence/ai_checks_postweek18.log` is that transcript) |
 | The documents | `Tools > Dama > Submission > Build Week 18 HTML`, then print the HTML to PDF |
 | The tags and commits | `Evidence/repo_state.txt` lists the commands and the output |

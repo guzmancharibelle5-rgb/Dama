@@ -131,6 +131,7 @@ strong { color: #0d1116; }
 <p class="meta"><strong>Student:</strong> Charibelle Guzman — BSIT-4 · MOBILE DEV 002, Module 5, Week 18</p>
 <p class="meta"><strong>Version:</strong> <code>1.0.0-rc1</code></p>
 <p class="meta"><strong>Platform:</strong> Android, 8.0 (API 26) or newer — <strong>see the note below before you look for an installer</strong></p>
+<p class="meta"><strong>Revised:</strong> 2026-11-27 — adds UNDO, HINT, the draw rule and the move animation (the post-submission revision, not a graded week)</p>
 <hr/>
 <h2>1. Before you start — there is no installer</h2>
 <p>This submission contains <strong>no APK</strong>. No Android build was produced for this project, so there is nothing to install on a phone. That is recorded as BLOCKED, with the reasons, in <code>Week_18/Evidence/final_pre_submission_checklist.md</code> §3.</p>
@@ -144,8 +145,8 @@ strong { color: #0d1116; }
 <h2>2. The title screen</h2>
 <pre><code>1.0.0-rc1 · Editor                       &lt;- the build you are running
 
-        HOW TO PLAY      START      CREDITS
-              PROFILE          EXIT</code></pre>
+        HOW TO PLAY     [ PLAY ]    CREDITS
+              PROFILE          [ EXIT ]</code></pre>
 <table>
 <thead><tr>
 <th>Control</th>
@@ -157,8 +158,8 @@ strong { color: #0d1116; }
 <td>the rules, in one screen, with BACK to return</td>
 </tr>
 <tr>
-<td><strong>START</strong></td>
-<td>a fresh match, RED to move</td>
+<td><strong>PLAY</strong></td>
+<td>opens CHOOSE MODE (section 2.1): PLAYER vs PLAYER or PLAYER vs AI, the AI level, and which side you take. A match then starts with RED to move</td>
 </tr>
 <tr>
 <td><strong>CREDITS</strong></td>
@@ -174,6 +175,36 @@ strong { color: #0d1116; }
 </tr>
 </tbody></table>
 <p>The caption is not a label someone typed: it is produced by <code>ReleaseInfo</code> from the build itself, so it cannot claim a version the code was not compiled with.</p>
+<h3>2.1 CHOOSE MODE</h3>
+<p><strong>PLAY</strong> opens one screen that decides the match before it starts:</p>
+<table>
+<thead><tr>
+<th>Control</th>
+<th>What it does</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>PLAYER vs AI</strong></td>
+<td>you against the computer, at the level armed below</td>
+</tr>
+<tr>
+<td><strong>PLAYER vs PLAYER</strong></td>
+<td>two people passing one device between them</td>
+</tr>
+<tr>
+<td><strong>EASY / NORMAL / HARD</strong></td>
+<td>the AI level; the armed one is drawn in the brighter fill and named above the row</td>
+</tr>
+<tr>
+<td><strong>PLAYING AS: RED / BLUE</strong></td>
+<td>which side you take; the choice is stored in the profile</td>
+</tr>
+<tr>
+<td><strong>BACK</strong></td>
+<td>returns to the title screen without starting anything</td>
+</tr>
+</tbody></table>
+<p>Your side also decides which end of the board is nearest you: play RED and the red men start at the bottom, play BLUE and the whole board is turned half a turn so the blue men are at the bottom. A tap is read from the turned board, so the square you touch is the square that is played. The view does not turn again during a match, so two people passing one device keep one board.</p>
 <h2>3. The rules, as the game enforces them</h2>
 <p>Dama is played on an 8x8 board, twelve men a side. Men move one square diagonally forward; the board is drawn from above so both players can read it across a table.</p>
 <ul>
@@ -181,6 +212,7 @@ strong { color: #0d1116; }
 <li><strong>A capture chains.</strong> If your man lands where another jump is available, it keeps going until the chain ends. You do not choose to stop early.</li>
 <li><strong>Reaching the far row crowns a Dama.</strong> A Dama moves any distance along any diagonal, forward or back.</li>
 <li><strong>The match ends</strong> when a side has no men left, or has men but no legal move.</li>
+<li><strong>A match can also end level.</strong> Two counts end it in a draw: the same position, with the same side to move, appearing for the <strong>third time</strong>, or <strong>50 turns</strong> in a row with neither a capture nor a promotion. A capture or a promotion resets both counts.</li>
 </ul>
 <p><strong>How to move:</strong> tap the man you want, then tap the empty square you want it to go to. The HUD at the top tells you whose turn it is and how many men each side has.</p>
 <h2>4. In a match</h2>
@@ -192,7 +224,15 @@ strong { color: #0d1116; }
 <tbody>
 <tr>
 <td><code>Turn: RED</code> / <code>Turn: BLUE</code></td>
-<td>whose move it is</td>
+<td>whose move it is, in a two-player match</td>
+</tr>
+<tr>
+<td><code>Turn: RED (you)</code> / <code>Turn: BLUE (AI)  [thinking]</code></td>
+<td>against the AI: which colour is yours, and which one is the machine</td>
+</tr>
+<tr>
+<td><code>PLAYER vs PLAYER</code> / <code>PLAYER vs AI - HARD</code></td>
+<td>the mode this match is being played in, under the turn line</td>
 </tr>
 <tr>
 <td><code>Red: 12   Blue: 12</code></td>
@@ -202,10 +242,15 @@ strong { color: #0d1116; }
 <td><strong>PAUSE</strong></td>
 <td>the pause panel (below)</td>
 </tr>
+<tr>
+<td><strong>HINT</strong></td>
+<td>paints a legal move for the side to move in green. It suggests; it never moves anything, and the next tap clears it</td>
+</tr>
 </tbody></table>
-<p><strong>Pause panel.</strong> RESUME returns to the match; RESTART starts a new board; SOUND turns the move and end-of-match audio on or off; <strong>MENU</strong> abandons the match and returns to the title screen. That last one exists because of a defect found in Week 15: before it, once a match started there was no way back to the title without closing the app.</p>
-<p><strong>End screen.</strong> The winner is named, the reason is written out (<code>BLUE has no pieces left</code>, <code>BLUE has no legal move</code>) and the counts are given. RESTART plays again; MENU returns to the title.</p>
-<p>The match is recorded in your profile when it ends — once, even if the end screen is reached twice.</p>
+<p><strong>Pause panel.</strong> RESUME returns to the match; RESTART starts a new board; <strong>UNDO</strong> takes your last turn back; SOUND turns the move and end-of-match audio on or off; <strong>MENU</strong> abandons the match and returns to the title screen. That last one exists because of a defect found in Week 15: before it, once a match started there was no way back to the title without closing the app.</p>
+<p><strong>UNDO</strong> retracts one <em>turn</em> — one move of yours, including a whole forced jump chain, because a chain is one turn and not three. There is no limit: press it again and again to walk further back. Against the AI one press also takes back the reply that followed, so the board always returns to you rather than to the machine. The draw counters come back with the position, so undoing a repetition does not leave the match one appearance closer to a draw.</p>
+<p><strong>End screen.</strong> The winner is named, the reason is written out (<code>BLUE has no pieces left</code>, <code>BLUE has no legal move</code>) and the counts are given. A level match says <strong>DRAW</strong> and gives the count that ended it — <code>DRAW.  RED 3-3, 50 plies without a capture.</code> or <code>DRAW.  RED 3-3, the same position 3 times.</code> RESTART plays again; MENU returns to the title.</p>
+<p>The match is recorded in your profile when it ends — once, even if the end screen is reached twice. A draw is recorded as neither a win nor a loss.</p>
 <h2>5. Your profile</h2>
 <p>The profile stores everything on this device and nothing anywhere else. There is no account and no network call.</p>
 <table>
@@ -220,11 +265,11 @@ strong { color: #0d1116; }
 </tr>
 <tr>
 <td>SIDE</td>
-<td>which colour you play; wins and losses are counted against it</td>
+<td>which colour you play, and which end of the board you sit at; set here or on CHOOSE MODE (section 2.1); wins and losses are counted against it</td>
 </tr>
 <tr>
-<td>Matches / Wins / Losses</td>
-<td>your record</td>
+<td>Matches / Wins / Losses / Draws</td>
+<td>your record; a draw is counted on its own line, not as a win or a loss</td>
 </tr>
 <tr>
 <td>Current streak / Best streak</td>
@@ -264,6 +309,16 @@ strong { color: #0d1116; }
 <td>it is a settings toggle, not a test</td>
 </tr>
 <tr>
+<td>UNDO does nothing on the first turn</td>
+<td>there is no completed turn to take back yet</td>
+<td>play a turn, then pause again</td>
+</tr>
+<tr>
+<td>UNDO in an AI match takes back two turns</td>
+<td>the AI had already answered, so its reply came back with your move</td>
+<td>that is intended — the board comes back to you</td>
+</tr>
+<tr>
 <td>No vibration</td>
 <td><code>Handheld.Vibrate()</code> is a no-op in the Editor</td>
 <td>unproven on a phone, and not claimed</td>
@@ -281,9 +336,9 @@ strong { color: #0d1116; }
 </tbody></table>
 <h2>7. Accessibility</h2>
 <ul>
-<li>Every control clears a <strong>96 canvas-pixel</strong> touch floor at the project's 1280x720 reference scaler (48 dp at xxhdpi is 144 physical px; 144 / 1.50 = 96 canvas px).</li>
-<li>Captions are 22 px bold and body labels 19–20 px, measured by the audit, not chosen by eye.</li>
-<li>Three control fills sit just over the 3:1 non-text contrast line (3.16:1, 3.17:1, 3.19:1) and two labels just over 4.5:1 — they pass, with little room.</li>
+<li>Every control clears a <strong>96 canvas-pixel</strong> touch floor at the project's 1280x720 reference scaler (48 dp at xxhdpi is 144 physical px; 144 / 1.50 = 96 canvas px). The two controls added in the post-submission revision also clear it: <strong>UNDO</strong> is 272x96 and <strong>HINT</strong> is 160x96.</li>
+<li>Captions are 22 px bold and body labels 19–20 px, measured by the audit, not chosen by eye. UNDO's label measures 6.24:1 on its own fill and HINT's 12.44:1, both over the 4.5:1 text floor.</li>
+<li>25 control fills are measurable, and <strong>17 of them sit within a fifth of the 3:1 non-text line</strong> — the closest is 3.03:1. All pass; the tightest ones have under 0.6 of headroom, which is the honest reading of that number.</li>
 <li><strong>What is missing:</strong> text does not follow the phone's font-size setting, and there is no screen-reader path. A player who needs either cannot use this game yet; that is stated here rather than hidden.</li>
 </ul>
 <h2>8. What the game does not do</h2>

@@ -299,8 +299,8 @@ strong { color: #0d1116; }
 </tr>
 <tr>
 <td>Accessibility audit</td>
-<td><strong>148 passed, 0 failed, 0 warnings, 4 not measurable</strong></td>
-<td><code>Evidence/a11y_week18_after.log</code></td>
+<td><strong>203 passed, 0 failed, 0 warnings, 6 not measurable</strong></td>
+<td><code>Evidence/a11y_week18_after.log</code> (148 / 0 / 0 / 4 at the PA2 submission; the tree has since gained UNDO and HINT)</td>
 </tr>
 <tr>
 <td>Second device / profile (<code>TC-COMPAT-01</code>)</td>
@@ -309,6 +309,56 @@ strong { color: #0d1116; }
 </tr>
 </tbody></table>
 <p>The blocked case is blocked on hardware and is not counted anywhere as a pass.</p>
+<h2>4a. Requirements added after the Week 18 submission</h2>
+<p>These eight rows are not graded work. They are here because the tree the repository now holds contains them, and each row names the file that proves it - or says plainly that no file does. The full statements are <code>Guzman_Charibelle_PA2_Technical_Report.pdf</code> §12.</p>
+<table>
+<thead><tr>
+<th>Claim</th>
+<th>Proof</th>
+<th>Standing</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RED or BLUE is chosen on CHOOSE MODE or PROFILE and kept in the signed record without a new field</td>
+<td><code>Guzman_Charibelle_PA2_User_Guide.pdf</code> §2.1, §5; <code>Evidence/test_logs_regression/</code> data cases still cover the store</td>
+<td>implemented; no log of its own</td>
+</tr>
+<tr>
+<td>A BLUE player's board is turned, and a tap still lands on the tapped cell</td>
+<td><code>Guzman_Charibelle_PA2_User_Guide.pdf</code> §2.1</td>
+<td>implemented; confirmed by playing, no log</td>
+</tr>
+<tr>
+<td>The AI obeys the same rules, takes mandatory captures at all three levels and HARD beats EASY</td>
+<td><code>Evidence/ai_checks_postweek18.log</code> - parity 200 x 2 with 0 disagreements, <strong>HARD 10/10</strong></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>A third appearance of the same position ends the match level</td>
+<td><code>Evidence/postweek18_features.log</code> case A - <code>DRAW.  RED 1-1, the same position 3 times.</code></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>50 plies with no capture or promotion end the match level</td>
+<td><code>Evidence/postweek18_features.log</code> case B - <code>DRAW.  RED 1-1, 50 plies without a capture.</code></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>UNDO returns the board, both counts, the side to move and the captured piece</td>
+<td><code>Evidence/postweek18_features.log</code> case C; audit row <code>UNDO</code> 272x96 at 6.24:1</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>HINT paints a legal move and moves nothing</td>
+<td><code>Evidence/postweek18_features.log</code> case D; audit row <code>HINT</code> 160x96 at 12.44:1</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>A move travels 120 ms and a capture pops</td>
+<td>—</td>
+<td><strong>NOT MEASURED</strong>: the edit-mode cases snap on purpose; no log records the travel</td>
+</tr>
+</tbody></table>
 <h2>5. Claims carried from earlier weeks, and where each one lives</h2>
 <table>
 <thead><tr>
@@ -330,7 +380,7 @@ strong { color: #0d1116; }
 <tr>
 <td>Every measurable control clears the touch, contrast and size floors</td>
 <td><code>Week_14/Evidence/a11y_after.log</code>, <code>Week_15/Evidence/a11y_week15_after.log</code>, <code>Week_17/Evidence/a11y_week17_after.log</code>, <code>Evidence/a11y_week18_after.log</code></td>
-<td>4 rows are NOT MEASURABLE and stay so</td>
+<td>6 rows are NOT MEASURABLE and stay so</td>
 </tr>
 <tr>
 <td>The rules hold across 27 cases</td>
@@ -397,6 +447,11 @@ strong { color: #0d1116; }
 <td>the end screen banked a match into the real profile store (the game's own behaviour); the harness now banks into a temporary store</td>
 <td><code>Evidence/final_results.md</code> §3</td>
 </tr>
+<tr>
+<td>Post-submission audit, run 1 (2026-11-28 12:25)</td>
+<td>the working tree had one failing row: <code>StartPanel/StartButton/Text</code> measured <strong>1.89:1</strong> because the button's fill had drifted to <code>#37D926</code> from the committed <code>#D92626</code>. The fill was restored to the committed red and the audit re-run: <strong>203 / 0 / 0 / 6</strong>. Both runs are kept</td>
+<td><code>Evidence/a11y_week18_audit_20261128_122518.log</code> (failing), <code>Evidence/a11y_week18_audit_20261128_122607.log</code> and <code>Evidence/a11y_week18_after.log</code> (passing)</td>
+</tr>
 </tbody></table>
 <p>Each of these is kept in the record rather than tidied away, because a portfolio that only shows the runs that worked is not evidence.</p>
 <h2>8. How to regenerate everything</h2>
@@ -421,6 +476,14 @@ strong { color: #0d1116; }
 <tr>
 <td>Accessibility audit</td>
 <td><code>Tools &gt; Dama &gt; Week 18 &gt; 2. Accessibility Audit</code></td>
+</tr>
+<tr>
+<td>The draw rule, UNDO and HINT</td>
+<td><code>Tools &gt; Dama &gt; Week 20 &gt; 2. Run Feature Checks</code> (four cases, writes <code>Evidence/postweek18_features.log</code>)</td>
+</tr>
+<tr>
+<td>The AI</td>
+<td><code>Tools &gt; Dama &gt; Week 19 &gt; 2. Run AI Checks</code> (prints to the Console; <code>Evidence/ai_checks_postweek18.log</code> is that transcript)</td>
 </tr>
 <tr>
 <td>The documents</td>

@@ -1,0 +1,18 @@
+DAMA - Week 19 AI checks, Console transcript (post-Week-18 revision)
+Unity 6000.6.0f1, Editor, scene DamaGame.unity, run 2026-11-28 12:25:07 (+08:00)
+
+This file is the Unity Console output of `Tools > Dama > Week 19 > 2. Run AI Checks`, copied
+unchanged. The harness prints to the Console only; it writes no file of its own, so this transcript
+is the record of the run. Every number below is the harness's own output, not retyped arithmetic.
+
+12:25:07 Log  [Week19Checks] === Week 19 AI checks ===
+12:25:07 Log  [Week19Checks] PASS A rules parity - 200 positions x 2 sides, 0 disagreements
+12:25:07 Log  [Week19Checks] PASS B mandatory capture - Easy=(3,5)->(1,3), Normal=(3,5)->(1,3), Hard=(3,5)->(1,3)
+12:25:07 Log  [Week19Checks] PASS C HARD beats EASY - HARD won 10/10 (needed 7), 0 draws at 20 ms/move [g1:37ply->HARD g2:47ply->HARD g3:34ply->HARD g4:54ply->HARD g5:37ply->HARD g6:47ply->HARD g7:38ply->HARD g8:40ply->HARD g9:39ply->HARD g10:42ply->HARD]
+12:25:07 Log  [Week19Checks] PASS D AI turn - move=(0,5)->(1,4), destination=BLUE:True, currentPlayer=RED
+12:25:07 Log  [Week19Checks] ALL PASS (4 passed, 0 failed) in 127 ms
+
+What this transcript does not prove: the AI was never played against a person, and no AI move was
+taken on a phone. It proves that the AI move generator agrees with the board's own rules on 400
+position/side pairs, that it takes a mandatory capture at every level, that HARD beats EASY at a
+200-ply budget, and that one AI turn moves a BLUE piece and hands the move back to RED.

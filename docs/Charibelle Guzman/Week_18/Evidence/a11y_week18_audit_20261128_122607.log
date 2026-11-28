@@ -1,0 +1,251 @@
+DAMA - WEEK 18 ACCESSIBILITY AUDIT (WCAG 2.2 subset)
+Game: Dama  |  Theme: Philippine Games and Sports
+Student: Charibelle Guzman (BSIT-4)
+Harness: Assets/Scripts/Editor/A11yAudit.cs
+Scene: DamaGame.unity   Unity: 6000.6.0f1   Run at: 2026-11-28 04:26:07 UTC
+Run label: AFTER   (the first run writes a11y_week18_baseline.log, later runs write a11y_week18_after.log)
+Canvas: GameCanvas   CanvasScaler: Scale With Screen Size, reference 1280x720, match 0.50   Game view: 640x480
+------------------------------------------------------------------------------------------------------------
+CHECKS AND THRESHOLDS
+  C  contrast      4.5:1 for normal text, 3.0:1 for large text (>=28 px, or >=24 px bold).
+                   Measured against the nearest ancestor Image with alpha >= 0.50, composited over black,
+                   which is the darkest plausible backdrop. For light text that is the most favourable case.
+  L  label fit     rect.height >= fontSize x 1.12. Split into 'clipped' (overflow truncates: the label can vanish)
+                   and 'spills' (overflow allowed: it draws outside its box). Clipped fails, spills warns.
+  T  touch target  96 x 96 canvas px, for every Button and InputField.
+     Derivation, stated rather than assumed: on a 1080p landscape phone (1920x1080) the scaler above gives a uniform
+     scale of 1.50 (1920/1280 = 1080/720 = 1.5). Android's 48 dp minimum touch target at xxhdpi (3.0 density) is
+     144 physical px, and 144 / 1.5 = 96 canvas px. This is a canvas-px measurement against a reference resolution on
+     an assumed phone class - NOT a measurement taken with a ruler on a handset.
+  S  type size     a caption on a Button >= 20 px; any other label >= 18 px.   [Week 15]
+     These two numbers are a PROJECT DECISION, not a WCAG requirement: the standard asks for 200% resize (SC 1.4.4),
+     which a fixed-size uGUI canvas cannot do at all. 20 px at the 1.5 scale above is ~13.3 dp of text, and 18 px is
+     ~12 dp; both are floors chosen so no string on screen is smaller than the caption of the control it sits on.
+  N  non-text      a control's own fill >= 3.0:1 against the panel behind it. WCAG 2.2 SC 1.4.11.   [Week 15]
+     Measured as the button's Image colour composited over the nearest opaque ancestor panel, against that same panel
+     composited over black. A control whose fill cannot be told from its panel has no visible edge, whatever its label
+     contrast. Inputs whose own Image is translucent or absent are reported as not measurable, not as passes.
+  Not measurable   a label with no opaque backdrop (drawn over the 3D board) has no contrast ratio. It is reported as
+                   not measurable rather than given an invented number.
+------------------------------------------------------------------------------------------------------------
+LABELS (51)
+C  PASS  StartPanel/TitleText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=96
+L  PASS  StartPanel/TitleText  height=150.4 need=107.5 size=96
+C  PASS  StartPanel/InstructionsText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=30
+L  PASS  StartPanel/InstructionsText  height=150.4 need=33.6 size=30
+C  PASS  StartPanel/StartButton/Text  ratio=4.93:1 need=4.5 fg=#FFFFFF bg=#D92626 size=22
+L  PASS  StartPanel/StartButton/Text  height=96.0 need=24.6 size=22
+C  PASS  StartPanel/ProfileButton/Text  ratio=6.91:1 need=3.0 fg=#FFFFFF bg=#335999 size=30
+L  PASS  StartPanel/ProfileButton/Text  height=96.0 need=33.6 size=30
+C  PASS  StartPanel/VersionLabel  ratio=15.01:1 need=4.5 fg=#D1DBE6 bg=#000000 size=22
+L  PASS  StartPanel/VersionLabel  height=34.0 need=24.6 size=22
+C  PASS  StartPanel/HowToButton/Text  ratio=5.73:1 need=3.0 fg=#FFFFFF bg=#3D66A8 size=24
+L  PASS  StartPanel/HowToButton/Text  height=96.0 need=26.9 size=24
+C  PASS  StartPanel/CreditsButton/Text  ratio=5.73:1 need=3.0 fg=#FFFFFF bg=#3D66A8 size=24
+L  PASS  StartPanel/CreditsButton/Text  height=96.0 need=26.9 size=24
+C  PASS  StartPanel/ExitButton/Text  ratio=6.32:1 need=3.0 fg=#FFFFFF bg=#9E4242 size=24
+L  PASS  StartPanel/ExitButton/Text  height=96.0 need=26.9 size=24
+C  NOT MEASURABLE  HUDPanel/TurnText  fg=#FFFFFF on the board (no opaque backdrop)
+L  PASS  HUDPanel/TurnText  height=54.0 need=38.1 size=34
+C  NOT MEASURABLE  HUDPanel/CountsText  fg=#FFFFFF on the board (no opaque backdrop)
+L  PASS  HUDPanel/CountsText  height=46.0 need=31.4 size=28
+C  PASS  HUDPanel/PauseButton/Text  ratio=12.44:1 need=4.5 fg=#FFFFFF bg=#333340 size=22
+L  PASS  HUDPanel/PauseButton/Text  height=96.0 need=24.6 size=22
+C  NOT MEASURABLE  HUDPanel/ModeLabel  fg=#D1DBE6 on the board (no opaque backdrop)
+L  PASS  HUDPanel/ModeLabel  height=40.0 need=26.9 size=24
+C  PASS  HUDPanel/HintButton/Text  ratio=12.44:1 need=4.5 fg=#FFFFFF bg=#333340 size=22
+L  PASS  HUDPanel/HintButton/Text  height=96.0 need=24.6 size=22
+C  PASS  PausePanel/PauseTitleText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=80
+L  PASS  PausePanel/PauseTitleText  height=120.0 need=89.6 size=80
+C  PASS  PausePanel/ResumeButton/Text  ratio=4.73:1 need=4.5 fg=#FFFFFF bg=#24843C size=22
+L  PASS  PausePanel/ResumeButton/Text  height=96.0 need=24.6 size=22
+C  PASS  PausePanel/RestartButtonPause/Text  ratio=4.71:1 need=4.5 fg=#FFFFFF bg=#A06713 size=22
+L  PASS  PausePanel/RestartButtonPause/Text  height=96.0 need=24.6 size=22
+C  PASS  PausePanel/SoundButton/Text  ratio=6.59:1 need=4.5 fg=#FFFFFF bg=#545D74 size=22
+L  PASS  PausePanel/SoundButton/Text  height=96.0 need=24.6 size=22
+C  PASS  PausePanel/MenuButton/Text  ratio=6.59:1 need=4.5 fg=#FFFFFF bg=#545D74 size=22
+L  PASS  PausePanel/MenuButton/Text  height=96.0 need=24.6 size=22
+C  PASS  PausePanel/UndoButton/Text  ratio=6.24:1 need=4.5 fg=#FFFFFF bg=#576175 size=22
+L  PASS  PausePanel/UndoButton/Text  height=96.0 need=24.6 size=22
+C  PASS  WinPanel/WinText  ratio=15.97:1 need=3.0 fg=#E0E0E0 bg=#000000 size=110
+L  PASS  WinPanel/WinText  height=136.8 need=123.2 size=110
+C  PASS  WinPanel/RestartButtonWin/Text  ratio=4.71:1 need=4.5 fg=#FFFFFF bg=#A06713 size=22
+L  PASS  WinPanel/RestartButtonWin/Text  height=96.0 need=24.6 size=22
+C  PASS  WinPanel/MenuButtonWin/Text  ratio=6.59:1 need=4.5 fg=#FFFFFF bg=#545D74 size=22
+L  PASS  WinPanel/MenuButtonWin/Text  height=96.0 need=24.6 size=22
+C  PASS  WinPanel/SummaryText  ratio=15.87:1 need=4.5 fg=#D9E0ED bg=#000000 size=22
+L  PASS  WinPanel/SummaryText  height=75.2 need=24.6 size=22
+C  PASS  ProfilePanel/TitleText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=44
+L  PASS  ProfilePanel/TitleText  height=56.0 need=49.3 size=44
+C  PASS  ProfilePanel/NameLabel  ratio=14.98:1 need=4.5 fg=#D9D9E6 bg=#000000 size=22
+L  PASS  ProfilePanel/NameLabel  height=26.0 need=24.6 size=22
+C  PASS  ProfilePanel/NameInput/Text  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=30
+L  PASS  ProfilePanel/NameInput/Text  height=88.0 need=33.6 size=30
+C  PASS  ProfilePanel/NameInput/Placeholder  ratio=3.01:1 need=3.0 fg=#FFFFFF bg=#000000 size=28
+L  PASS  ProfilePanel/NameInput/Placeholder  height=88.0 need=31.4 size=28
+C  PASS  ProfilePanel/SideButton/SideLabel  ratio=6.92:1 need=4.5 fg=#FFFFFF bg=#40598C size=22
+L  PASS  ProfilePanel/SideButton/SideLabel  height=96.0 need=24.6 size=22
+C  PASS  ProfilePanel/RecordText  ratio=18.80:1 need=4.5 fg=#F2F2F2 bg=#000000 size=22
+L  PASS  ProfilePanel/RecordText  height=64.0 need=24.6 size=22
+C  PASS  ProfilePanel/BestText  ratio=15.06:1 need=4.5 fg=#F2D98C bg=#000000 size=20
+L  PASS  ProfilePanel/BestText  height=110.0 need=22.4 size=20
+C  PASS  ProfilePanel/StatusText  ratio=12.86:1 need=4.5 fg=#BFCCD9 bg=#000000 size=20
+L  PASS  ProfilePanel/StatusText  height=40.0 need=22.4 size=20
+C  PASS  ProfilePanel/SaveButton/Text  ratio=5.88:1 need=3.0 fg=#FFFFFF bg=#267333 size=24
+L  PASS  ProfilePanel/SaveButton/Text  height=96.0 need=26.9 size=24
+C  PASS  ProfilePanel/ResetButton/ResetLabel  ratio=6.63:1 need=4.5 fg=#FFFFFF bg=#A43636 size=20
+L  PASS  ProfilePanel/ResetButton/ResetLabel  height=96.0 need=22.4 size=20
+C  PASS  ProfilePanel/BackButton/Text  ratio=6.64:1 need=4.5 fg=#FFFFFF bg=#535C74 size=22
+L  PASS  ProfilePanel/BackButton/Text  height=96.0 need=24.6 size=22
+C  PASS  ModePanel/TitleText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=44
+L  PASS  ModePanel/TitleText  height=56.0 need=49.3 size=44
+C  PASS  ModePanel/SubtitleText  ratio=15.01:1 need=4.5 fg=#D1DBE6 bg=#000000 size=22
+L  PASS  ModePanel/SubtitleText  height=36.0 need=24.6 size=22
+C  PASS  ModePanel/VsAiButton/Text  ratio=5.73:1 need=3.0 fg=#FFFFFF bg=#3D66A8 size=24
+L  PASS  ModePanel/VsAiButton/Text  height=96.0 need=26.9 size=24
+C  PASS  ModePanel/VsPlayerButton/Text  ratio=5.73:1 need=3.0 fg=#FFFFFF bg=#3D66A8 size=24
+L  PASS  ModePanel/VsPlayerButton/Text  height=96.0 need=26.9 size=24
+C  PASS  ModePanel/DifficultyLabel  ratio=15.01:1 need=3.0 fg=#D1DBE6 bg=#000000 size=24
+L  PASS  ModePanel/DifficultyLabel  height=40.0 need=26.9 size=24
+C  PASS  ModePanel/EasyButton/Text  ratio=6.24:1 need=3.0 fg=#FFFFFF bg=#576175 size=24
+L  PASS  ModePanel/EasyButton/Text  height=96.0 need=26.9 size=24
+C  PASS  ModePanel/NormalButton/Text  ratio=6.24:1 need=3.0 fg=#FFFFFF bg=#576175 size=24
+L  PASS  ModePanel/NormalButton/Text  height=96.0 need=26.9 size=24
+C  PASS  ModePanel/HardButton/Text  ratio=6.24:1 need=3.0 fg=#FFFFFF bg=#576175 size=24
+L  PASS  ModePanel/HardButton/Text  height=96.0 need=26.9 size=24
+C  PASS  ModePanel/SideButton/Text  ratio=6.24:1 need=4.5 fg=#FFFFFF bg=#576175 size=22
+L  PASS  ModePanel/SideButton/Text  height=96.0 need=24.6 size=22
+C  PASS  ModePanel/BackButton/Text  ratio=6.24:1 need=3.0 fg=#FFFFFF bg=#576175 size=24
+L  PASS  ModePanel/BackButton/Text  height=96.0 need=26.9 size=24
+C  PASS  HowToPanel/TitleText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=44
+L  PASS  HowToPanel/TitleText  height=56.0 need=49.3 size=44
+C  PASS  HowToPanel/BodyText  ratio=18.44:1 need=4.5 fg=#F0F0F5 bg=#000000 size=19
+L  PASS  HowToPanel/BodyText  height=466.0 need=21.3 size=19
+C  PASS  HowToPanel/BackButton/Text  ratio=6.24:1 need=3.0 fg=#FFFFFF bg=#576175 size=24
+L  PASS  HowToPanel/BackButton/Text  height=100.0 need=26.9 size=24
+C  PASS  CreditsPanel/TitleText  ratio=21.00:1 need=3.0 fg=#FFFFFF bg=#000000 size=44
+L  PASS  CreditsPanel/TitleText  height=56.0 need=49.3 size=44
+C  PASS  CreditsPanel/BodyText  ratio=18.44:1 need=4.5 fg=#F0F0F5 bg=#000000 size=19
+L  PASS  CreditsPanel/BodyText  height=380.0 need=21.3 size=19
+C  PASS  CreditsPanel/BuildText  ratio=15.06:1 need=4.5 fg=#F2D98C bg=#000000 size=22
+L  PASS  CreditsPanel/BuildText  height=36.0 need=24.6 size=22
+C  PASS  CreditsPanel/BackButton/Text  ratio=6.24:1 need=3.0 fg=#FFFFFF bg=#576175 size=24
+L  PASS  CreditsPanel/BackButton/Text  height=100.0 need=26.9 size=24
+
+TOUCH TARGETS (27 buttons, 1 input fields, floor 96 x 96 canvas px)
+T  PASS  StartPanel/StartButton  415x96 px
+T  PASS  StartPanel/ProfileButton  512x96 px
+T  PASS  StartPanel/HowToButton  296x96 px
+T  PASS  StartPanel/CreditsButton  296x96 px
+T  PASS  StartPanel/ExitButton  512x96 px
+T  PASS  HUDPanel/PauseButton  170x96 px
+T  PASS  HUDPanel/HintButton  160x96 px
+T  PASS  PausePanel/ResumeButton  560x96 px
+T  PASS  PausePanel/RestartButtonPause  272x96 px
+T  PASS  PausePanel/SoundButton  272x96 px
+T  PASS  PausePanel/MenuButton  272x96 px
+T  PASS  PausePanel/UndoButton  272x96 px
+T  PASS  WinPanel/RestartButtonWin  272x96 px
+T  PASS  WinPanel/MenuButtonWin  272x96 px
+T  PASS  ProfilePanel/SideButton  208x96 px
+T  PASS  ProfilePanel/SaveButton  176x96 px
+T  PASS  ProfilePanel/ResetButton  176x96 px
+T  PASS  ProfilePanel/BackButton  176x96 px
+T  PASS  ModePanel/VsAiButton  520x96 px
+T  PASS  ModePanel/VsPlayerButton  520x96 px
+T  PASS  ModePanel/EasyButton  163x96 px
+T  PASS  ModePanel/NormalButton  163x96 px
+T  PASS  ModePanel/HardButton  163x96 px
+T  PASS  ModePanel/SideButton  252x96 px
+T  PASS  ModePanel/BackButton  252x96 px
+T  PASS  HowToPanel/BackButton  320x100 px
+T  PASS  CreditsPanel/BackButton  320x100 px
+T  PASS  ProfilePanel/NameInput  336x96 px
+
+TYPE SIZES (51 labels, captions >= 20 px, other labels >= 18 px)
+S  PASS  StartPanel/TitleText  size=96px need=18px role=label
+S  PASS  StartPanel/InstructionsText  size=30px need=18px role=label
+S  PASS  StartPanel/StartButton/Text  size=22px need=20px role=caption
+S  PASS  StartPanel/ProfileButton/Text  size=30px need=20px role=caption
+S  PASS  StartPanel/VersionLabel  size=22px need=18px role=label
+S  PASS  StartPanel/HowToButton/Text  size=24px need=20px role=caption
+S  PASS  StartPanel/CreditsButton/Text  size=24px need=20px role=caption
+S  PASS  StartPanel/ExitButton/Text  size=24px need=20px role=caption
+S  PASS  HUDPanel/TurnText  size=34px need=18px role=label
+S  PASS  HUDPanel/CountsText  size=28px need=18px role=label
+S  PASS  HUDPanel/PauseButton/Text  size=22px need=20px role=caption
+S  PASS  HUDPanel/ModeLabel  size=24px need=18px role=label
+S  PASS  HUDPanel/HintButton/Text  size=22px need=20px role=caption
+S  PASS  PausePanel/PauseTitleText  size=80px need=18px role=label
+S  PASS  PausePanel/ResumeButton/Text  size=22px need=20px role=caption
+S  PASS  PausePanel/RestartButtonPause/Text  size=22px need=20px role=caption
+S  PASS  PausePanel/SoundButton/Text  size=22px need=20px role=caption
+S  PASS  PausePanel/MenuButton/Text  size=22px need=20px role=caption
+S  PASS  PausePanel/UndoButton/Text  size=22px need=20px role=caption
+S  PASS  WinPanel/WinText  size=110px need=18px role=label
+S  PASS  WinPanel/RestartButtonWin/Text  size=22px need=20px role=caption
+S  PASS  WinPanel/MenuButtonWin/Text  size=22px need=20px role=caption
+S  PASS  WinPanel/SummaryText  size=22px need=18px role=label
+S  PASS  ProfilePanel/TitleText  size=44px need=18px role=label
+S  PASS  ProfilePanel/NameLabel  size=22px need=18px role=label
+S  PASS  ProfilePanel/NameInput/Text  size=30px need=18px role=label
+S  PASS  ProfilePanel/NameInput/Placeholder  size=28px need=18px role=label
+S  PASS  ProfilePanel/SideButton/SideLabel  size=22px need=20px role=caption
+S  PASS  ProfilePanel/RecordText  size=22px need=18px role=label
+S  PASS  ProfilePanel/BestText  size=20px need=18px role=label
+S  PASS  ProfilePanel/StatusText  size=20px need=18px role=label
+S  PASS  ProfilePanel/SaveButton/Text  size=24px need=20px role=caption
+S  PASS  ProfilePanel/ResetButton/ResetLabel  size=20px need=20px role=caption
+S  PASS  ProfilePanel/BackButton/Text  size=22px need=20px role=caption
+S  PASS  ModePanel/TitleText  size=44px need=18px role=label
+S  PASS  ModePanel/SubtitleText  size=22px need=18px role=label
+S  PASS  ModePanel/VsAiButton/Text  size=24px need=20px role=caption
+S  PASS  ModePanel/VsPlayerButton/Text  size=24px need=20px role=caption
+S  PASS  ModePanel/DifficultyLabel  size=24px need=18px role=label
+S  PASS  ModePanel/EasyButton/Text  size=24px need=20px role=caption
+S  PASS  ModePanel/NormalButton/Text  size=24px need=20px role=caption
+S  PASS  ModePanel/HardButton/Text  size=24px need=20px role=caption
+S  PASS  ModePanel/SideButton/Text  size=22px need=20px role=caption
+S  PASS  ModePanel/BackButton/Text  size=24px need=20px role=caption
+S  PASS  HowToPanel/TitleText  size=44px need=18px role=label
+S  PASS  HowToPanel/BodyText  size=19px need=18px role=label
+S  PASS  HowToPanel/BackButton/Text  size=24px need=20px role=caption
+S  PASS  CreditsPanel/TitleText  size=44px need=18px role=label
+S  PASS  CreditsPanel/BodyText  size=19px need=18px role=label
+S  PASS  CreditsPanel/BuildText  size=22px need=18px role=label
+S  PASS  CreditsPanel/BackButton/Text  size=24px need=20px role=caption
+
+NON-TEXT CONTRAST (27 buttons, 1 input fields, floor 3.0:1, SC 1.4.11)
+N  PASS  StartPanel/StartButton  ratio=4.26:1 need=3.0 fill=#D92626 panel=#000000
+N  PASS  StartPanel/ProfileButton  ratio=3.04:1 need=3.0 fill=#335999 panel=#000000
+N  PASS  StartPanel/HowToButton  ratio=3.67:1 need=3.0 fill=#3D66A8 panel=#000000
+N  PASS  StartPanel/CreditsButton  ratio=3.67:1 need=3.0 fill=#3D66A8 panel=#000000
+N  PASS  StartPanel/ExitButton  ratio=3.32:1 need=3.0 fill=#9E4242 panel=#000000
+N  NOT MEASURABLE  HUDPanel/PauseButton  no opaque panel behind the control
+N  NOT MEASURABLE  HUDPanel/HintButton  no opaque panel behind the control
+N  PASS  PausePanel/ResumeButton  ratio=4.44:1 need=3.0 fill=#24843C panel=#000000
+N  PASS  PausePanel/RestartButtonPause  ratio=4.46:1 need=3.0 fill=#A06713 panel=#000000
+N  PASS  PausePanel/SoundButton  ratio=3.19:1 need=3.0 fill=#545D74 panel=#000000
+N  PASS  PausePanel/MenuButton  ratio=3.19:1 need=3.0 fill=#545D74 panel=#000000
+N  PASS  PausePanel/UndoButton  ratio=3.37:1 need=3.0 fill=#576175 panel=#000000
+N  PASS  WinPanel/RestartButtonWin  ratio=4.46:1 need=3.0 fill=#A06713 panel=#000000
+N  PASS  WinPanel/MenuButtonWin  ratio=3.19:1 need=3.0 fill=#545D74 panel=#000000
+N  PASS  ProfilePanel/SideButton  ratio=3.03:1 need=3.0 fill=#40598C panel=#000000
+N  PASS  ProfilePanel/SaveButton  ratio=3.57:1 need=3.0 fill=#267333 panel=#000000
+N  PASS  ProfilePanel/ResetButton  ratio=3.17:1 need=3.0 fill=#A43636 panel=#000000
+N  PASS  ProfilePanel/BackButton  ratio=3.16:1 need=3.0 fill=#535C74 panel=#000000
+N  PASS  ModePanel/VsAiButton  ratio=3.67:1 need=3.0 fill=#3D66A8 panel=#000000
+N  PASS  ModePanel/VsPlayerButton  ratio=3.67:1 need=3.0 fill=#3D66A8 panel=#000000
+N  PASS  ModePanel/EasyButton  ratio=3.37:1 need=3.0 fill=#576175 panel=#000000
+N  PASS  ModePanel/NormalButton  ratio=3.37:1 need=3.0 fill=#576175 panel=#000000
+N  PASS  ModePanel/HardButton  ratio=3.37:1 need=3.0 fill=#576175 panel=#000000
+N  PASS  ModePanel/SideButton  ratio=3.37:1 need=3.0 fill=#576175 panel=#000000
+N  PASS  ModePanel/BackButton  ratio=3.37:1 need=3.0 fill=#576175 panel=#000000
+N  PASS  HowToPanel/BackButton  ratio=3.37:1 need=3.0 fill=#576175 panel=#000000
+N  PASS  CreditsPanel/BackButton  ratio=3.37:1 need=3.0 fill=#576175 panel=#000000
+N  NOT MEASURABLE  ProfilePanel/NameInput  the control has no opaque fill of its own
+
+------------------------------------------------------------------------------------------------------------
+TOTAL: 203 passed, 0 failed, 0 warnings, 6 not measurable
+Every measurable control meets the five thresholds. That is a floor, not a ceiling: an audit cannot see a
+an accessible game, and it cannot read a label that is the right size and still says nothing.

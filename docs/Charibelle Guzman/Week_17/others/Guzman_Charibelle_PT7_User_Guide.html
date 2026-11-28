@@ -132,6 +132,7 @@ strong { color: #0d1116; }
 <p class="meta"><strong>Release:</strong> <code>1.0.0-rc1</code> (version code 2) · <code>com.defaultcompany.dama</code></p>
 <p class="meta"><strong>Platform:</strong> Android 8.0 (API 26) and above, ARM64</p>
 <p class="meta"><strong>Produced:</strong> 2026-11-26</p>
+<p class="meta"><strong>Revised:</strong> 2026-11-27 - adds UNDO, HINT, the draw rule and the move animation (the post-submission revision, not a graded week)</p>
 <hr/>
 <h2>1. What Dama is</h2>
 <p>Dama is the Filipino game of dama - checkers on an 8x8 board - played by two people sharing one phone. RED starts, RED moves up the board, BLUE moves down it, and a piece that reaches the far row becomes a <strong>Dama</strong> (a king) that travels any distance along a diagonal. The board is the theme; there is no timer, no advertisement and no network connection.</p>
@@ -177,7 +178,7 @@ strong { color: #0d1116; }
         Captures are mandatory. Keep jumping while captures remain.
         Reach the far row to promote to a Dama.
 
-   HOW TO PLAY        [ START ]        CREDITS
+   HOW TO PLAY        [ PLAY ]        CREDITS
    PROFILE            [ EXIT ]</code></pre>
 <table>
 <thead><tr>
@@ -186,16 +187,16 @@ strong { color: #0d1116; }
 </tr></thead>
 <tbody>
 <tr>
-<td><strong>START</strong></td>
-<td>begins a match. RED moves first, 12 pieces a side</td>
+<td><strong>PLAY</strong></td>
+<td>opens CHOOSE MODE (section 3.2): PLAYER vs PLAYER or PLAYER vs AI, the AI level, and which side you take. A match then starts with RED to move, 12 pieces a side</td>
 </tr>
 <tr>
 <td><strong>HOW TO PLAY</strong></td>
-<td>opens the full instructions (section 3.2)</td>
+<td>opens the full instructions (section 3.3)</td>
 </tr>
 <tr>
 <td><strong>CREDITS</strong></td>
-<td>author, course, engine, licence and the build line (section 3.3)</td>
+<td>author, course, engine, licence and the build line (section 3.4)</td>
 </tr>
 <tr>
 <td><strong>PROFILE</strong></td>
@@ -207,14 +208,44 @@ strong { color: #0d1116; }
 </tr>
 </tbody></table>
 <p>The caption in the top-left corner is the build the game was compiled as. It is read from the application at start-up, so it cannot say something the game is not.</p>
-<h3>3.2 HOW TO PLAY (E2)</h3>
+<h3>3.2 CHOOSE MODE</h3>
+<p>PLAY opens one screen that decides the match before it starts:</p>
+<table>
+<thead><tr>
+<th>Control</th>
+<th>What it does</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>PLAYER vs AI</strong></td>
+<td>you against the computer, at the level armed below</td>
+</tr>
+<tr>
+<td><strong>PLAYER vs PLAYER</strong></td>
+<td>two people passing one device between them</td>
+</tr>
+<tr>
+<td><strong>EASY / NORMAL / HARD</strong></td>
+<td>the AI level; the armed one is drawn in the brighter fill and named above the row</td>
+</tr>
+<tr>
+<td><strong>PLAYING AS: RED / BLUE</strong></td>
+<td>which side you take. The choice is stored in the profile, so it is the same side the record is kept against</td>
+</tr>
+<tr>
+<td><strong>BACK</strong></td>
+<td>returns to the title screen without starting anything</td>
+</tr>
+</tbody></table>
+<p>Your side decides which end of the board is nearest you: play RED and the red men start at the bottom, play BLUE and the whole board is turned half a turn so the blue men are at the bottom. A tap is read from the turned board, so the square you touch is the square that is played. The view does not turn again during a match, so two people passing one device keep one board.</p>
+<h3>3.3 HOW TO PLAY (E2)</h3>
 <p>One tap from the title, and <strong>BACK</strong> returns. It covers: the board and the two directions of play; how to select and move; the capture rule and the requirement to keep jumping while a capture remains; the Dama and its free travel along a diagonal; how a match ends; the pause menu; the sound toggle; and where the profile is stored. The body is 1,122 characters at 19 px in a 440 px box - it is the whole rule set, not a summary.</p>
-<h3>3.3 CREDITS (E3)</h3>
+<h3>3.4 CREDITS (E3)</h3>
 <p>Author, course and section, engine and render-pipeline versions, the licence the project uses, a statement that AI assistance was used as a tool, and a build line:</p>
 <pre><code>Build 1.0.0-rc1 · Editor · com.defaultcompany.dama</code></pre>
 <p>If that line and the title caption ever disagree, the build is inconsistent - they are both generated from the same source. <strong>BACK</strong> returns to the title.</p>
-<h3>3.4 A match (E4) and the pause menu (E5)</h3>
-<p>The HUD shows whose turn it is and how many pieces each side has left, plus a <strong>PAUSE</strong> control in the top-right corner. Pausing freezes the board and offers:</p>
+<h3>3.5 A match (E4) and the pause menu (E5)</h3>
+<p>The HUD shows whose turn it is and how many pieces each side has left, plus <strong>PAUSE</strong> and <strong>HINT</strong> in the top-right corner. <strong>HINT</strong> paints a legal move for the side to move in green - it suggests, it never moves anything - and the next tap clears it. Pausing freezes the board and offers:</p>
 <table>
 <thead><tr>
 <th>Control</th>
@@ -230,6 +261,10 @@ strong { color: #0d1116; }
 <td>starts a fresh match</td>
 </tr>
 <tr>
+<td><strong>UNDO</strong></td>
+<td>takes your last turn back (section 4.1)</td>
+</tr>
+<tr>
 <td><strong>SOUND</strong></td>
 <td>toggles sound and spells its own state: <code>SOUND: ON</code> / <code>SOUND: OFF</code>; remembered between sessions</td>
 </tr>
@@ -238,18 +273,20 @@ strong { color: #0d1116; }
 <td>abandons the match and returns to the title screen</td>
 </tr>
 </tbody></table>
-<h3>3.5 End screen (E6)</h3>
-<p>The winner is announced, both counts are named, and the summary says <strong>why</strong> the match ended - for example <code>RED WINS.  RED 1-1, BLUE has no legal move.</code> <strong>RESTART</strong> plays again; <strong>MENU</strong> returns to the title.</p>
+<h3>3.6 End screen (E6)</h3>
+<p>The winner is announced, both counts are named, and the summary says <strong>why</strong> the match ended - for example <code>RED WINS.  RED 1-1, BLUE has no legal move.</code> A match that ends level says <strong>DRAW</strong> and gives the reason: <code>DRAW.  RED 3-3, 50 plies without a capture.</code> or <code>DRAW.  RED 3-3, the same position 3 times.</code> <strong>RESTART</strong> plays again; <strong>MENU</strong> returns to the title. A draw is recorded in the profile as neither a win nor a loss.</p>
 <h2>4. How to play, in six steps</h2>
 <ol>
 <li>Tap one of your pieces. The squares it can reach light up yellow.</li>
-<li>Tap a lit square to move there. The turn passes to the other side.</li>
+<li>Tap a lit square to move there. The piece travels across the board in about a tenth of a second, so you can see where it went; a capture lands with a short scale pop. The turn passes when the move has landed.</li>
 <li>To capture, jump over an adjacent enemy piece onto the empty square beyond it. The jumped piece is removed.</li>
 <li>If a capture is available you <strong>must</strong> take it - a quiet move will be refused and the board will say so.</li>
 <li>If the piece that just captured can capture again, the turn stays with you until no jump remains.</li>
 <li>Reach the far row to become a Dama. A Dama may travel any distance along a diagonal and stops before the first piece in its path.</li>
 </ol>
-<p>A side loses when it has no pieces left, <strong>or</strong> when it still has pieces but no legal move.</p>
+<p>A side loses when it has no pieces left, <strong>or</strong> when it still has pieces but no legal move. A match can also end level, on either of two counts: <strong>the same position, with the same side to move, appearing for the third time</strong>, or <strong>50 turns in a row with neither a capture nor a promotion</strong>. Both counters are reset by a capture or a promotion, and UNDO rewinds them with the position.</p>
+<h3>4.1 UNDO, and what a turn is</h3>
+<p>UNDO, in the pause menu, retracts <strong>one turn</strong> - one move of yours, including a whole forced jump chain, because a chain is one turn and not three. It can be pressed again and again; there is no limit and no cost. Against the AI one press also takes back the reply that followed, so the board always comes back to you and never to the machine. The draw counters rewind with the position, so a position that had appeared twice before the undo does not become a third appearance after it.</p>
 <h2>5. Reading the board</h2>
 <table>
 <thead><tr>
@@ -274,8 +311,16 @@ strong { color: #0d1116; }
 <td>a legal destination for the selected piece</td>
 </tr>
 <tr>
+<td>green square</td>
+<td>HINT's suggestion: the piece to move and where it should go</td>
+</tr>
+<tr>
 <td>darkened board</td>
 <td>the match is over; the end panel is in front</td>
+</tr>
+<tr>
+<td>the board turned round</td>
+<td>you are playing BLUE, so the blue end is nearest you; the squares are read from the turned board</td>
 </tr>
 </tbody></table>
 <h2>6. Accessibility of this interface</h2>
@@ -286,9 +331,15 @@ strong { color: #0d1116; }
 <li>every measurable label clears its contrast threshold; the five controls this week added are 3.32:1 to 3.67:1 against the panel behind them, above the 3:1 non-text floor;</li>
 <li>four items are reported <strong>not measurable</strong>, not passed: the turn and count text drawn over the board, the pause button over the board, and the name input which has no fill of its own.</li>
 </ul>
+<p>The post-submission revision added two controls, measured in the Week 18 audit rerun of 2026-11-27 (<code>Week_18/Evidence/a11y_week18_audit_20261127_182110.log</code>, 203 passed / 0 failed / 0 warnings):</p>
+<ul>
+<li><strong>UNDO</strong> is 272x96 canvas px with its label at 6.24:1 on its own fill - over both the 96 px touch floor and the 4.5:1 text floor;</li>
+<li><strong>HINT</strong> is 160x96 px and its label is 12.44:1. Like PAUSE it sits over the board with no panel behind it, so the audit reports its fill as <strong>not measurable</strong> rather than passing it;</li>
+<li>that rerun measured <strong>28 controls</strong> across all eight panels: every one clears the 96 px floor, no two overlap, and the six items it cannot measure are the three HUD texts, PAUSE, HINT and the name input.</li>
+</ul>
 <p>The interface is fixed-size text: it does <strong>not</strong> follow the Android system font-size setting. That is a real limitation of a fixed-canvas uGUI screen, recorded in Week 15 and unchanged since.</p>
 <h2>7. Your profile and where it lives</h2>
-<p>The profile holds your name, chosen side, wins, losses and fastest wins.</p>
+<p>The profile holds your name, chosen side, wins, losses, draws and fastest wins.</p>
 <table>
 <thead><tr>
 <th>Question</th>
@@ -354,6 +405,16 @@ strong { color: #0d1116; }
 <td>Nothing happens when EXIT is tapped in the Editor</td>
 <td>the Editor stops play mode instead of quitting</td>
 <td>that is the intended Editor behaviour</td>
+</tr>
+<tr>
+<td>UNDO does nothing on the first turn</td>
+<td>there is no completed turn to take back yet</td>
+<td>play a turn, then pause again</td>
+</tr>
+<tr>
+<td>UNDO in an AI match takes back two turns</td>
+<td>the AI had already answered, so its reply came back with your move</td>
+<td>that is the intended behaviour - the board returns to you</td>
 </tr>
 </tbody></table>
 <h2>9. Telling two builds apart</h2>

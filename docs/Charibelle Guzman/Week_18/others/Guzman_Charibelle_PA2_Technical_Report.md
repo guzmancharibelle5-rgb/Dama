@@ -166,7 +166,7 @@ measures what it can read back, and writes a log. None of them asserts a number 
 | `Week17Checks` | `TC-REL-01…05` | `Week_17/Evidence/test_logs_release/` |
 | `Week17Captures` | six images + distinct-hash gate | `Week_17/Evidence/week17_shots.txt` |
 | `Week18Captures` | nine images + distinct-hash gate | `Week_18/Evidence/demo_rehearsal.txt` |
-| `A11yAudit` | 148 checks over 18 buttons and 1 field | `Week_18/Evidence/a11y_week18_after.log` |
+| `A11yAudit` | 203 checks over 27 buttons and 1 field | `Week_18/Evidence/a11y_week18_after.log` |
 
 Two things the harnesses do deliberately: they seed positions **by reflection** and then rebuild the
 visible pieces from the grid, so an image can never disagree with the state it claims; and they hash
@@ -183,6 +183,7 @@ every capture and fail on a collision, because the first Week 17 run wrote six n
 | `week16-final` → `337b436` | the frozen baseline Week 17 was built on |
 | `10006a4`, `183b603`, `01d58df` | Week 17: release identity, three screens, release package |
 | `v1.0.0-pa2` | the Week 18 submission commit |
+| post-Week-18 revision | the side choice, the turned board, PLAYER vs AI, the draw rule, UNDO, HINT and the move animation - hashes in `../README.md`, repository-state table |
 
 Every result in Weeks 13–18 can be regenerated: each harness has a menu entry and each week's
 `HOW_TO_RERUN.txt` names the order. The demonstration is
@@ -196,3 +197,29 @@ Every result in Weeks 13–18 can be regenerated: each harness has a menu entry 
 - No human playtest: the Week 14 kit was never run with a volunteer.
 - No dynamic type and no screen-reader path.
 - The oral defense is not described as passed; `Evidence/e3_record.md` is blank by design.
+- The eight requirements below were added **after** the Week 18 submission and are not graded
+  work. They are recorded here because they are in the tree the repository now holds, and a tree
+  nobody describes is worse than one described with its limits.
+
+## 12. Requirements added after the Week 18 submission
+
+Eight requirements were written for work that came after PA2 was submitted: the RED/BLUE side
+choice, the turned board, PLAYER vs AI, the two draw counts, UNDO, HINT and the move animation.
+They are numbered from `REQ-23` so they cannot be confused with the Week 15 set (`REQ-01…REQ-22`,
+`Week_15/Evidence/requirements.md`), which is left exactly as it was measured.
+
+| # | Requirement | Where it lives | Evidence | Standing |
+|---|---|---|---|---|
+| REQ-23 | The player's side (RED or BLUE) is chosen on CHOOSE MODE or on PROFILE and kept in the saved record | `ModePanel/SideButton`, `ProfilePanel/SideButton`, `DamaBoard.SelectSide`, `PlayerProfile.SetSide` - the payload and `SchemaVersion 1` are unchanged, so no field was added to the signed record | `Guzman_Charibelle_PA2_User_Guide.pdf` §2.1 and §5; the store is still covered by `TC-DATA-01…04` in `Evidence/test_logs_regression/` | implemented; no new payload field, no separate log |
+| REQ-24 | A BLUE player sees the board turned so the blue men are nearest them, and a tap still selects the piece under the finger | `DamaBoard.ApplyBoardView` (180° about Z on the board root), tap mapped through `transform.InverseTransformPoint` | `Guzman_Charibelle_PA2_User_Guide.pdf` §2.1; `Week17Checks`/`Week18Captures` still pass because `StartGame` forces the identity view | implemented; confirmed by playing in the Editor, no log |
+| REQ-25 | PLAY opens PLAYER vs AI with EASY, NORMAL and HARD, and the AI obeys the same rules as the human | `DamaBoard.StartVsAi`, `DamaAI.Choose`, `AiLevel` | `Evidence/ai_checks_postweek18.log` - rules parity on 200 positions x 2 sides with **0 disagreements**, identical mandatory capture at all three levels, **HARD won 10/10** against EASY, AI turn moves a BLUE piece and hands the move back to RED | PASS |
+| REQ-26 | A position that appears for the third time, with the same side to move, ends the match in a draw | `DamaPlyHistory.Verdict` (FNV-1a key over cells, kings and side to move), `DamaBoard.EndTurn` -> `DeclareDraw` | `Evidence/postweek18_features.log` case **A**: 8 plies, `DRAW.  RED 1-1, the same position 3 times.`, `draws 2->3` | PASS |
+| REQ-27 | 50 plies without a capture or a promotion end the match in a draw | the no-progress counter in `DamaPlyHistory`, `DamaBoard.DeclareDraw` | `Evidence/postweek18_features.log` case **B**: 50 plies, counter 50, `DRAW.  RED 1-1, 50 plies without a capture.`, `draws 3->4` | PASS |
+| REQ-28 | UNDO in the pause panel returns the board, both piece counts, the side to move and the captured piece to the last human turn | `PausePanel/UndoButton`, `DamaBoard.UndoPressed`, `DamaPlyHistory.TryPop` | `Evidence/postweek18_features.log` case **C**: capture left RED 12 / BLUE 11, after undo RED 12 / BLUE 12, turn RED, the captured piece re-activated at (1,4) under `Pieces`; audit row `PausePanel/UndoButton` 272x96 with its label at **6.24:1** | PASS |
+| REQ-29 | HINT paints a legal move for the side to move and moves nothing | `HUDPanel/HintButton`, `DamaBoard.HintPressed`, `DamaAI.Choose` at `AiLevel.Easy` | `Evidence/postweek18_features.log` case **D**: opening (3,2)->(2,3), forced capture (3,5)->(1,3) and flying king (3,3)->(2,2) all reported legal by the board's own generator, piece count unchanged; audit row `HUDPanel/HintButton` 160x96 at **12.44:1** | PASS |
+| REQ-30 | A move travels for 120 ms instead of teleporting, and a capture pops | `DamaBoard.AnimatePieceTo` (ease-out on `localPosition`, unscaled), `CapturePop` | none - the four edit-mode cases snap the piece on purpose, so the travel is **not measured** anywhere | implemented, **not measured** |
+
+The accessibility audit was re-run over the tree that contains these changes: **203 passed, 0 failed,
+0 warnings, 6 not measurable** (`Evidence/a11y_week18_after.log`; the four row totals were 148 / 0 / 0
+/ 4 at the PA2 submission). The six not-measurable rows are the three HUD texts, PAUSE, HINT and the
+name input - all drawn over the 3D board with no opaque backdrop, so they are reported, never passed.

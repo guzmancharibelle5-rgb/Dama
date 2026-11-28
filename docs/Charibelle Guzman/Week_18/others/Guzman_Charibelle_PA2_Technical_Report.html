@@ -433,7 +433,7 @@ strong { color: #0d1116; }
 </tr>
 <tr>
 <td><code>A11yAudit</code></td>
-<td>148 checks over 18 buttons and 1 field</td>
+<td>203 checks over 27 buttons and 1 field</td>
 <td><code>Week_18/Evidence/a11y_week18_after.log</code></td>
 </tr>
 </tbody></table>
@@ -473,6 +473,10 @@ strong { color: #0d1116; }
 <td><code>v1.0.0-pa2</code></td>
 <td>the Week 18 submission commit</td>
 </tr>
+<tr>
+<td>post-Week-18 revision</td>
+<td>the side choice, the turned board, PLAYER vs AI, the draw rule, UNDO, HINT and the move animation - hashes in <code>../README.md</code>, repository-state table</td>
+</tr>
 </tbody></table>
 <p>Every result in Weeks 13–18 can be regenerated: each harness has a menu entry and each week's <code>HOW_TO_RERUN.txt</code> names the order. The demonstration is <code>Tools &gt; Dama &gt; Week 18 &gt; 1. Capture Demonstration</code>; the gates are <code>Week 17/2</code>, <code>Week 18/2</code> and <code>Week 18/3</code>.</p>
 <h2>11. What this report does not claim</h2>
@@ -482,7 +486,77 @@ strong { color: #0d1116; }
 <li>No human playtest: the Week 14 kit was never run with a volunteer.</li>
 <li>No dynamic type and no screen-reader path.</li>
 <li>The oral defense is not described as passed; <code>Evidence/e3_record.md</code> is blank by design.</li>
+<li>The eight requirements below were added <strong>after</strong> the Week 18 submission and are not graded work. They are recorded here because they are in the tree the repository now holds, and a tree nobody describes is worse than one described with its limits.</li>
 </ul>
+<h2>12. Requirements added after the Week 18 submission</h2>
+<p>Eight requirements were written for work that came after PA2 was submitted: the RED/BLUE side choice, the turned board, PLAYER vs AI, the two draw counts, UNDO, HINT and the move animation. They are numbered from <code>REQ-23</code> so they cannot be confused with the Week 15 set (<code>REQ-01…REQ-22</code>, <code>Week_15/Evidence/requirements.md</code>), which is left exactly as it was measured.</p>
+<table>
+<thead><tr>
+<th>#</th>
+<th>Requirement</th>
+<th>Where it lives</th>
+<th>Evidence</th>
+<th>Standing</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>REQ-23</td>
+<td>The player's side (RED or BLUE) is chosen on CHOOSE MODE or on PROFILE and kept in the saved record</td>
+<td><code>ModePanel/SideButton</code>, <code>ProfilePanel/SideButton</code>, <code>DamaBoard.SelectSide</code>, <code>PlayerProfile.SetSide</code> - the payload and <code>SchemaVersion 1</code> are unchanged, so no field was added to the signed record</td>
+<td><code>Guzman_Charibelle_PA2_User_Guide.pdf</code> §2.1 and §5; the store is still covered by <code>TC-DATA-01…04</code> in <code>Evidence/test_logs_regression/</code></td>
+<td>implemented; no new payload field, no separate log</td>
+</tr>
+<tr>
+<td>REQ-24</td>
+<td>A BLUE player sees the board turned so the blue men are nearest them, and a tap still selects the piece under the finger</td>
+<td><code>DamaBoard.ApplyBoardView</code> (180° about Z on the board root), tap mapped through <code>transform.InverseTransformPoint</code></td>
+<td><code>Guzman_Charibelle_PA2_User_Guide.pdf</code> §2.1; <code>Week17Checks</code>/<code>Week18Captures</code> still pass because <code>StartGame</code> forces the identity view</td>
+<td>implemented; confirmed by playing in the Editor, no log</td>
+</tr>
+<tr>
+<td>REQ-25</td>
+<td>PLAY opens PLAYER vs AI with EASY, NORMAL and HARD, and the AI obeys the same rules as the human</td>
+<td><code>DamaBoard.StartVsAi</code>, <code>DamaAI.Choose</code>, <code>AiLevel</code></td>
+<td><code>Evidence/ai_checks_postweek18.log</code> - rules parity on 200 positions x 2 sides with <strong>0 disagreements</strong>, identical mandatory capture at all three levels, <strong>HARD won 10/10</strong> against EASY, AI turn moves a BLUE piece and hands the move back to RED</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>REQ-26</td>
+<td>A position that appears for the third time, with the same side to move, ends the match in a draw</td>
+<td><code>DamaPlyHistory.Verdict</code> (FNV-1a key over cells, kings and side to move), <code>DamaBoard.EndTurn</code> -&gt; <code>DeclareDraw</code></td>
+<td><code>Evidence/postweek18_features.log</code> case <strong>A</strong>: 8 plies, <code>DRAW.  RED 1-1, the same position 3 times.</code>, <code>draws 2-&gt;3</code></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>REQ-27</td>
+<td>50 plies without a capture or a promotion end the match in a draw</td>
+<td>the no-progress counter in <code>DamaPlyHistory</code>, <code>DamaBoard.DeclareDraw</code></td>
+<td><code>Evidence/postweek18_features.log</code> case <strong>B</strong>: 50 plies, counter 50, <code>DRAW.  RED 1-1, 50 plies without a capture.</code>, <code>draws 3-&gt;4</code></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>REQ-28</td>
+<td>UNDO in the pause panel returns the board, both piece counts, the side to move and the captured piece to the last human turn</td>
+<td><code>PausePanel/UndoButton</code>, <code>DamaBoard.UndoPressed</code>, <code>DamaPlyHistory.TryPop</code></td>
+<td><code>Evidence/postweek18_features.log</code> case <strong>C</strong>: capture left RED 12 / BLUE 11, after undo RED 12 / BLUE 12, turn RED, the captured piece re-activated at (1,4) under <code>Pieces</code>; audit row <code>PausePanel/UndoButton</code> 272x96 with its label at <strong>6.24:1</strong></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>REQ-29</td>
+<td>HINT paints a legal move for the side to move and moves nothing</td>
+<td><code>HUDPanel/HintButton</code>, <code>DamaBoard.HintPressed</code>, <code>DamaAI.Choose</code> at <code>AiLevel.Easy</code></td>
+<td><code>Evidence/postweek18_features.log</code> case <strong>D</strong>: opening (3,2)-&gt;(2,3), forced capture (3,5)-&gt;(1,3) and flying king (3,3)-&gt;(2,2) all reported legal by the board's own generator, piece count unchanged; audit row <code>HUDPanel/HintButton</code> 160x96 at <strong>12.44:1</strong></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>REQ-30</td>
+<td>A move travels for 120 ms instead of teleporting, and a capture pops</td>
+<td><code>DamaBoard.AnimatePieceTo</code> (ease-out on <code>localPosition</code>, unscaled), <code>CapturePop</code></td>
+<td>none - the four edit-mode cases snap the piece on purpose, so the travel is <strong>not measured</strong> anywhere</td>
+<td>implemented, <strong>not measured</strong></td>
+</tr>
+</tbody></table>
+<p>The accessibility audit was re-run over the tree that contains these changes: <strong>203 passed, 0 failed, 0 warnings, 6 not measurable</strong> (<code>Evidence/a11y_week18_after.log</code>; the four row totals were 148 / 0 / 0 / 4 at the PA2 submission). The six not-measurable rows are the three HUD texts, PAUSE, HINT and the name input - all drawn over the 3D board with no opaque backdrop, so they are reported, never passed.</p>
 
 </body>
 </html>
