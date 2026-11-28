@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "com.adjoint.editor": "https://github.com/adjointdev/adjoint-beta-dist.git",
+    "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity",
+    "com.ramenvr.aura-unity": "git+https://github.com/ramenvr/AuraForUnityPlugin.git#main",
+    "com.ramenvr.autopilot": "https://github.com/ramenvr/autopilot.git?path=/plugin/unity/com.ramenvr.autopilot#286ee8a758e89dd77921b8f55ba409306410c5c5",
     "com.unity.2d.animation": "16.0.0",
     "com.unity.2d.aseprite": "6.0.0",
     "com.unity.2d.psdimporter": "15.0.0",
@@ -54,8 +56,7 @@
     "com.unity.modules.vehicles": "1.0.0",
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.ivanmurzak.unity.mcp": "0.93.0"
+    "com.unity.modules.xr": "1.0.0"
   },
   "scopedRegistries": [
     {
