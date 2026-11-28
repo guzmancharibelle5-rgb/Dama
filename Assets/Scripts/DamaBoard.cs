@@ -11,10 +11,13 @@ using UnityEngine.UI;
 /// handles tap-select, move highlighting, movement, jump captures, forced
 /// multi-jump capture chains and promotion to a flying "Dama" king on the back row.
 /// Captures are mandatory whenever any piece can capture.
-/// Turns alternate between two local players.
+/// Turns alternate between two local players, or between the player and a three-level AI
+/// (Week 19: the mode is chosen on the title screen).
 /// UI: start screen, pause menu, restart and win screen on a single Canvas.
-/// Not yet included (next steps): AI opponent, online multiplayer.
+/// Not yet included (next steps): online multiplayer.
 /// </summary>
+public enum PlayMode { TwoPlayer = 0, VsAi = 1 }
+
 public class DamaBoard : MonoBehaviour
 {
     public const int Size = 8;
@@ -34,6 +37,7 @@ public class DamaBoard : MonoBehaviour
     [Header("Highlight Colors")]
     [SerializeField] private Color selectTint = new Color(0.30f, 1f, 1f, 1f);
     [SerializeField] private Color moveTint = new Color(1f, 0.90f, 0.25f, 1f);
+    [SerializeField] private Color hintTint = new Color(0.35f, 0.95f, 0.55f, 1f);
 
     [Header("Dama (King)")]
     [SerializeField] private Color crownColor = new Color(1f, 0.82f, 0.15f, 1f);
@@ -90,8 +94,31 @@ public class DamaBoard : MonoBehaviour
     private Vector2Int chainPiece = new Vector2Int(-1, -1);
     private Coroutine promotionPulse;
 
+    // ---- Week 19: mode and opponent ----
+    // The default stays TwoPlayer, so every harness written in Weeks 13-18 keeps driving the same
+    // two-sided board it always did. An AI match is only ever started from the title screen.
+    /// <summary>How long the AI appears to think, in unscaled seconds, so the reply is visible.</summary>
+    [Header("AI (Week 19)")]
+    [SerializeField] private float aiThinkSeconds = 0.35f;
+
+    private PlayMode playMode = PlayMode.TwoPlayer;
+    private AiLevel aiLevel = AiLevel.Normal;
+    private int aiSide = 2;
+    private Coroutine aiTurn;
+    private bool aiThinking;
+
+    // ---- Week 19: which side faces the player ----
+    // 1 = RED at the bottom (the board exactly as it is built), 2 = BLUE at the bottom (the board
+    // is turned half a turn). Only this transform's rotation changes: the grid, isKing and the
+    // piece array do not move, so the rules are untouched and a turn is still a swap of
+    // currentPlayer. The turn is fixed for the whole match, so a pass-and-play pair never has the
+    // board swing under their hands mid-game.
+    private int viewSide = 1;
+    private Text sideButtonLabel;
+
     // HowTo and Credits are title-screen panels, like Profile: they only make sense from Ready.
-    private enum GameState { Ready, Playing, Paused, GameOver, Profile, HowTo, Credits }
+    // ModeSelect (Week 19) is the same shape: it is reached from Ready and returns to it.
+    private enum GameState { Ready, Playing, Paused, GameOver, Profile, HowTo, Credits, ModeSelect }
 
     private GameState gameState = GameState.Ready;
     private GameObject startPanel;
@@ -105,10 +132,23 @@ public class DamaBoard : MonoBehaviour
     private GameObject profilePanel;
     private GameObject howToPanel;
     private GameObject creditsPanel;
+    private GameObject modePanel;
+    private Text modeLabel;
+    private Text difficultyLabel;
     private Text versionLabel;
     private Text creditsBuildText;
     private Text soundButtonLabel;
     private GameFeedback feedback;
+
+    // ---- Week 20: draw rule, undo pile, hint and move animation ----
+    // The history holds one snapshot per *turn*, not per jump: a three-jump chain is one turn, so
+    // it is one undo. The draw counters live inside the history, so taking a turn back also puts
+    // the repetition and no-progress counts back where they were.
+    private readonly DamaPlyHistory history = new DamaPlyHistory();
+    private PlySnapshot pendingPly;
+    private Coroutine moveAnimation;
+    private Coroutine capturePop;
+    private bool moveAnimating;
 
     private float matchStartUnscaled;
     private int currentMatchId = -1;
@@ -138,14 +178,19 @@ public class DamaBoard : MonoBehaviour
     private void Update()
     {
         if (gameState != GameState.Playing) return;
+        if (aiThinking) return;   // Week 19: the opponent owns the board while it thinks.
         if (!TryGetTapScreenPoint(out Vector2 screenPoint)) return;
 
         if (mainCamera == null) mainCamera = Camera.main;
         if (mainCamera == null) return;
 
         Vector3 world = mainCamera.ScreenToWorldPoint(screenPoint);
-        int x = Mathf.FloorToInt(world.x + Size * 0.5f);
-        int y = Mathf.FloorToInt(world.y + Size * 0.5f);
+
+        // InverseTransformPoint, not a raw world read: when the board is turned to give BLUE the
+        // bottom of the screen, the cell under the finger is the mirror of the world coordinate.
+        Vector3 local = transform.InverseTransformPoint(world);
+        int x = Mathf.FloorToInt(local.x + Size * 0.5f);
+        int y = Mathf.FloorToInt(local.y + Size * 0.5f);
 
         if (x < 0 || x >= Size || y < 0 || y >= Size)
         {
@@ -172,12 +217,15 @@ public class DamaBoard : MonoBehaviour
         profilePanel = canvas.transform.Find("ProfilePanel")?.gameObject;
         howToPanel = canvas.transform.Find("HowToPanel")?.gameObject;
         creditsPanel = canvas.transform.Find("CreditsPanel")?.gameObject;
+        modePanel = canvas.transform.Find("ModePanel")?.gameObject;
+        difficultyLabel = modePanel != null ? modePanel.transform.Find("DifficultyLabel")?.GetComponent<Text>() : null;
 
         Transform hud = canvas.transform.Find("HUDPanel");
         if (hud != null)
         {
             turnText = hud.Find("TurnText")?.GetComponent<Text>();
             countsText = hud.Find("CountsText")?.GetComponent<Text>();
+            modeLabel = hud.Find("ModeLabel")?.GetComponent<Text>();
         }
 
         Transform win = canvas.transform.Find("WinPanel");
@@ -187,7 +235,8 @@ public class DamaBoard : MonoBehaviour
             winSummaryText = win.Find("SummaryText")?.GetComponent<Text>();
         }
 
-        WireButton(canvas, "StartPanel/StartButton", StartGame);
+        WireButton(canvas, "StartPanel/StartButton", ShowModeSelect);
+        WireButton(canvas, "StartPanel/PlayButton", ShowModeSelect);
         WireButton(canvas, "HUDPanel/PauseButton", PauseGame);
         WireButton(canvas, "PausePanel/ResumeButton", ResumeGame);
         WireButton(canvas, "PausePanel/RestartButtonPause", RestartGame);
@@ -197,11 +246,34 @@ public class DamaBoard : MonoBehaviour
         WireButton(canvas, "StartPanel/ProfileButton", ShowProfile);
         WireButton(canvas, "ProfilePanel/BackButton", CloseProfile);
         WireButton(canvas, "PausePanel/SoundButton", ToggleSound);
+
+        // ---- Week 20: undo and hint ----
+        WireButton(canvas, "PausePanel/UndoButton", UndoPressed);
+        WireButton(canvas, "HUDPanel/HintButton", HintPressed);
         WireButton(canvas, "StartPanel/HowToButton", ShowHowTo);
         WireButton(canvas, "StartPanel/CreditsButton", ShowCredits);
         WireButton(canvas, "StartPanel/ExitButton", QuitGame);
         WireButton(canvas, "HowToPanel/BackButton", CloseHowTo);
         WireButton(canvas, "CreditsPanel/BackButton", CloseCredits);
+
+        // ---- Week 19: the mode panel ----
+        WireButton(canvas, "ModePanel/VsAiButton", StartVsAiMatch);
+        WireButton(canvas, "ModePanel/VsPlayerButton", StartTwoPlayer);
+        WireButton(canvas, "ModePanel/BackButton", CloseModeSelect);
+        WireButton(canvas, "ModePanel/EasyButton", SelectEasy);
+        WireButton(canvas, "ModePanel/NormalButton", SelectNormal);
+        WireButton(canvas, "ModePanel/HardButton", SelectHard);
+        WireButton(canvas, "ModePanel/SideButton", ToggleSide);
+
+        if (modePanel != null)
+        {
+            Transform side = modePanel.transform.Find("SideButton");
+            if (side != null) sideButtonLabel = side.Find("Text")?.GetComponent<Text>();
+        }
+
+        if (modePanel == null)
+            Debug.LogWarning("[Week19] GameCanvas/ModePanel was not found: run Tools > Dama > Week 19 > 1. Build Mode UI. " +
+                             "Until then the title screen's PLAY button has nowhere to go.");
 
         Transform sound = canvas.transform.Find("PausePanel/SoundButton");
         if (sound != null) soundButtonLabel = sound.Find("Text")?.GetComponent<Text>();
@@ -238,6 +310,7 @@ public class DamaBoard : MonoBehaviour
         if (profilePanel != null) profilePanel.SetActive(state == GameState.Profile);
         if (howToPanel != null) howToPanel.SetActive(state == GameState.HowTo);
         if (creditsPanel != null) creditsPanel.SetActive(state == GameState.Credits);
+        if (modePanel != null) modePanel.SetActive(state == GameState.ModeSelect);
     }
 
     /// <summary>
@@ -262,21 +335,352 @@ public class DamaBoard : MonoBehaviour
     private void RefreshUI()
     {
         if (turnText != null)
-            turnText.text = $"Turn: {(currentPlayer == 1 ? "RED" : "BLUE")}" +
-                            (chainPiece.x >= 0 ? "  (chain jump!)" : "");
+        {
+            string side = currentPlayer == 1 ? "RED" : "BLUE";
+            string who = side;
+
+            // Week 19: in an AI match the HUD says which colour the player owns and which one thinks.
+            if (playMode == PlayMode.VsAi)
+                who = $"{side} ({(currentPlayer == aiSide ? "AI" : "you")})";
+
+            turnText.text = $"Turn: {who}" +
+                            (chainPiece.x >= 0 ? "  (chain jump!)" : "") +
+                            (playMode == PlayMode.VsAi && currentPlayer == aiSide ? "  [thinking]" : "");
+        }
 
         if (countsText != null)
             countsText.text = $"Red: {CountPieces(1)}   Blue: {CountPieces(2)}";
+
+        if (modeLabel != null)
+            modeLabel.text = ModeCaption();
     }
 
-    /// <summary>Hides the title screen and starts the game.</summary>
+    /// <summary>
+    /// Hides the title screen and starts a two-player match. Kept as the single two-sided entry
+    /// point the Week 13-18 harnesses call, so their behaviour is unchanged by the mode work.
+    /// </summary>
     public void StartGame()
     {
+        playMode = PlayMode.TwoPlayer;
+        aiSide = 0;
+
+        // The harness entry point keeps the board exactly as built, so every Week 13-18 capture
+        // and play-mode case still measures the same board it always did.
+        viewSide = 1;
+
+        BeginMatch();
+    }
+
+    /// <summary>Mode panel: PLAYER vs PLAYER.</summary>
+    public void StartTwoPlayer()
+    {
+        playMode = PlayMode.TwoPlayer;
+        aiSide = 0;
+        viewSide = PlayerProfile.PlayerSide;
+
+        Debug.Log($"[Week19] Mode selected: PLAYER vs PLAYER (pass and play on this device), " +
+                  $"{(viewSide == 1 ? "RED" : "BLUE")} at the bottom for the whole match.");
+
+        BeginMatch();
+    }
+
+    /// <summary>Mode panel: PLAYER vs AI, using the difficulty that is currently chosen.</summary>
+    public void StartVsAiMatch()
+    {
+        StartVsAi(aiLevel);
+    }
+
+    /// <summary>
+    /// Starts a match against the AI. The human plays the side stored in the player profile, because
+    /// the end screen already judges win/loss against that side (DeclareWinner -> PlayerProfile).
+    /// </summary>
+    public void StartVsAi(AiLevel level)
+    {
+        aiLevel = level;
+        playMode = PlayMode.VsAi;
+
+        int humanSide = PlayerProfile.PlayerSide;
+        aiSide = humanSide == 1 ? 2 : 1;
+        viewSide = humanSide;
+
+        DamaRules.Report();
+
+        Debug.Log($"[Week19] mode=VsAi level={aiLevel} you={(humanSide == 1 ? "RED" : "BLUE")} " +
+                  $"ai={(aiSide == 1 ? "RED" : "BLUE")}{(aiSide == 1 ? " (the AI opens)" : "")}");
+
+        BeginMatch();
+    }
+
+    /// <summary>The one place a match begins, whichever mode asked for it.</summary>
+    private void BeginMatch()
+    {
         Time.timeScale = 1f;
+        ApplyBoardView();
+
+        // Week 20: a new match starts with an empty ply stack, and the position it starts from is
+        // the first entry in the draw watch.
+        pendingPly = null;
+        history.Reset(BuildPositionKey(currentPlayer));
+
         matchStartUnscaled = Time.unscaledTime;
         currentMatchId = PlayerProfile.LastMatchId + 1;
         ShowState(GameState.Playing);
         RefreshUI();
+
+        Debug.Log($"[Week19] Match {currentMatchId} started: {ModeCaption()}, turn={(currentPlayer == 1 ? "RED" : "BLUE")}");
+
+        MaybeStartAiTurn();
+    }
+
+    // ---- Week 19: mode panel ----
+
+    /// <summary>PLAY on the title screen opens the mode panel.</summary>
+    public void ShowModeSelect()
+    {
+        if (gameState != GameState.Ready) return;
+        Time.timeScale = 1f;
+        RefreshModePanel();
+        ShowState(GameState.ModeSelect);
+        Debug.Log($"[Week19] ModePanel opened. Difficulty {aiLevel}, side {(PlayerProfile.PlayerSide == 1 ? "RED" : "BLUE")}.");
+    }
+
+    /// <summary>Mode panel BACK: nothing is started.</summary>
+    public void CloseModeSelect()
+    {
+        if (gameState != GameState.ModeSelect) return;
+        ShowState(GameState.Ready);
+        Debug.Log("[Week19] ModePanel closed without starting a match.");
+    }
+
+    public void SelectEasy() => SelectLevel(AiLevel.Easy);
+    public void SelectNormal() => SelectLevel(AiLevel.Normal);
+    public void SelectHard() => SelectLevel(AiLevel.Hard);
+
+    /// <summary>
+    /// Difficulty is a choice made before the match, so it lives on the mode panel rather than in the
+    /// pause menu; the label and the three fills spell out which one is armed.
+    /// </summary>
+    public void SelectLevel(AiLevel level)
+    {
+        aiLevel = level;
+        RefreshModePanel();
+        Debug.Log($"[Week19] Difficulty set to {aiLevel}.");
+    }
+
+    private void RefreshDifficultyPanel()
+    {
+        if (difficultyLabel != null)
+            difficultyLabel.text = $"AI LEVEL: {aiLevel.ToString().ToUpperInvariant()}";
+
+        if (modePanel == null) return;
+
+        TintDifficultyButton("ModePanel/EasyButton", aiLevel == AiLevel.Easy);
+        TintDifficultyButton("ModePanel/NormalButton", aiLevel == AiLevel.Normal);
+        TintDifficultyButton("ModePanel/HardButton", aiLevel == AiLevel.Hard);
+    }
+
+    private void TintDifficultyButton(string path, bool selected)
+    {
+        if (modePanel == null) return;
+
+        Transform button = modePanel.transform.Find(path.Substring("ModePanel/".Length));
+        if (button == null) return;
+
+        Image image = button.GetComponent<Image>();
+        if (image == null) return;
+
+        image.color = selected ? new Color(0.24f, 0.40f, 0.66f, 1f) : new Color(0.34f, 0.38f, 0.46f, 1f);
+    }
+
+    // ---- Week 19: the side the player takes ----
+
+    /// <summary>Mode panel SIDE pressed while RED is wanted.</summary>
+    public void SelectRed() => SelectSide(1);
+
+    /// <summary>Mode panel SIDE pressed while BLUE is wanted.</summary>
+    public void SelectBlue() => SelectSide(2);
+
+    /// <summary>One control that swaps the side, for a screen that has room for only one.</summary>
+    public void ToggleSide() => SelectSide(PlayerProfile.PlayerSide == 1 ? 2 : 1);
+
+    /// <summary>
+    /// Stores the side through PlayerProfile.SetSide. That is also the side DeclareWinner judges the
+    /// record against, so the scoreboard can never contradict the colour that was on the screen.
+    /// The visible end of the board follows the same value, so choosing BLUE turns the board.
+    /// </summary>
+    public void SelectSide(int side)
+    {
+        if (side != 1 && side != 2) return;
+
+        if (!PlayerProfile.SetSide(side))
+        {
+            Debug.LogWarning($"[Week19] Could not store side {side}: {PlayerProfile.LastError}");
+            return;
+        }
+
+        viewSide = side;
+        RefreshModePanel();
+
+        Debug.Log($"[Week19] Side set to {(side == 1 ? "RED" : "BLUE")}; the profile records " +
+                  $"{(PlayerProfile.PlayerSide == 1 ? "RED" : "BLUE")} and that end faces the player.");
+    }
+
+    /// <summary>Fills the side label, the difficulty label and the three level fills from state.</summary>
+    private void RefreshModePanel()
+    {
+        RefreshDifficultyPanel();
+
+        if (sideButtonLabel != null)
+            sideButtonLabel.text = $"PLAYING AS: {(PlayerProfile.PlayerSide == 1 ? "RED" : "BLUE")}";
+    }
+
+    /// <summary>
+    /// Turns the whole board so the chosen side sits nearest the player: RED at the bottom is the
+    /// board exactly as built, BLUE at the bottom is that same board turned half a turn. The rule
+    /// state is untouched - a turn is still a swap of currentPlayer - and the tap mapping in Update
+    /// reads the point in local space, so the square under the finger is the square that is played.
+    /// Called once per match, never between turns, so a pass-and-play pair keeps one view.
+    /// </summary>
+    private void ApplyBoardView()
+    {
+        float degrees = viewSide == 2 ? 180f : 0f;
+        transform.localRotation = Quaternion.Euler(0f, 0f, degrees);
+
+        Debug.Log($"[Week19] Board view: {(viewSide == 2 ? "BLUE" : "RED")} at the bottom " +
+                  $"({degrees:0} deg on the board root).");
+    }
+
+    // ---- Week 19: the AI's turn ----
+
+    /// <summary>
+    /// Starts the opponent's turn when - and only when - it is the AI's move in an AI match. Safe to
+    /// call from anywhere: every guard is repeated here, because being called twice is the one
+    /// mistake that would let two coroutines fight over the board.
+    /// </summary>
+    private void MaybeStartAiTurn()
+    {
+        if (playMode != PlayMode.VsAi) return;
+        if (gameState != GameState.Playing) return;
+        if (currentPlayer != aiSide) return;
+        if (aiThinking) return;
+
+        aiTurn = StartCoroutine(AiTurnRoutine());
+    }
+
+    /// <summary>
+    /// One AI turn: wait, ask DamaAI for a step, and play it through ExecuteMove - the same path a tap
+    /// takes, so captures, crowns, chains, sounds and the win check happen exactly once, in one place.
+    /// A jump chain keeps the same side to move, so the routine simply loops for the next jump.
+    /// Waits are unscaled: pause sets Time.timeScale to 0, and a scaled wait would never finish.
+    /// </summary>
+    private IEnumerator AiTurnRoutine()
+    {
+        aiThinking = true;
+
+        while (true)
+        {
+            // realtimeSinceStartup, not Time.deltaTime: pause sets timeScale to 0, and a scaled wait
+            // would never finish, while an unscaled-delta accumulation is zero in the editor.
+            float startedAt = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup - startedAt < aiThinkSeconds)
+            {
+                if (gameState != GameState.Playing)
+                {
+                    Debug.Log($"[Week19] AI turn abandoned while thinking (state={gameState}).");
+                    FinishAiTurn();
+                    yield break;
+                }
+
+                yield return null;
+            }
+
+            if (gameState != GameState.Playing || currentPlayer != aiSide)
+            {
+                Debug.Log($"[Week19] AI turn abandoned before moving (state={gameState}, turn={(currentPlayer == 1 ? "RED" : "BLUE")}).");
+                FinishAiTurn();
+                yield break;
+            }
+
+            Vector2Int forced = chainPiece.x >= 0 ? chainPiece : new Vector2Int(-1, -1);
+            DamaRules.Position position = SnapshotPosition();
+            DamaAI.Choice choice = DamaAI.Choose(position, aiSide, aiLevel, forced);
+
+            if (!choice.valid)
+            {
+                Debug.LogWarning($"[Week19] The AI found no legal move for {(aiSide == 1 ? "RED" : "BLUE")}; " +
+                                 "the board's own win check has already been asked, so the turn is left alone.");
+                FinishAiTurn();
+                yield break;
+            }
+
+            if (!IsLegalBoardMove(choice.from, choice.to))
+            {
+                Debug.LogError($"[Week19] The AI proposed an illegal move {choice} (forcedFrom={forced}); refused, so the board is untouched.");
+                FinishAiTurn();
+                yield break;
+            }
+
+            Debug.Log($"[Week19] AI {(aiSide == 1 ? "RED" : "BLUE")} plays {choice}{(choice.nodes > 0 ? $" ({aiLevel}, {choice.nodes} nodes)" : $" ({aiLevel})")}.");
+            ExecuteMove(choice.from, choice.to);
+
+            // A chain capture keeps the same side to move: think again for the next jump.
+            if (gameState == GameState.Playing && chainPiece.x >= 0) continue;
+
+            FinishAiTurn();
+            yield break;
+        }
+    }
+
+    private void FinishAiTurn()
+    {
+        aiThinking = false;
+        aiTurn = null;
+    }
+
+    /// <summary>Stops the opponent. Called by restart, by returning to the menu, and by the end screen.</summary>
+    private void CancelAiTurn()
+    {
+        if (aiTurn != null) StopCoroutine(aiTurn);
+        aiTurn = null;
+
+        if (!aiThinking) return;
+        aiThinking = false;
+        Debug.Log("[Week19] AI turn cancelled.");
+    }
+
+    /// <summary>A copy of the live board for the AI to think on, so nothing it does can touch the real one.</summary>
+    private DamaRules.Position SnapshotPosition()
+    {
+        DamaRules.Position position = new DamaRules.Position();
+
+        for (int x = 0; x < Size; x++)
+            for (int y = 0; y < Size; y++)
+                if (grid[x, y] != Cell.Empty)
+                    position.Set(x, y, (int)grid[x, y], isKing[x, y]);
+
+        return position;
+    }
+
+    /// <summary>
+    /// The board's own verdict on the AI's proposal, asked with the board's own generator. DamaRules
+    /// mirrors these rules, and Week 19's harness compares the two, but a disagreement at runtime must
+    /// leave the board untouched rather than move a piece illegally.
+    /// </summary>
+    private bool IsLegalBoardMove(Vector2Int from, Vector2Int to)
+    {
+        if (!InBounds(from.x, from.y) || !InBounds(to.x, to.y)) return false;
+        if (grid[from.x, from.y] != (aiSide == 1 ? Cell.Player1 : Cell.Player2)) return false;
+        if (grid[to.x, to.y] != Cell.Empty) return false;
+
+        List<Vector2Int> legal = GetSelectableMoves(from.x, from.y);
+        return legal.Contains(to);
+    }
+
+    /// <summary>One short caption for the mode, used by the HUD and by the transcript.</summary>
+    private string ModeCaption()
+    {
+        if (playMode != PlayMode.VsAi) return "PLAYER vs PLAYER";
+        return $"PLAYER vs AI - {aiLevel.ToString().ToUpperInvariant()}";
     }
 
     /// <summary>Freezes the board (input is gated in Update) and shows the pause menu.</summary>
@@ -293,6 +697,9 @@ public class DamaBoard : MonoBehaviour
         if (gameState != GameState.Paused) return;
         Time.timeScale = 1f;
         ShowState(GameState.Playing);
+
+        // The AI routine abandons itself on pause, so resuming is what puts it back on the board.
+        MaybeStartAiTurn();
     }
 
     /// <summary>Opens the profile screen from the title screen.</summary>
@@ -313,6 +720,12 @@ public class DamaBoard : MonoBehaviour
         RestartGame();
         ShowState(GameState.Ready);
         Time.timeScale = 1f;
+        CancelAiTurn();
+
+        // The title screen is the board as built: a match that was viewed from the BLUE end must
+        // not leave the menu sitting behind a turned board.
+        viewSide = 1;
+        ApplyBoardView();
 
         Debug.Log("[Week15] ReturnToMenu: board reset, title screen shown, timeScale restored to 1.");
     }
@@ -409,6 +822,14 @@ public class DamaBoard : MonoBehaviour
     {
         Time.timeScale = 1f;
 
+        CancelAiTurn();
+
+        // Week 20: a restart drops the undo pile and any move still in flight, or the first ply of
+        // the new match would be able to walk back into the old one.
+        StopMoveAnimation();
+        history.Clear();
+        pendingPly = null;
+
         if (promotionPulse != null)
         {
             StopCoroutine(promotionPulse);
@@ -437,6 +858,10 @@ public class DamaBoard : MonoBehaviour
         if (piecesRoot != null)
             SpawnStartingPieces(piecesRoot, circleSprite != null ? circleSprite : CreateCircleSprite());
 
+        // Week 20: the board is back in its opening position, so that is what the draw watch counts
+        // from - and nothing from the abandoned match is left in the undo pile.
+        history.Reset(BuildPositionKey(currentPlayer));
+
         if (!piecePoolReported)
         {
             piecePoolReported = true;
@@ -446,6 +871,10 @@ public class DamaBoard : MonoBehaviour
 
         ShowState(GameState.Playing);
         RefreshUI();
+
+        // A restart in an AI match must hand the turn back if the AI is the side that opens.
+        ApplyBoardView();
+        MaybeStartAiTurn();
     }
 
     /// <summary>
@@ -486,7 +915,8 @@ public class DamaBoard : MonoBehaviour
 
         if (PlayerProfile.RecordMatch(currentMatchId, winner, seconds, CountPieces(1), CountPieces(2)))
         {
-            Debug.Log($"[DamaBoard] Banked match {currentMatchId}: winner={(winner == 1 ? "RED" : "BLUE")} seconds={seconds:0.0}");
+            // A draw banks as winner 0: PlayerProfile records it as "DRAW" and raises the draw count.
+            Debug.Log($"[DamaBoard] Banked match {currentMatchId}: winner={(winner == 1 ? "RED" : winner == 2 ? "BLUE" : "DRAW")} seconds={seconds:0.0}");
         }
         else
         {
@@ -705,6 +1135,9 @@ public class DamaBoard : MonoBehaviour
     {
         if (piece == null) return;
 
+        // A piece can be parked mid-pop. Reset the scale here so a rented piece never starts a
+        // match bulged by an animation that was interrupted before it finished.
+        piece.transform.localScale = Vector3.one * 0.82f;
         piece.SetActive(false);
         piece.transform.SetParent(PiecePoolRoot(), false);
         piecePool.Add(piece);
@@ -824,6 +1257,9 @@ public class DamaBoard : MonoBehaviour
 
     private void HandleTap(Vector2Int cell)
     {
+        if (aiThinking) return;   // Week 19: taps are ignored while the opponent moves.
+        if (moveAnimating) return; // Week 20: a piece is still travelling; a second tap would jump it.
+
         // Chain capture in progress: only the chained piece's landing squares act.
         if (chainPiece.x >= 0)
         {
@@ -869,6 +1305,10 @@ public class DamaBoard : MonoBehaviour
         int player = moving == Cell.Player1 ? 1 : 2;
         Vector2Int jumped = FindJumpedCell(from, to);
 
+        // Week 20: the first move of a turn opens the snapshot; the rest of a forced chain adds to
+        // the same one, so a three-jump chain undoes as one turn rather than as three.
+        if (chainPiece.x < 0) pendingPly = CaptureSnapshot();
+
         grid[to.x, to.y] = moving;
         grid[from.x, from.y] = Cell.Empty;
         isKing[to.x, to.y] = isKing[from.x, from.y];
@@ -879,15 +1319,30 @@ public class DamaBoard : MonoBehaviour
         if (pieceRenderers[to.x, to.y] != null)
         {
             Transform piece = pieceRenderers[to.x, to.y].transform;
-            piece.position = transform.TransformPoint(CellToLocal(to.x, to.y));
+            AnimatePieceTo(piece, from, to);
             piece.name = PieceName(player, to.x, to.y);
         }
 
         // Jump capture: remove the jumped piece from the board immediately.
         if (jumped.x >= 0)
         {
-            if (pieceRenderers[jumped.x, jumped.y] != null)
-                ReleasePiece(pieceRenderers[jumped.x, jumped.y].gameObject);
+            GameObject taken = pieceRenderers[jumped.x, jumped.y] != null
+                ? pieceRenderers[jumped.x, jumped.y].gameObject
+                : null;
+
+            if (taken != null)
+            {
+                // Held by the snapshot before it goes to the pool: undo needs that same object back,
+                // because its colour and crown are the state it was captured in.
+                if (pendingPly != null)
+                {
+                    pendingPly.captured.Add(taken);
+                    pendingPly.capturedCells.Add(new Vector2Int(jumped.x, jumped.y));
+                }
+
+                ReleasePiece(taken);
+            }
+
             pieceRenderers[jumped.x, jumped.y] = null;
             grid[jumped.x, jumped.y] = Cell.Empty;
             isKing[jumped.x, jumped.y] = false;
@@ -902,11 +1357,20 @@ public class DamaBoard : MonoBehaviour
         }
 
         // Promotion is checked after every landing, including mid-chain jumps.
+        bool crownedHere = false;
         if (!isKing[to.x, to.y] &&
             ((player == 1 && to.y == Size - 1) || (player == 2 && to.y == 0)))
         {
             PromoteToDama(to.x, to.y);
+            crownedHere = true;
         }
+
+        if (crownedHere && pendingPly != null) pendingPly.promoted = true;
+
+        // Week 20: a capture lands with a small scale pop. A promotion owns localScale through
+        // PromotionPulse, so the two never run on the same piece in the same frame.
+        if (jumped.x >= 0 && !crownedHere && pieceRenderers[to.x, to.y] != null)
+            CapturePop(pieceRenderers[to.x, to.y].transform);
 
         // Chain capture: the same piece must keep jumping while captures remain.
         if (jumped.x >= 0)
@@ -932,9 +1396,32 @@ public class DamaBoard : MonoBehaviour
     {
         chainPiece = new Vector2Int(-1, -1);
         ClearSelection();
-        currentPlayer = currentPlayer == 1 ? 2 : 1;
+
+        int nextPlayer = currentPlayer == 1 ? 2 : 1;
+
+        // Week 20: one ply is one turn, so the snapshot opened before the turn's first move is
+        // filed here - after the last jump of the chain, before the draw counters are asked.
+        if (pendingPly != null)
+        {
+            // The key is the position the move has just left the board in - not the one the
+            // snapshot holds, which is the position this turn started from.
+            history.Push(pendingPly,
+                         BuildPositionKey(nextPlayer),
+                         pendingPly.captured.Count > 0,
+                         pendingPly.promoted);
+            pendingPly = null;
+        }
+
+        currentPlayer = nextPlayer;
         RefreshUI();
         CheckForWin();
+
+        // Week 20: a match can also end level. Asked only if nobody lost, because a side with no
+        // pieces has lost even when the position also repeated.
+        if (gameState == GameState.Playing) CheckForDraw();
+
+        // Week 19: the opponent answers the move that was just made.
+        MaybeStartAiTurn();
     }
 
     /// <summary>Re-shows the forced jump chain after the player re-taps the piece.</summary>
@@ -1130,6 +1617,322 @@ public class DamaBoard : MonoBehaviour
         highlightedCells.Clear();
         selectedMoves.Clear();
         selected = new Vector2Int(-1, -1);
+    }
+
+    // ---- Week 20: undo, hint, draw rule and move animation ----
+
+    /// <summary>Scratch arrays for the position key, so a draw check allocates nothing.</summary>
+    private static readonly int[] keyCells = new int[PlySnapshot.BoardCells];
+    private static readonly bool[] keyKings = new bool[PlySnapshot.BoardCells];
+
+    /// <summary>The FNV-1a key of the live board with <paramref name="sideToMove"/> to move.</summary>
+    private ulong BuildPositionKey(int sideToMove)
+    {
+        for (int x = 0; x < Size; x++)
+        {
+            for (int y = 0; y < Size; y++)
+            {
+                int index = x * Size + y;
+                keyCells[index] = (int)grid[x, y];
+                keyKings[index] = isKing[x, y];
+            }
+        }
+
+        return DamaPlyHistory.Key(keyCells, keyKings, sideToMove);
+    }
+
+    /// <summary>
+    /// Opens an undo record for the turn that is about to be played. Called from ExecuteMove before
+    /// the rule arrays change, so the snapshot holds the position the player is looking at - the one
+    /// an undo has to put back.
+    /// </summary>
+    private PlySnapshot CaptureSnapshot()
+    {
+        PlySnapshot snapshot = new PlySnapshot();
+
+        for (int x = 0; x < Size; x++)
+        {
+            for (int y = 0; y < Size; y++)
+            {
+                int index = x * Size + y;
+                snapshot.cells[index] = (int)grid[x, y];
+                snapshot.kings[index] = isKing[x, y];
+                snapshot.renderers[index] = pieceRenderers[x, y];
+            }
+        }
+
+        snapshot.player = currentPlayer;
+        snapshot.chainX = chainPiece.x;
+        snapshot.chainY = chainPiece.y;
+        snapshot.selected = selected;
+
+        return snapshot;
+    }
+
+    /// <summary>
+    /// Puts a snapshot back on the board: the rule arrays first, then one pass over the scene that
+    /// makes every piece agree with them. A captured piece comes back out of the pool because it was
+    /// only ever parked there, never destroyed.
+    /// </summary>
+    private void RestoreFrom(PlySnapshot snapshot)
+    {
+        if (snapshot == null) return;
+
+        Transform piecesRoot = PiecesRoot();
+
+        for (int i = 0; i < snapshot.captured.Count; i++)
+        {
+            GameObject piece = snapshot.captured[i];
+            if (piece == null) continue;
+
+            piecePool.Remove(piece);
+            if (piecesRoot != null) piece.transform.SetParent(piecesRoot, false);
+            piece.SetActive(true);
+        }
+
+        for (int x = 0; x < Size; x++)
+        {
+            for (int y = 0; y < Size; y++)
+            {
+                int index = x * Size + y;
+                grid[x, y] = (Cell)snapshot.cells[index];
+                isKing[x, y] = snapshot.kings[index];
+                pieceRenderers[x, y] = snapshot.renderers[index];
+            }
+        }
+
+        // One sweep that makes the scene match the arrays: a chain may already have moved or crowned
+        // pieces before the turn was taken back, and this is what un-moves them.
+        for (int x = 0; x < Size; x++)
+        {
+            for (int y = 0; y < Size; y++)
+            {
+                SpriteRenderer renderer = pieceRenderers[x, y];
+                if (renderer == null) continue;
+
+                int owner = snapshot.cells[x * Size + y];
+                if (owner == 0) continue;
+
+                Transform piece = renderer.transform;
+                if (piecesRoot != null) piece.SetParent(piecesRoot, false);
+                piece.localPosition = CellToLocal(x, y);
+                piece.localScale = Vector3.one * 0.82f;
+                piece.name = PieceName(owner, x, y);
+
+                Transform crown = CrownChild(piece);
+                if (crown != null) crown.gameObject.SetActive(isKing[x, y]);
+            }
+        }
+
+        currentPlayer = snapshot.player;
+        chainPiece = new Vector2Int(snapshot.chainX, snapshot.chainY);
+
+        ClearSelection();
+        if (chainPiece.x >= 0) RehighlightChain();
+
+        RefreshUI();
+        RefreshModePanel();
+
+        Debug.Log($"[Week20] UNDO: board restored to the position before " +
+                  $"{(snapshot.player == 1 ? "RED" : "BLUE")}'s turn ({snapshot.captured.Count} piece(s) back), " +
+                  $"{history.Count} ply/plies still undoable, turn={(currentPlayer == 1 ? "RED" : "BLUE")}.");
+    }
+
+    /// <summary>PAUSE panel: takes the last turn back, and in an AI match hands the board to you.</summary>
+    public void UndoPressed()
+    {
+        if (gameState != GameState.Paused && gameState != GameState.Playing) return;
+
+        // The opponent must not move while the board is being rewound.
+        CancelAiTurn();
+        StopMoveAnimation();
+
+        if (!history.TryPop(out PlySnapshot snapshot))
+        {
+            Debug.Log("[Week20] UNDO: there is no completed turn to take back yet.");
+            return;
+        }
+
+        RestoreFrom(snapshot);
+        int undone = 1;
+
+        // One press hands the turn back to the human: if the AI has already answered, its reply is
+        // taken back with the human's own move, so a single press never leaves the AI to move again.
+        while (playMode == PlayMode.VsAi && currentPlayer == aiSide && history.Count > 0)
+        {
+            if (!history.TryPop(out PlySnapshot earlier)) break;
+            RestoreFrom(earlier);
+            undone++;
+        }
+
+        Debug.Log($"[Week20] UNDO taken: {undone} turn(s) rewound, {history.Count} left in the pile.");
+
+        // Paused is the normal case (the button lives in the pause menu): the AI restarts on RESUME.
+        MaybeStartAiTurn();
+    }
+
+    /// <summary>HUD: paints a legal move for the side to move. It suggests, it never plays.</summary>
+    public void HintPressed()
+    {
+        if (gameState != GameState.Playing || aiThinking)
+        {
+            Debug.Log("[Week20] HINT ignored: the board is not waiting for a move.");
+            return;
+        }
+
+        Vector2Int forced = chainPiece.x >= 0 ? chainPiece : new Vector2Int(-1, -1);
+        DamaAI.Choice choice = DamaAI.Choose(SnapshotPosition(), currentPlayer, AiLevel.Easy, forced);
+
+        if (!choice.valid)
+        {
+            Debug.LogWarning($"[Week20] HINT found no legal move for {(currentPlayer == 1 ? "RED" : "BLUE")}.");
+            return;
+        }
+
+        // The tint goes through HighlightSquare, so the next ClearSelection repaints these squares.
+        ClearSelection();
+        HighlightSquare(choice.from, hintTint);
+        HighlightSquare(choice.to, hintTint);
+
+        Debug.Log($"[Week20] HINT for {(currentPlayer == 1 ? "RED" : "BLUE")}: {choice} (from and to painted green).");
+    }
+
+    /// <summary>The draw rule: threefold repetition, or 50 plies with no capture and no promotion.</summary>
+    private void CheckForDraw()
+    {
+        DamaDrawReason reason = history.Verdict(out int evidence);
+        if (reason == DamaDrawReason.None) return;
+
+        DeclareDraw(reason, evidence);
+    }
+
+    /// <summary>
+    /// Shows that the match ended level. A draw banks as winner 0, which PlayerProfile already
+    /// records as "DRAW" and counts separately from a win or a loss.
+    /// </summary>
+    private void DeclareDraw(DamaDrawReason reason, int evidence)
+    {
+        int red = CountPieces(1);
+        int blue = CountPieces(2);
+
+        if (winText != null)
+        {
+            winText.text = "DRAW";
+            winText.color = new Color(0.88f, 0.88f, 0.88f);
+        }
+
+        if (winSummaryText != null)
+        {
+            winSummaryText.text = reason == DamaDrawReason.Repetition
+                ? $"DRAW.  RED {red}-{blue}, the same position {evidence} times."
+                : $"DRAW.  RED {red}-{blue}, {evidence} plies without a capture.";
+        }
+
+        Debug.Log($"[Week20] End screen: DRAW by {reason}, RED {red}-{blue}.");
+
+        if (feedback != null) feedback.PlayDraw();
+
+        BankMatch(0);
+
+        Time.timeScale = 0f;
+        ShowState(GameState.GameOver);
+    }
+
+    /// <summary>Stops a move or a pop that is still running, e.g. on restart.</summary>
+    private void StopMoveAnimation()
+    {
+        if (moveAnimation != null)
+        {
+            StopCoroutine(moveAnimation);
+            moveAnimation = null;
+        }
+
+        if (capturePop != null)
+        {
+            StopCoroutine(capturePop);
+            capturePop = null;
+        }
+
+        moveAnimating = false;
+    }
+
+    /// <summary>
+    /// Moves a piece to its new cell over 120 ms instead of teleporting. localPosition, not position:
+    /// the board root is turned for the BLUE view, and the cell coordinates are local to it.
+    /// </summary>
+    private void AnimatePieceTo(Transform piece, Vector2Int from, Vector2Int to)
+    {
+        if (piece == null) return;
+
+        // Edit mode has no coroutines and no delta time, so a move is snapped there and every
+        // harness that drives ExecuteMove still finds the piece on its cell immediately.
+        if (!Application.isPlaying)
+        {
+            piece.localPosition = CellToLocal(to.x, to.y);
+            return;
+        }
+
+        if (moveAnimation != null) StopCoroutine(moveAnimation);
+
+        moveAnimating = true;
+        moveAnimation = StartCoroutine(MovePieceRoutine(piece, from, to));
+
+        Debug.Log($"[Week20] animate ({from.x},{from.y}) -> ({to.x},{to.y}) over 120 ms.");
+    }
+
+    private IEnumerator MovePieceRoutine(Transform piece, Vector2Int from, Vector2Int to)
+    {
+        const float duration = 0.12f;
+
+        Vector3 start = CellToLocal(from.x, from.y);
+        Vector3 end = CellToLocal(to.x, to.y);
+        float elapsed = 0f;
+
+        while (piece != null && elapsed < duration)
+        {
+            // Unscaled: the pause menu stops scaled time, and a move in flight must still finish.
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            piece.localPosition = Vector3.Lerp(start, end, 1f - (1f - t) * (1f - t));
+            yield return null;
+        }
+
+        if (piece != null) piece.localPosition = end;
+
+        moveAnimation = null;
+        moveAnimating = false;
+    }
+
+    /// <summary>A short scale pop so a capture reads as a hit rather than as a piece vanishing.</summary>
+    private void CapturePop(Transform piece)
+    {
+        if (piece == null) return;
+        if (!Application.isPlaying) return;
+
+        // PromotionPulse owns localScale for a quarter of a second; the pop waits its turn.
+        if (promotionPulse != null) return;
+
+        if (capturePop != null) StopCoroutine(capturePop);
+        capturePop = StartCoroutine(CapturePopRoutine(piece));
+    }
+
+    private IEnumerator CapturePopRoutine(Transform piece)
+    {
+        const float duration = 0.12f;
+        const float baseScale = 0.82f;
+        const float bulge = 0.12f;
+        float elapsed = 0f;
+
+        while (piece != null && elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            piece.localScale = Vector3.one * (baseScale * (1f + bulge * Mathf.Sin(t * Mathf.PI)));
+            yield return null;
+        }
+
+        if (piece != null) piece.localScale = Vector3.one * baseScale;
+        capturePop = null;
     }
 
     // ---- Helpers ----

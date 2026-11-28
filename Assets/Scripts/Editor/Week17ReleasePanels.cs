@@ -48,8 +48,10 @@ public static class Week17ReleasePanels
 
     private const string HowToBody =
         "The board is 8x8. RED moves first and moves UP the board; BLUE moves DOWN.\n\n" +
-        "SELECT   Tap one of your pieces. The squares it can reach light up yellow.\n" +
-        "MOVE     Tap a lit square. The turn then passes to the other side.\n\n" +
+        "SELECT   Tap a piece, then a lit square: the turn then passes to the other side.\n\n" +
+        "MODES    PLAY offers PLAYER vs PLAYER (pass and play) and PLAYER vs AI\n" +
+        "         (EASY, NORMAL or HARD). SIDE on that screen picks RED or BLUE: you\n" +
+        "         play that end, and BLUE sees the board turned to face them.\n\n" +
         "CAPTURE  Jump over an adjacent enemy piece onto the empty square beyond it, and the\n" +
         "         piece jumped is removed. If any capture is available to you, you must take\n" +
         "         one: a plain move is refused, and the board says so.\n" +
@@ -148,9 +150,9 @@ public static class Week17ReleasePanels
             44, TextAnchor.MiddleCenter, FontStyle.Bold, Color.white);
 
         Text body = CreateLabel("BodyText", howToPanel.transform, font, HowToBody,
-            new Vector2(0.5f, 0.52f), Vector2.zero, new Vector2(1220f, 440f),
+            new Vector2(0.5f, 0.52f), Vector2.zero, new Vector2(1220f, 466f),
             26, TextAnchor.UpperLeft, FontStyle.Normal, BodyTextColor);
-        FitText(body, 440f, 26, 18);
+        FitText(body, 466f, 26, 18);
 
         CreateButton("BackButton", howToPanel.transform, font, "BACK",
             new Vector2(0.5f, 0.085f), Vector2.zero, new Vector2(ButtonWidth, ButtonHeight), BackFill, 24);

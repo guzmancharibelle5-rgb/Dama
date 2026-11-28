@@ -30,6 +30,7 @@ public class GameFeedback : MonoBehaviour
     [SerializeField] private AudioClip crownClip;
     [SerializeField] private AudioClip winClip;
     [SerializeField] private AudioClip loseClip;
+    [SerializeField] private AudioClip drawClip;
 
     [Header("Haptics")]
     [Tooltip("One short buzz when a piece is captured. Android only; a no-op on desktop.")]
@@ -58,7 +59,7 @@ public class GameFeedback : MonoBehaviour
 
         Debug.Log($"[Feedback] ready - sound {(SoundEnabled ? "ON" : "OFF")}, " +
                   $"clips move={Present(moveClip)} capture={Present(captureClip)} crown={Present(crownClip)} " +
-                  $"win={Present(winClip)} lose={Present(loseClip)}, haptics={(vibrateOnCapture ? "on" : "off")} " +
+                  $"win={Present(winClip)} lose={Present(loseClip)} draw={Present(drawClip)}, haptics={(vibrateOnCapture ? "on" : "off")} " +
                   $"on {Application.platform}");
     }
 
@@ -93,6 +94,9 @@ public class GameFeedback : MonoBehaviour
 
     /// <summary>Win or lose relative to the side stored in the player profile.</summary>
     public void PlayResult(bool playerWon) => Play(playerWon ? "win" : "lose", playerWon ? winClip : loseClip);
+
+    /// <summary>Week 20: the match ended level. Neither a win nor a loss, so it has its own clip.</summary>
+    public void PlayDraw() => Play("draw", drawClip);
 
     // ---- The one setting ----
 

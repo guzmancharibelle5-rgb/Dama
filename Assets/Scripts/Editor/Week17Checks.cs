@@ -260,7 +260,7 @@ public static class Week17Checks
 
     private static void CaseRel05_NoPanelLeak()
     {
-        string[] titlePanels = { "HowToPanel", "CreditsPanel", "ProfilePanel", "PausePanel", "WinPanel", "HUDPanel" };
+        string[] titlePanels = { "HowToPanel", "CreditsPanel", "ProfilePanel", "PausePanel", "WinPanel", "HUDPanel", "ModePanel" };
 
         board.CloseHowTo();
         board.CloseCredits();
@@ -282,11 +282,12 @@ public static class Week17Checks
         bool creditsAfter = Active("CreditsPanel");
         bool startAfter = Active("StartPanel");
         bool hudAfter = Active("HUDPanel");
-        bool matchQuiet = !howToAfter && !creditsAfter && !startAfter && hudAfter;
+        bool modeAfter = Active("ModePanel");
+        bool matchQuiet = !howToAfter && !creditsAfter && !startAfter && hudAfter && !modeAfter;
 
         board.ReturnToMenu();
 
-        string afterStart = $"HowTo={howToAfter} Credits={creditsAfter} Start={startAfter} HUD={hudAfter}";
+        string afterStart = $"HowTo={howToAfter} Credits={creditsAfter} Start={startAfter} HUD={hudAfter} Mode={modeAfter}";
         string detail = $"atTitle: StartPanel={titleOn} {atTitle}| after StartGame: {afterStart}";
 
         Record("TC-REL-05", "release", "The new panels hide completely and cannot leak into a running match",

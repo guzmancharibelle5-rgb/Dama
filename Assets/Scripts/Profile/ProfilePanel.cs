@@ -114,7 +114,7 @@ public class ProfilePanel : MonoBehaviour
         if (recordText != null)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($"Matches: {PlayerProfile.MatchesPlayed}   Wins: {PlayerProfile.Wins}   Losses: {PlayerProfile.Losses}");
+            builder.Append($"Matches: {PlayerProfile.MatchesPlayed}   Wins: {PlayerProfile.Wins}   Losses: {PlayerProfile.Losses}   Draws: {PlayerProfile.Draws}");
             builder.Append('\n');
             builder.Append($"Current streak: {PlayerProfile.CurrentStreak}   Best streak: {PlayerProfile.BestStreak}");
             recordText.text = builder.ToString();
