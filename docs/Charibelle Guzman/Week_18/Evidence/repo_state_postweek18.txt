@@ -1,0 +1,67 @@
+DAMA - POST-SUBMISSION REPOSITORY STATE (2026-11-28)
+Student : Charibelle Guzman (BSIT-4)
+Project : Dama - MOBILE DEV 002, Module 5
+Rule    : every line below is the unedited output of the command that precedes it.
+
+This file is the record of the push that carried the two post-submission commits (REQ-23…REQ-30:
+side choice and turned board, PLAYER vs AI, the draw rule, UNDO, HINT and the move animation). It
+sits beside `repo_state.txt`, which is the Week 18 submission record and is left exactly as it was.
+
+====================================================================================================
+1. PUSH
+====================================================================================================
+
+  git push origin main
+
+  To https://github.com/guzmancharibelle5-rgb/Dama.git
+     370ccf2..86cc143  main -> main
+
+====================================================================================================
+2. WHAT THE REMOTE NOW HOLDS
+====================================================================================================
+
+  git log --oneline -3
+
+  86cc143 Post-submission revision: record the code and documentation commit ids in the README
+  08ac115 Documentation: REQ-23 to REQ-30 added to the PA2 report and evidence portfolio, both user guides reworded, HTML and PDFs rebuilt
+  cc11d3b Post-submission revision: side choice, turned board, PLAYER vs AI, draw rule, UNDO, HINT and the move animation
+
+  git rev-parse HEAD
+  86cc143a01e25a686200deb118592e0175221752
+
+  git rev-parse refs/remotes/origin/main
+  86cc143a01e25a686200deb118592e0175221752
+
+  git rev-list --count HEAD
+  28
+
+The two hashes are identical, so `main` and `origin/main` are the same commit and nothing local is
+unpushed.
+
+====================================================================================================
+3. WHAT WAS DELIBERATELY NOT PUSHED
+====================================================================================================
+
+  git status --short     -> 26 entries, and 24 of them are the assistant's own tooling
+
+  Assets/Plugins/NuGet/        15 modified: .nuget-installed.json and 14 MCP/.NET DLLs
+  Assets/Plugins/NuGet/Rql.*   6 new files: Rql.Contracts, Rql.Execution, Rql.Parser (.dll + .meta)
+  Packages/Aura/               the embedded assistant package (new)
+  Packages/manifest.json       the package set the assistant changed
+  Packages/packages-lock.json  the lock that follows it
+
+  the other two entries are this file and the re-run transcript named in section 4
+
+None of these is game code, a document, an asset or a setting the build depends on. They are left
+out on purpose: this repository is a submission, not the working environment it was written in, and
+"only the important things" was the instruction. `git status` therefore is not empty, and that is a
+decision rather than an oversight.
+
+====================================================================================================
+4. ONE REWRITE BY THE VERIFICATION PASS, DISCLOSED
+====================================================================================================
+
+The verification pass re-ran `Tools > Dama > Week 20 > 2. Run Feature Checks` at 2026-11-28 12:30,
+which rewrote `postweek18_features.log`: its "run at" line and per-case timings moved, and the four
+PASS lines and every measured value are unchanged. The rewritten transcript is what this commit
+carries. Nothing else in the tree was touched by that pass.

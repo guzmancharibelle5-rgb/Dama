@@ -494,7 +494,7 @@ machine pre-test everywhere it is mentioned, and it is never referred to as a pl
 | Code commit (post-submission revision) | `cc11d3b` - side choice and turned board, PLAYER vs AI, the draw rule, UNDO, HINT, the move animation and `Dama_Draw.mp3` |
 | Documentation commit (post-submission revision) | `08ac115` - `REQ-23…REQ-30` in the PA2 report and evidence portfolio, both user guides reworded, HTML and four PDFs rebuilt, the four audit logs and the AI transcript |
 | Submission tag | `v1.0.0-pa2` - annotated, on the Week 18 closing commit; `Week_18/Evidence/repo_state.txt` records `git rev-list -n1 v1.0.0-pa2` and the push attempt's exact output |
-| Remote state | `origin/main` carries the whole project, both tags and the Week 18 closing records; the two push outputs and their exact wording are quoted in `Week_18/Evidence/repo_state.txt` §7. From 2026-11-28 it also carries the two post-submission commits above and this record of them |
+| Remote state | `origin/main` carries the whole project, both tags and the Week 18 closing records; the two push outputs and their exact wording are quoted in `Week_18/Evidence/repo_state.txt` §7. From 2026-11-28 it also carries the two post-submission commits above and this record of them - `git push origin main` printed `370ccf2..86cc143  main -> main`, and `git rev-parse HEAD` and `git rev-parse refs/remotes/origin/main` both return `86cc143a01e25a686200deb118592e0175221752` (`Week_18/Evidence/repo_state_postweek18.txt`) |
 | Build target | Android, ARM64 only, IL2CPP, minimum API 26, `com.defaultcompany.dama` |
 | Scenes in build | `DamaGame.unity` (index 0), `SampleScene.unity` (disabled) |
 
